@@ -1,0 +1,41 @@
+html, body {
+  height: 100%;
+}
+
+#work {
+  background-color: $a_cyan_l10;
+  display: flex;
+  flex-flow: column nowrap;
+  height: 100%;
+  .part {
+    margin: 5px;
+  }
+  #txt, #info {
+    margin-top: 0px;
+  }
+}
+
+#files {
+  //background-color: $a_purple;
+  .files {
+    display: flex;
+    margin-bottom: 3px;
+  }
+}
+
+#txt {
+  background-color: $a_green_l20;
+  border: 0.5px solid $a_blue;
+  flex: 1 1 auto;
+  overflow-y: scroll;
+  min-height: 100px;
+}
+
+#info {
+  background-color: $a_green;
+  border: 0.5px solid $a_blue;
+}
+
+#btns {
+  background-color: $a_blue;
+}

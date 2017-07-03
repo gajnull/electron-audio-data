@@ -1,0 +1,17 @@
+
+#btn-files-audio, #btn-files-txt {
+  background-color: $a_blue;
+  color: $a_cyan_l10;
+  border-radius: 5px;
+  width: 100px;
+  min-width: 100px;
+  margin-right: 5px;
+  padding: 6px;
+  cursor: pointer;
+}
+#field-files-audio, #field-files-txt {
+  background-color: $a_cyan;
+  flex: 1 1 auto;
+  border: 0.5px solid $a_blue;
+  padding: 6px;
+}
