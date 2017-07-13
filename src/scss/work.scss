@@ -16,9 +16,7 @@ html, body {
 }
 
 #files {
-  //background-color: $a_purple;
   .files {
-    display: flex;
     margin-bottom: 3px;
   }
 }
@@ -33,7 +31,6 @@ html, body {
 
 #info {
   background-color: $a_green;
-  border: 0.5px solid $a_blue;
 }
 
 #btns {

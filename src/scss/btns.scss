@@ -1,0 +1,11 @@
+#btns {
+  display: flex;
+  flex-flow: row wrap;
+  div {
+    flex: 1 0 300px;
+    button {
+      width: 80px;
+      margin: 7px;
+    }
+  }
+}

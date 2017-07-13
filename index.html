@@ -17,20 +17,27 @@
         </div>
       </div>
       <div id="txt" class = "part"></div>
-      <table id="info" class = "part">
-        <tr>
-          <td>
-            <span> Текущий отрезок (выбрано): </span>
-            <span info = "curr-region"> 0.0 (0.0 - 0.0)</span>
-          </td>
-          <tr>
-            <span> Позиция в файле/Всего: </span>
-            <span info = "poz-file"> 0.0 / 0.0 </span>
-          </tr>
-        </tr>
-      </table>
+      <div id="info" class = "part" title = "Ctrl + стрелка(вправо-влево) меняет выбранный отрезок">
+        <div>
+          <span> Текущий отрезок (выбрано): </span>
+          <span info = "curr-region"> 0.0 (0.0 - 0.0)</span>
+        </div>
+        <div class = "mid-border">
+          <span> Позиция в файле/Всего: </span>
+          <span info = "poz-file"> 0.0 / 0.0 </span>
+        </div>
+      </div>
       <div id="btns" class = "part">
-        btns-btns <br> btns-btns
+        <div class = "btns-interaval">
+          <button act = "start" type="button"> Start </button>
+          <button act = "continue" type="button"> Continue </button>
+          <button act = "stop" type="button"> Stop </button>
+        </div>
+        <div class = "btns-control">
+          <button act = "repeate" type="Repeate"> Start </button>
+          <button act = "set" type="button"> Set </button>
+          <button act = "save" type="button"> Save </button>
+        </div>
       </div>
     </div>
     <script src="dist/bundle.js"></script>
