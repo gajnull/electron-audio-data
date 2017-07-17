@@ -8,16 +8,15 @@ html, body {
   flex-flow: column nowrap;
   height: 100%;
   .part {
-    margin: 5px;
-  }
-  #txt, #info {
-    margin-top: 0px;
+    margin: 0px 5px 5px 5px;
   }
 }
 
 #files {
+  margin: 5px;
   .files {
     margin-bottom: 3px;
+    margin-top: 0px;
   }
 }
 
@@ -31,12 +30,8 @@ html, body {
 
 #info {
   background-color: $a_green;
-<<<<<<< HEAD
-=======
-  display: block;
->>>>>>> bdc096c2b540b54506fcccf23587a7ca11211007
 }
 
 #btns {
-  background-color: $a_blue;
+  //background-color: $a_blue;
 }

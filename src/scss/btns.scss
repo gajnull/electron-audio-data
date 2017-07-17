@@ -4,8 +4,11 @@
   div {
     flex: 1 0 300px;
     button {
+      background-color: $a_blue;
+      color: $a_cyan_l10;
+      border-radius: 6px;
+      padding: 5px;
       width: 80px;
-      margin: 7px;
     }
   }
 }

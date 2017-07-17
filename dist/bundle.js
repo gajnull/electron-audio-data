@@ -105,19 +105,127 @@ if(false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_vent_js__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_vent_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__js_vent_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_test1_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_test1_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__js_test1_js__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_test2_js__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_test2_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__js_test2_js__);
 
 // import {something, clog} from './js/empty.js'
 // document.body.innerHTML = something
 // console.log(clog)
 
+
+
+
+
+console.log('before');
+console.log(__WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].x);
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_test1_js__["test1"])();
+console.log('after test1');
+console.log(__WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].x);
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__js_test2_js__["test2"])();
+console.log('after test2');
+console.log(__WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_vent_js__["vent"].x);
+
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: \r\n  background-color: $a_green;\r\n                            ^\r\n      Invalid CSS after \"...olor: $a_green;\": expected \"}\", was \"<<<<<<< HEAD\"\r\n      in C:\\MyProject\\technologies\\electron-create-audio-data\\src\\scss\\work.scss (line 33, column 30)");
+exports = module.exports = __webpack_require__(3)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n\n#files {\n  margin: 5px; }\n  #files .files {\n    margin-bottom: 3px;\n    margin-top: 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 1 auto;\n  overflow-y: scroll;\n  min-height: 100px; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files .files {\n  display: flex; }\n\n#btn-files-audio, #btn-files-txt {\n  background-color: #8C95AA;\n  color: #e8f3f7;\n  border-radius: 6px;\n  width: 100px;\n  min-width: 100px;\n  margin-right: 5px;\n  padding: 6px;\n  cursor: pointer; }\n\n#field-files-audio, #field-files-txt {\n  background-color: #C2DFEA;\n  flex: 1 1 auto;\n  border: 0.5px solid #8C95AA;\n  padding: 6px; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 50px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex;\n  flex-flow: row wrap; }\n  #btns div {\n    flex: 1 0 300px; }\n    #btns div button {\n      background-color: #8C95AA;\n      color: #e8f3f7;\n      border-radius: 6px;\n      padding: 5px;\n      width: 80px; }\n", ""]);
+
+// exports
+
 
 /***/ }),
-/* 3 */,
+/* 3 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -570,6 +678,24 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: C:/ws_projects/ws_electron/electron-audio-data/src/js/test1.js: Unexpected token, expected { (9:7)\n\n\u001b[0m \u001b[90m  7 | \u001b[39m}\n \u001b[90m  8 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 | \u001b[39m\u001b[36mexport\u001b[39m test1\n \u001b[90m    | \u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 | \u001b[39m\u001b[0m\n");
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: C:/ws_projects/ws_electron/electron-audio-data/src/js/test2.js: Unexpected token, expected { (9:7)\n\n\u001b[0m \u001b[90m  7 | \u001b[39m}\n \u001b[90m  8 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 | \u001b[39m\u001b[36mexport\u001b[39m test2\n \u001b[90m    | \u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 | \u001b[39m\u001b[0m\n");
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed: SyntaxError: C:/ws_projects/ws_electron/electron-audio-data/src/js/vent.js: Unexpected token, expected { (6:7)\n\n\u001b[0m \u001b[90m 4 | \u001b[39m}\n \u001b[90m 5 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 | \u001b[39m\u001b[36mexport\u001b[39m vent\n \u001b[90m   | \u001b[39m       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 | \u001b[39m\u001b[0m\n");
 
 /***/ })
 /******/ ]);
