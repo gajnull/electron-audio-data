@@ -1,13 +1,23 @@
 
 #info {
+<<<<<<< HEAD
   display: flex;
   border: 0.5px solid $a_blue;
   div {
     flex: 1 1 50px;  // 50px взято с потолка - просто чтобы поровну
+=======
+  border-collapse: collapse; /* Убираем двойные линии ячеек*/
+  border: 0.5px solid $a_blue;
+  td {
+    min-width: 48%;
+>>>>>>> bdc096c2b540b54506fcccf23587a7ca11211007
     padding: 5px;
     overflow: auto;
   }
   .mid-border {
     border-left: 0.5px solid $a_blue;
+  }
+  .td-border {
+    border-left: 0.5px solid $a_blue; 
   }
 }
