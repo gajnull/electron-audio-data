@@ -67,53 +67,9 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return test1; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent_js__ = __webpack_require__(2);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__vent_js__["a"]; });
-
-
-function test1() {
-  __WEBPACK_IMPORTED_MODULE_0__vent_js__["a" /* vent */].test = 2;
-  __WEBPACK_IMPORTED_MODULE_0__vent_js__["a" /* vent */].x = 'b';
-}
-
-
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return test2; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent_js__ = __webpack_require__(2);
-
-
-function test2() {
-  __WEBPACK_IMPORTED_MODULE_0__vent_js__["a" /* vent */].test = 3;
-  __WEBPACK_IMPORTED_MODULE_0__vent_js__["a" /* vent */].x = 'c';
-}
-
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return vent; });
-var vent = {
-  test: 1,
-  x: 'a'
-};
-
-
-
-/***/ }),
+/* 0 */,
+/* 1 */,
+/* 2 */,
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -152,25 +108,10 @@ if(false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_test1_js__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_test2_js__ = __webpack_require__(1);
 
 // import {something, clog} from './js/empty.js'
-// document.body.innerHTML = something
-// console.log(clog)
 
-//import {vent} from './js/vent.js'
-
-
-
-console.log('before');
-console.log(__WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].x);
-__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__js_test1_js__["b" /* test1 */])();
-console.log('after test1');
-console.log(__WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].x);
-__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__js_test2_js__["a" /* test2 */])();
-console.log('after test2');
-console.log(__WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].test + ' & ' + __WEBPACK_IMPORTED_MODULE_1__js_test1_js__["a" /* vent */].x);
+//import {test1, vent} from './js/test1.js'
 
 /***/ }),
 /* 5 */
