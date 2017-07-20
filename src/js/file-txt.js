@@ -1,52 +1,34 @@
-/********************************************
-  во внешнем модуле используется files.init()
-*********************************************/
+/****************************************************************
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
 
 import {vent} from './vent.js'
 
-/******************************************/
-const audio = (function() {
-  const f = {}
-  const btn = document.getElementById('btn-files-audio')
-  const path = document.getElementById('field-files-audio')
-  f.init = function() {
-    btn.addEventListener('click', chooseFile);
-  }
-  f.close = function() {
-    btn.removeEventListener('click', chooseFile);
-  }
-  function chooseFile() {}
+const fileTxt = {}
 
+const btn = document.getElementById('btn-files-txt')
+const input = document.getElementById('input-txt')
+const path = document.getElementById('field-files-txt')
 
-})()
-
-
-/******************************************/
-const txt = (function () {
-  const f = {}
-  const btn = document.getElementById('btn-files-txt')
-  const path = document.getElementById('field-files-txt')
-  f.init = function() {
-    btn.addEventListener('click', chooseFile);
-  }
-  f.close = function() {
-    btn.removeEventListener('click', chooseFile);
-  }
-  function chooseFile() {}
-
-
-})()
-
-
-/******************************************/
-const files = {}
-files.init = function() {
-  audio.init()
-  txt.init()
+fileTxt.init = function() {
+                                                console.log('before init')
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', chooseFile)
+                                                console.log('after init')
 }
-files.close = function() {
-  audio.close()
-  txt.close()
+fileTxt.close = function() {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', chooseFile)
 }
 
-export {files}
+function clickInput() {
+  console.log('clickInput')
+  input.click()
+}
+function chooseFile() {
+  if (input.files[0]) console.log(input.files[0])
+}
+
+
+
+export {fileTxt}
