@@ -11,24 +11,56 @@ const input = document.getElementById('input-txt')
 const path = document.getElementById('field-files-txt')
 
 fileTxt.init = function() {
-                                                console.log('before init')
-  btn.addEventListener('click', clickInput);
+  btn.addEventListener('click', clickInput)
   input.addEventListener('change', chooseFile)
-                                                console.log('after init')
 }
 fileTxt.close = function() {
-  btn.removeEventListener('click', clickInput);
+  btn.removeEventListener('click', clickInput)
   input.removeEventListener('change', chooseFile)
 }
 
 function clickInput() {
-  console.log('clickInput')
   input.click()
 }
 function chooseFile() {
-  if (input.files[0]) console.log(input.files[0])
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  const f = input.files[0]
+  const reader = new FileReader()
+  reader.readAsText(f)
+  reader.onprogress = updateProgress
+  reader.onload = loaded
+  reader.onerror = errorHandler
 }
 
+function updateProgress(evt) {
+  if (evt.lengthComputable) {
+    // evt.loaded and evt.total are ProgressEvent properties
+    var loaded = (evt.loaded / evt.total)
+    if (loaded < 1) {
+      // Increase the prog bar length
+      // style.width = (loaded * 200) + "px";
+    }
+  }
+}
 
+function loaded(evt) {
+  // Obtain the read file data
+  var fileString = evt.target.result
+  document.getElementById('txt').innerHTML = fileString
+  // Handle UTF-16 file dump
+  //if(utils.regexp.isChinese(fileString)) {
+    //Chinese Characters + Name validation
+  //}
+//  else {
+    // run other charset test
+//  }
+  // xhr.send(fileString)
+}
+
+function errorHandler(evt) {
+  if(evt.target.error.name == "NotReadableError") {
+    // The file could not be read
+  }
+}
 
 export {fileTxt}

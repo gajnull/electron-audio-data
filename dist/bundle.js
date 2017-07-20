@@ -67,7 +67,80 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return fileTxt; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent_js__ = __webpack_require__(3);
+/****************************************************************
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
+
+
+
+var fileTxt = {};
+
+var btn = document.getElementById('btn-files-txt');
+var input = document.getElementById('input-txt');
+var path = document.getElementById('field-files-txt');
+
+fileTxt.init = function () {
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', chooseFile);
+};
+fileTxt.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', chooseFile);
+};
+
+function clickInput() {
+  input.click();
+}
+function chooseFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var f = input.files[0];
+  var reader = new FileReader();
+  reader.readAsText(f);
+  reader.onprogress = updateProgress;
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+}
+
+function updateProgress(evt) {
+  if (evt.lengthComputable) {
+    // evt.loaded and evt.total are ProgressEvent properties
+    var loaded = evt.loaded / evt.total;
+    if (loaded < 1) {
+      // Increase the prog bar length
+      // style.width = (loaded * 200) + "px";
+    }
+  }
+}
+
+function loaded(evt) {
+  // Obtain the read file data
+  var fileString = evt.target.result;
+  document.getElementById('txt').innerHTML = fileString;
+  // Handle UTF-16 file dump
+  //if(utils.regexp.isChinese(fileString)) {
+  //Chinese Characters + Name validation
+  //}
+  //  else {
+  // run other charset test
+  //  }
+  // xhr.send(fileString)
+}
+
+function errorHandler(evt) {
+  if (evt.target.error.name == "NotReadableError") {
+    // The file could not be read
+  }
+}
+
+
+
+/***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -106,7 +179,7 @@ if(false) {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_file_txt__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_file_txt__ = __webpack_require__(0);
 
 // import {something, clog} from './js/empty.js'
 
@@ -699,47 +772,6 @@ module.exports = function (css) {
 	// send back the fixed css
 	return fixedCss;
 };
-
-
-/***/ }),
-/* 8 */,
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return fileTxt; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent_js__ = __webpack_require__(3);
-/****************************************************************
-  во внешнем модуле используется fileTxt.init() и fileTxt.close()
-*****************************************************************/
-
-
-
-var fileTxt = {};
-
-var btn = document.getElementById('btn-files-txt');
-var input = document.getElementById('input-txt');
-var path = document.getElementById('field-files-txt');
-
-fileTxt.init = function () {
-  console.log('before init');
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', chooseFile);
-  console.log('after init');
-};
-fileTxt.close = function () {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', chooseFile);
-};
-
-function clickInput() {
-  console.log('clickInput');
-  input.click();
-}
-function chooseFile() {
-  if (input.files[0]) console.log(input.files[0]);
-}
-
 
 
 /***/ })
