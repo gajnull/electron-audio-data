@@ -4,7 +4,10 @@
 
 import {vent} from './vent.js'
 
-const fileTxt = {}
+const fileTxt = {
+  name: '',
+  path: ''  //with name
+}
 
 const btn = document.getElementById('btn-files-txt')
 const input = document.getElementById('input-txt')
@@ -25,6 +28,8 @@ function clickInput() {
 function chooseFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   const f = input.files[0]
+  console.log(f)
+  //path.innerHTML =
   const reader = new FileReader()
   reader.readAsText(f)
   reader.onprogress = updateProgress
@@ -32,10 +37,9 @@ function chooseFile() {
   reader.onerror = errorHandler
 }
 
-function updateProgress(evt) {
-  if (evt.lengthComputable) {
-    // evt.loaded and evt.total are ProgressEvent properties
-    var loaded = (evt.loaded / evt.total)
+function updateProgress(ev) {
+  if (ev.lengthComputable) {
+    var loaded = (ev.loaded / ev.total)
     if (loaded < 1) {
       // Increase the prog bar length
       // style.width = (loaded * 200) + "px";
@@ -43,10 +47,9 @@ function updateProgress(evt) {
   }
 }
 
-function loaded(evt) {
-  // Obtain the read file data
-  var fileString = evt.target.result
-  document.getElementById('txt').innerHTML = fileString
+function loaded(ev) {
+  fileString = ev.target.result
+  vent.publish('loadLngt', fileString)
   // Handle UTF-16 file dump
   //if(utils.regexp.isChinese(fileString)) {
     //Chinese Characters + Name validation
@@ -57,9 +60,10 @@ function loaded(evt) {
   // xhr.send(fileString)
 }
 
-function errorHandler(evt) {
-  if(evt.target.error.name == "NotReadableError") {
-    // The file could not be read
+function errorHandler(ev) {
+  if(ev.target.error.name == "NotReadableError") {
+    path.innerHTML = 'Выбеоите другой звуковой файл'
+    vent.publish('loadLngt', 'err')
   }
 }
 
