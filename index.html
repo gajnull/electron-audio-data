@@ -2,30 +2,30 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Нарезка отрезков</title>
   </head>
   <body>
     <div id="work">
-      <div id="files">
-        <input id = "input-audio" type="file" accept=".mp3,.wav" hidden>
-        <div class="files">
-          <div id="btn-files-audio">Аудиофайл</div>
-          <div class="field-files-audio">
-            <spav>Выберите звуковой файл</spav>
-            <progress value="0" max="100" hidden></progress>
-          </div>
-        </div>
-        <input id = "input-txt" type = "file" accept = ".txt,.lngt" hidden>
-        <div class="files">
-          <div id="btn-files-txt">Текст</div>
-          <div class="field-files-txt">
-            <spav>Выберите звуковой файл</spav>
-            <progress value="0" max="100" hidden></progress>
-          </div>
+
+      <input id = "input-audio" type="file" accept=".mp3,.wav" hidden>
+      <input id = "input-txt" type = "file" accept = ".txt,.lngt" hidden>
+
+      <div id="files" class="part">
+        <div id="file-txt" class="file-field">Выберите текстовой файл</div>
+        <div id="file-audio" class="file-field">Выберите звуковой файл</div>
+      </div>
+
+      <div class="part" id="file-end">
+        <input type="text" id="name-lngt" placeholder="Название не выбрано" title="Файл ещё не сохранялся">
+        <div class="btns-file">
+          <button type="button" act="save"> Save </button>
+          <button type="button" act="restore"> Restore </button>
         </div>
       </div>
-      <div id="txt" class = "part"></div>
-      <div id="info" class = "part" title = "Ctrl + стрелка(вправо-влево) меняет выбранный отрезок">
+
+      <div id="txt" class="part"></div>
+
+      <div id="info" class="part" title="Ctrl + стрелка(вправо-влево) меняет выбранный отрезок">
         <div>
           <span> Текущий отрезок (выбрано): </span>
           <span info = "curr-region"> 0.0 (0.0 - 0.0)</span>
@@ -35,19 +35,42 @@
           <span info = "poz-file"> 0.0 / 0.0 </span>
         </div>
       </div>
-      <div id="btns" class = "part">
-        <div class = "btns-interaval">
-          <button act = "start" type="button"> Start </button>
-          <button act = "continue" type="button"> Continue </button>
-          <button act = "stop" type="button"> Stop </button>
-        </div>
+
+      <div id="btns" class="part">
         <div class = "btns-control">
-          <button act = "repeate" type="Repeate"> Repeate </button>
-          <button act = "set" type="button"> Set </button>
-          <button act = "save" type="button"> Save </button>
+          <button act = "tooglePlay" type="button"> Start </button>
+          <button act = "repeate" type="button"> Repeate </button>
+          <button act = "addInterval" type="button"> Set </button>
+        </div>
+        <div class="btns-move">
+          <button act="gotoStart" type="button">->start</button>
+          <button act="gotoFrom" type="button">->from</button>
+          <button act="gotoTo" type="button">->to</button>
+        </div>
+        <div class="btns-from">
+          <button act="fromMoveBack" type="button" class="z"> - </button>
+          <button act="fromSet" type="button">>from<</button>
+          <button act="fromMoveForward" type="button" class="z"> + </button>
+        </div>
+        <div class="btns-to">
+          <button act="toMoveBack" type="button" class="z"> - </button>
+          <button act="toSet" type="button">>to<</button>
+          <button act="toMoveForward" type="button" class="z"> + </button>
         </div>
       </div>
+
+      <div id="edit-intervals" class="part">
+        <div class = "btns-control">
+          <button act = "repeate" type="button"> Play </button>
+          <button act = "cleare" type="button"> Cleare </button>
+        </div>
+        <div class="btns-change">
+          <button act="change" type="button" class="toogle"> Toogle </button>
+        </div>
+      </div>      
+      
     </div>
     <script src="dist/bundle.js"></script>
+    <script src="src/savef.js"></script>
   </body>
 </html>

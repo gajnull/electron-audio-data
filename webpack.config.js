@@ -17,6 +17,7 @@ const config = {
     rules: [{
       test: /\.js$/,
       include: path.resolve(__dirname, 'src'),
+      exclude: /node_modules/,
       use: [{
         loader: 'babel-loader',
         options: {
@@ -36,7 +37,7 @@ const config = {
   	  test: /\.(png|jpg)$/,
   	  use: [{
   	    loader: 'url-loader',
-  	    options: { limit: 10000 } // Convert images < 10k to base64 strings
+  	    options: { limit: 70000 } // Convert images < 10k to base64 strings
   	  }]
 	  }]
   }

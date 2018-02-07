@@ -1,20 +1,53 @@
-#files .files {
+#files {
   display: flex;
+  flex-wrap: wrap;
+
+  .file-field {
+    flex: 1 0 200px;
+    margin-left: 5px;
+    background-color: $a_cyan;
+    border: 0.5px solid $a_blue;
+    border-radius: 4px;
+    padding: 6px;
+    cursor: pointer;
+  }
 }
 
-#btn-files-audio, #btn-files-txt {
-  background-color: $a_blue;
-  color: $a_cyan_l10;
-  border-radius: 6px;
-  width: 100px;
-  min-width: 100px;
-  margin-right: 5px;
-  padding: 6px;
-  cursor: pointer;
+#file-end {
+  display: flex;
+  //flex-wrap: wrap;
+
+  #name-lngt {
+    padding: 6px;
+    flex: 1 0 250px;
+    background-color: #f4ecf5;
+    border: 0.5px solid $a_blue;
+    font-size: 0.9em;
+  }
+  .btns-file {
+    flex: 1 0 150px;
+    align-content: stretch;
+    display: flex;
+    button {
+      flex: 1 0 40px;
+      margin-left: 5px;
+      cursor: pointer;
+      color: $b_white_l7;
+      border: 0.5px solid $b_brown_d10;
+      border-radius: 4px;
+      padding: 5px;
+      background-color: $b_brown;
+    }
+  }
 }
-.field-files-audio, .field-files-txt {
-  background-color: $a_cyan;
-  flex: 1 1 auto;
-  border: 0.5px solid $a_blue;
-  padding: 6px;
+
+
+.progress {
+  background-color: $a_blue;
+  position: absolute;
+  width: 30%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  opacity: 0.3;
 }

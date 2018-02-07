@@ -10,13 +10,14 @@ html, body {
   .part {
     margin: 0px 5px 5px 5px;
   }
-  #files {
-    margin: 5px 5px 5px 0px;
-  }
 }
 
 #files {
-  //
+  margin: 5px;
+  .files {
+    margin-bottom: 3px;
+    margin-top: 0px;
+  }
 }
 
 #txt {

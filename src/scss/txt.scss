@@ -1,0 +1,22 @@
+#txt {
+  padding: 5px;
+
+  span {
+    color: $a_cyan_d30;
+  }
+
+  #selection-txt {
+    background-color: $a_cyan_d30;
+    color: $a_cyan_l14;
+  }
+
+  #current-txt {
+    color: black;
+  }
+
+  #last-txt {
+    background-color: darken($a_purple, 30%);
+    color: $a_cyan_l14;
+  }
+
+}

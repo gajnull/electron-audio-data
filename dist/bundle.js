@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,175 +71,1116 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return fileTxt; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent_js__ = __webpack_require__(3);
-/****************************************************************
-  во внешнем модуле используется fileTxt.init() и fileTxt.close()
-*****************************************************************/
+/* harmony default export */ __webpack_exports__["a"] = (setHotKey);
 
+var evs = void 0; //var чтобы не было ошибки при повторной встрече
 
-
-var fileTxt = {};
-
-var btn = document.getElementById('btn-files-txt');
-var input = document.getElementById('input-txt');
-var path = document.getElementById('field-files-txt');
-
-fileTxt.init = function () {
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', chooseFile);
-};
-fileTxt.close = function () {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', chooseFile);
+var keyCodes = {
+  37: 'arrowLeft', // <- влево
+  39: 'arrowRight', // -> вправо
+  32: 'space', // _ пробел
+  9: 'tab' // tab
 };
 
-function clickInput() {
-  input.click();
-}
-function chooseFile() {
-  if (input.files.length === 0) return; //здесь ";" обязательно
-  var f = input.files[0];
-  var reader = new FileReader();
-  reader.readAsText(f);
-  reader.onprogress = updateProgress;
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
+setHotKey.init = function () {
+  if (evs) {
+    console.warn('setHotKey инициализирована');
+    return;
+  }
+  evs = {
+    arrowLeft: function arrowLeft() {},
+    arrowRight: function arrowRight() {},
+    space: function space() {}
+  };
+  document.onkeydown = keyboardHandler;
+};
+
+function setHotKey(hotKey, fn) {
+  if (!evs) {
+    console.warn('setHotKey неинициализирована');
+    return;
+  }
+  evs[hotKey] = fn;
 }
 
-function updateProgress(evt) {
-  if (evt.lengthComputable) {
-    // evt.loaded and evt.total are ProgressEvent properties
-    var loaded = evt.loaded / evt.total;
-    if (loaded < 1) {
-      // Increase the prog bar length
-      // style.width = (loaded * 200) + "px";
-    }
+function keyboardHandler(ev) {
+  //console.log(ev.keyCode);
+  var fn = keyCodes[ev.keyCode];
+  if (fn) {
+    evs[fn]();
   }
 }
-
-function loaded(evt) {
-  // Obtain the read file data
-  var fileString = evt.target.result;
-  document.getElementById('txt').innerHTML = fileString;
-  // Handle UTF-16 file dump
-  //if(utils.regexp.isChinese(fileString)) {
-  //Chinese Characters + Name validation
-  //}
-  //  else {
-  // run other charset test
-  //  }
-  // xhr.send(fileString)
-}
-
-function errorHandler(evt) {
-  if (evt.target.error.name == "NotReadableError") {
-    // The file could not be read
-  }
-}
-
-
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// style-loader: Adds some css to the DOM by adding a <style> tag
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-// load the styles
-var content = __webpack_require__(4);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var options = {}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(6)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss", function() {
-			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
+var Vent = function () {
+  function Vent(evs) {
+    _classCallCheck(this, Vent);
+
+    this.evs = evs;
+  }
+
+  _createClass(Vent, [{
+    key: 'on',
+    value: function on(ev, fn) {
+      this.evs[ev].push(fn);
+    }
+  }, {
+    key: 'off',
+    value: function off(ev, fn) {
+      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    }
+  }, {
+    key: 'publish',
+    value: function publish(ev, data) {
+      //console.log(ev)
+      //console.log(evs)
+      if (ev !== 'changedPoz') {
+        console.log(ev);
+        console.log(this.evs[ev]);
+      }
+      this.evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    }
+  }]);
+
+  return Vent;
+}();
+
+//   evs = {
+//     loadLngt: [],
+//     saveLngt: [],
+//     loadAudio: []
+//   }
+
+
+/* harmony default export */ __webpack_exports__["a"] = (Vent);
 
 /***/ }),
 /* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(1);
+/* harmony export (immutable) */ __webpack_exports__["a"] = work;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_file_txt__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(9);
 
-// import {something, clog} from './js/empty.js'
 
 
-//import {fileAudio} from './js/file-audio'
 
-__WEBPACK_IMPORTED_MODULE_1__js_file_txt__["a" /* fileTxt */].init();
-//fileAudio.init()
+
+
+
+
+
+
+
+
+
+
+function work() {
+
+  var model = {
+    txt: new __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__["a" /* default */](),
+    audio: new __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__["a" /* default */]()
+  };
+
+  __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
+
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(model);
+  __WEBPACK_IMPORTED_MODULE_4__js_area_txt__["a" /* default */].init(model);
+  __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(model);
+
+  __WEBPACK_IMPORTED_MODULE_7__js_file_audio__["a" /* default */].init(model.audio);
+  __WEBPACK_IMPORTED_MODULE_8__js_control_audio__["a" /* default */].init(model);
+  __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__["a" /* default */].init(model.audio);
+}
 
 /***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export vent */
-var vent = {
-  evs: {
-    changeText: [],
-    loadLngt: [],
-    saveLngt: [],
-    loadAudio: [],
-    decodedAudio: []
-  },
-
-  on: function on(ev, fn) {
-    this.evs[ev].push(fn);
-  },
-
-  off: function off(ev, fn) {
-    this.evs[ev] = this.evs[ev].filter(function (fnEv) {
-      return fnEv !== fn;
-    });
-  },
-
-  publish: function publish(ev, data) {
-    this.evs[ev].forEach(function (fnEv) {
-      fnEv(data);
-    });
-  }
-
-};
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
 
 
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
 /* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
+
+
+var areaTxt = {};
+var mTxt = void 0,
+    mAudio = void 0,
+    area = void 0,
+    last = void 0,
+    selection = void 0,
+    current = void 0;
+
+areaTxt.init = function (model) {
+  area = document.getElementById('txt');
+
+  mTxt = model.txt;
+  mAudio = model.audio;
+  mTxt.on('loadedLngt', loadHandler);
+  mTxt.on('saveLngt', function () {
+    //need to replace for named function
+    mTxt.save(area.innerHTML);
+  });
+  mAudio.on('addInterval', addInterval);
+
+  mTxt.getTxt = function () {
+    return area.innerHTML;
+  };
+
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', changeStateTxt);
+};
+
+areaTxt.close = function () {
+  mTxt.off('loadedLngt', loadHandler);
+
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
+};
+
+function loadHandler(_ref) {
+  var content = _ref.content;
+
+  area.innerHTML = content;
+  selection = document.getElementById('selection-txt');
+  current = document.getElementById('current-txt');
+  mTxt.selection = selection.innerHTML;
+  mTxt.current = current.innerHTML;
+  //mAudio.pozMin = getPozMin()
+}
+function getPozMin() {
+  var span = selection.previousElementSibling;
+  if (span && span.hasAttribute('to')) return span.getAttribute('to');
+  return 0;
+}
+
+function addSelection() {
+  mTxt.addSelection();
+  setFromModel();
+}
+
+function reduceSelection() {
+  mTxt.reduceSelection();
+  setFromModel();
+}
+
+function addInterval(_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
+
+  var span = document.createElement('span');
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  span.innerHTML = mTxt.selection;
+  selection.innerHTML = mTxt.selection = '';
+  selection.before(span);
+}
+
+function changeStateTxt() {
+  if (mTxt.stateEdit === 'add interval') {
+    if (!setStateDelete()) return; // если ни одного интервала ещё не установлено
+    mTxt.stateEdit = 'delete interval';
+    mTxt.publish('changeStateEdit');
+  } else {
+    setStateAdd();
+    mTxt.stateEdit = 'add interval';
+    mTxt.publish('changeStateEdit');
+  }
+}
+
+function setStateDelete() {
+  // устанавливает ...
+  last = selection.previousSibling;
+  if (!last) return false;
+  last.id = 'last-txt';
+  mTxt.current += mTxt.selection;
+  mTxt.selection = '';
+  mTxt.last = last.innerHTML;
+  setFromModel();
+  mAudio.pozFrom = +last.getAttribute('from');
+  mAudio.pozTo = +last.getAttribute('to');
+  mAudio.pozCurrent = mAudio.pozMin = mAudio.pozFrom;
+  mAudio.changePoz();
+  return true;
+}
+
+function setStateAdd() {
+  mTxt.last = '';
+  last.removeAttribute('id');
+  mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo;
+  mAudio.changePoz();
+  last = null;
+}
+
+function setFromModel() {
+  selection.innerHTML = mTxt.selection;
+  current.innerHTML = mTxt.current;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (areaTxt);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
+
+
+
+var controlAudio = {};
+
+var mTxt = void 0,
+    mAudio = void 0,
+    btns = void 0,
+    intervals = void 0,
+    btnPlay = void 0;
+
+controlAudio.init = function (_ref) {
+  var txt = _ref.txt,
+      audio = _ref.audio;
+
+  mTxt = txt;
+  mAudio = audio;
+  mAudio.on('decodedAudio', handlerDecoded);
+  mAudio.on('changeStateAudio', changeBtnPlay);
+  mTxt.on('changeStateEdit', changeStateEdit);
+  //mAudio.on('addInterval', );
+  btns = document.getElementById('btns');
+  intervals = document.getElementById('edit-intervals');
+  btnPlay = btns.querySelector('button[act="tooglePlay"]');
+};
+
+controlAudio.close = function () {
+  mAudio.off('decodedAudio', handlerDecoded);
+  mAudio.off('changeStateAudio', changeBtnPlay);
+  mTxt.on('changeStateEdit', changeStateEdit);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {});
+  btns.onclick = '';
+  btns = null;
+};
+
+function handlerDecoded() {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {
+    mAudio.tooglePlay();
+  });
+  btns.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      switch (attr) {
+        case 'addInterval':
+          if (mTxt.selection.trim() !== '') {
+            mAudio[attr]();
+          }
+          break;
+        case 'resetInterval':
+          //
+          break;
+        default:
+          mAudio[attr]();
+      }
+    }
+  };
+}
+
+function changeBtnPlay() {
+  if (mAudio.playing) {
+    btnPlay.innerHTML = 'Stop';
+  } else {
+    btnPlay.innerHTML = 'Play';
+  }
+}
+
+function changeStateEdit() {
+  if (mTxt.stateEdit === 'add interval') {
+    btns.style.display = 'flex';
+    intervals.style.display = 'none';
+  } else {
+    btns.style.display = 'none';
+    intervals.style.display = 'flex';
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (controlAudio);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/****************************************************************
+  во внешнем модуле используется fileAudio.init(model) и
+  fileAudio.close(model)
+
+*****************************************************************/
+
+var fileAudio = {};
+// const file = {
+//   buffer: null,
+//   name: '',
+//   duration: 0,
+//   size: null,  //if !computable then will be null
+//   path: ''  //with name
+// }
+var model = void 0,
+    btn = void 0,
+    input = void 0;
+//path,
+//progress
+
+fileAudio.init = function (mAudio) {
+  model = mAudio;
+  btn = document.getElementById('file-audio');
+  input = document.getElementById('input-audio');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  //model.on('decodedAudio', handleDecodedAudio)
+};
+
+fileAudio.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', chooseFile);
+  //model.off('decodedAudio', handleDecodedAudio)
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  var path = file.path;
+  var name = file.name;
+
+  btn.innerHTML = file.name;
+  btn.setAttribute('title', path);
+
+  var reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+  /*
+    reader.onloadstart = startProgress
+    reader.onprogress = updateProgress
+    */
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  /*
+    function startProgress(ev) {
+      progress.style.display = 'block'
+      setWidthProgress(0)
+    }
+  
+    function updateProgress(ev) {
+      //console.log(ev.loaded)
+      if (ev.lengthComputable) {
+        var loaded = (ev.loaded / ev.total)
+        if (loaded < 1) {
+          setWidthProgress(loaded)  //остальную половину будет декодироваться аудио
+        }
+      } else {
+        // тогда будет анимация загрузки средствами css
+      }
+    }
+  */
+
+  function loaded(ev) {
+    //setWidthProgress(0)
+    model.file = { name: name, path: path, size: file.size };
+    model.decode(ev.target.result);
+    /*    model.decode(ev.target.result, function(duration) {
+          model.file = {name, path, size: file.size}
+          model.duration = duration
+          model.publish('decodedAudio')
+          //model.changePoz()
+        })
+    */
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      path.innerHTML = 'Выберите другой звуковой файл';
+    }
+  }
+}
+
+function handleDecodedAudio(data) {} // пока не используется (ф-ция подписчмк на декодирование)
+
+/*
+function setWidthProgress(value) {
+  const width = 20 + value * 70
+  progress.style.width = width + '%'
+}
+*/
+
+/* harmony default export */ __webpack_exports__["a"] = (fileAudio);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//export const something = 'test'
+var fileEnd = {};
+
+var model = void 0,
+    nameEnd = void 0,
+    btnSave = void 0,
+    btnRestore = void 0;
+//progress,
+//btnSave,
+//btnRestore
+
+fileEnd.init = function (fullModel) {
+  model = fullModel.txt;
+
+  nameEnd = document.getElementById('name-lngt');
+  btnSave = document.querySelector('#file-end button[act=save]');
+  btnRestore = document.querySelector('#file-end button[act=restore]');
+
+  btnSave.addEventListener('click', saveFile);
+  btnRestore.addEventListener('click', restoreFile);
+  model.on('loadedLngt', writeName);
+};
+
+fileEnd.close = function () {
+  btnSave.removeEventListener('click', saveFile);
+  btnRestore.removeEventListener('click', restoreFile);
+  model.off('loadedLngt', writeName);
+};
+
+function saveFile() {
+  //
+}
+
+function restoreFile() {
+  //
+}
+
+function writeName(_ref) {
+  var name = _ref.name;
+
+  var res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
+  if (res) nameEnd.value = res[1];
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileEnd);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init(model) и
+   fileTxt.close()
+  генерирует событие получения контента текстового файл
+*****************************************************************/
+
+var fileTxt = {};
+
+var model = void 0,
+    btn = void 0,
+    input = void 0;
+//progress,
+//btnSave,
+//btnRestore
+
+fileTxt.init = function (fullModel) {
+  model = fullModel.txt;
+  btn = document.getElementById('file-txt');
+  input = document.getElementById('input-txt');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+};
+
+fileTxt.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  var path = file.path;
+  var name = file.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function startProgress(ev) {
+    progress.style.display = 'block';
+    setWidthProgress(0);
+  }
+
+  function updateProgress(ev) {
+    if (ev.lengthComputable) {
+      var loaded = ev.loaded / ev.total;
+      if (loaded < 1) {
+        setWidthProgress(loaded);
+      }
+    } else {
+      // тогда будет анимация загрузки средствами css
+    }
+  }
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    if (/\.txt$/.test(name)) {
+      content = model.txtToLngt(content);
+    }
+    //setWidthProgress(0)
+    //progress.style.display = 'none'
+    model.publish('loadedLngt', {
+      name: name, path: path,
+      size: file.size,
+      content: content
+    });
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //model.publish('setPoz', model.getPoz)
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+      //setWidthProgress(0)
+      //progress.style.display = 'none'
+    }
+  }
+}
+
+function setWidthProgress(value) {
+  var width = 20 + value * 70;
+  progress.style.width = width + '%';
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var infoTiming = {};
+
+var model = void 0,
+    info = void 0;
+
+infoTiming.init = function (audio) {
+  model = audio;
+  model.on('changedPoz', showChangedPoz);
+  info = document.getElementById('info');
+};
+
+infoTiming.close = function () {
+  model.off('changedPoz', showChangedPoz);
+  info = null;
+};
+
+function showChangedPoz(_ref) {
+  var _ref$pozCurrent = _ref.pozCurrent,
+      pozCurrent = _ref$pozCurrent === undefined ? 0 : _ref$pozCurrent,
+      _ref$duration = _ref.duration,
+      duration = _ref$duration === undefined ? 0 : _ref$duration,
+      _ref$pozMin = _ref.pozMin,
+      pozMin = _ref$pozMin === undefined ? 0 : _ref$pozMin,
+      _ref$pozFrom = _ref.pozFrom,
+      pozFrom = _ref$pozFrom === undefined ? 0 : _ref$pozFrom,
+      _ref$pozTo = _ref.pozTo,
+      pozTo = _ref$pozTo === undefined ? 0 : _ref$pozTo;
+
+
+  var localPoz = (pozCurrent - pozMin).toFixed(1);
+  var localFrom = (pozFrom - pozMin).toFixed(1);
+  var localTo = (pozTo - pozMin).toFixed(1);
+  var totalPoz = pozCurrent.toFixed(1);
+  var total = duration.toFixed(1);
+
+  info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (infoTiming);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(12);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var ModelAudio = function (_Vent) {
+  _inherits(ModelAudio, _Vent);
+
+  function ModelAudio() {
+    _classCallCheck(this, ModelAudio);
+
+    var evs = {
+      decodedAudio: [],
+      changedPoz: [],
+      changeStateAudio: [],
+      addInterval: []
+    };
+
+    var _this = _possibleConstructorReturn(this, (ModelAudio.__proto__ || Object.getPrototypeOf(ModelAudio)).call(this, evs));
+
+    _this.file = {
+      name: null,
+      path: null,
+      size: null
+    };
+    _this.api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
+    return _this;
+  }
+
+  _createClass(ModelAudio, [{
+    key: 'decode',
+    value: function decode(rawData) {
+      this.pozMin = 0; // Позиция конца предыдущего отрезка
+      this.pozCurrent = 0; // Текущая позиция
+      this.duration = 0; // Продолжительность всего ауиотрека.
+      // Запомненный отрезок
+      this.pozFrom = 0;
+      this.pozTo = 0;
+
+      this.playing = false;
+      this.delta = 0.1; // Шаг изменения позиции отрезка
+
+      this.timer = null;
+      this.timerStop = null;
+
+      this.api.decode(rawData, decodedAudio.bind(this));
+
+      function decodedAudio(duration) {
+        this.duration = duration;
+        this.publish('decodedAudio');
+        this.changePoz();
+      }
+    }
+  }, {
+    key: 'changePoz',
+    value: function changePoz() {
+      this.publish('changedPoz', { pozMin: this.pozMin,
+        duration: this.duration,
+        pozCurrent: this.pozCurrent,
+        pozFrom: this.pozFrom,
+        pozTo: this.pozTo });
+    }
+
+    ///// проигрывание/остановка
+
+  }, {
+    key: 'tooglePlay',
+    value: function tooglePlay() {
+      //проигрываем с момента остановки
+      if (this.playing) {
+        this.stop();
+      } else {
+        this.play();
+      }
+    }
+  }, {
+    key: 'play',
+    value: function play() {
+      var _this2 = this;
+
+      this.api.play(this.pozCurrent);
+      this.playing = true;
+      this.publish('changeStateAudio');
+      this.timer = setInterval(function () {
+        _this2.pozCurrent = _this2.api.getCurrentPoz();
+        if (_this2.pozCurrent > _this2.duration) _this2.stop();
+        _this2.changePoz();
+      }, 100);
+    }
+  }, {
+    key: 'stop',
+    value: function stop() {
+      if (!this.playing) return;
+      this.pozCurrent = this.api.stop();
+      this.playing = false;
+      this.publish('changeStateAudio');
+      if (this.pozCurrent > this.duration) this.pozCurrent = this.duration;
+      clearInterval(this.timer);
+      if (this.timerStop) {
+        clearTimeout(this.timerStop);
+      }
+      this.changePoz();
+    }
+  }, {
+    key: 'repeate',
+    value: function repeate() {
+      var _this3 = this;
+
+      //проигрываем выбранный отрезок
+      if (this.playing) return;
+      this.pozCurrent = this.pozFrom;
+      this.play();
+      this.playing = true;
+      //this.publish('changeStateAudio')
+      var period = (this.pozTo - this.pozFrom) * 1000;
+      this.timerStop = setTimeout(function () {
+        _this3.stop();
+      }, period);
+    }
+  }, {
+    key: 'addInterval',
+    value: function addInterval() {
+      var pozFrom = this.pozFrom;
+      var pozTo = this.pozTo;
+      this.publish('addInterval', { pozFrom: pozFrom, pozTo: pozTo });
+      this.pozMin = this.pozFrom = this.pozCurrent = pozTo;
+      this.changePoz();
+    }
+
+    //// переход позиции старт, от и до
+
+  }, {
+    key: 'gotoStart',
+    value: function gotoStart() {
+      if (this.playing) return;
+      this.pozCurrent = this.pozMin;
+      this.changePoz();
+    }
+  }, {
+    key: 'gotoFrom',
+    value: function gotoFrom() {
+      if (this.playing) return;
+      this.pozCurrent = this.pozFrom;
+      this.changePoz();
+    }
+  }, {
+    key: 'gotoTo',
+    value: function gotoTo() {
+      if (this.playing) return;
+      this.pozCurrent = this.pozTo;
+      this.changePoz();
+    }
+
+    //// установка и изменение позицй от и до
+
+  }, {
+    key: 'fromMoveBack',
+    value: function fromMoveBack() {
+      var newPoz = Math.round((this.pozFrom - this.delta) * 10) / 10;
+      if (newPoz < this.pozMin) {
+        newPoz = this.pozMin;
+      } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
+      this.pozFrom = newPoz;
+      this.changePoz();
+    }
+  }, {
+    key: 'fromSet',
+    value: function fromSet() {
+      this.pozFrom = +this.pozCurrent.toFixed(1);
+      if (this.pozTo < this.pozFrom) this.pozTo = this.pozFrom;
+      this.changePoz();
+    }
+  }, {
+    key: 'fromMoveForward',
+    value: function fromMoveForward() {
+      var newPoz = Math.round((this.pozFrom + this.delta) * 10) / 10;
+      if (newPoz > this.duration) {
+        newPoz = this.duration;
+      }
+      this.pozFrom = newPoz;
+      if (this.pozFrom > this.pozTo) this.pozTo = this.pozFrom;
+      this.changePoz();
+    }
+  }, {
+    key: 'toMoveBack',
+    value: function toMoveBack() {
+      if (this.playing) return;
+      var newPoz = Math.round((this.pozTo - this.delta) * 10) / 10;
+      if (newPoz < this.pozMin) {
+        newPoz = this.pozMin;
+      } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
+      this.pozTo = newPoz;
+      if (this.pozTo < this.pozFrom) this.pozFrom = this.pozTo;
+      this.changePoz();
+    }
+  }, {
+    key: 'toSet',
+    value: function toSet() {
+      //if(this.playing) return;
+      this.stop(); // this working only if this.playing = true
+      this.pozTo = +this.pozCurrent.toFixed(1);
+      if (this.pozFrom > this.pozTo) this.pozFrom = this.pozTo;
+      this.changePoz();
+    }
+  }, {
+    key: 'toMoveForward',
+    value: function toMoveForward() {
+      if (this.playing) return;
+      var newPoz = Math.round((this.pozTo + this.delta) * 10) / 10;
+      if (newPoz > this.duration) {
+        newPoz = this.duration;
+      }
+      this.pozTo = newPoz;
+      this.changePoz();
+    }
+  }]);
+
+  return ModelAudio;
+}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (ModelAudio);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var ModelTxt = function (_Vent) {
+  _inherits(ModelTxt, _Vent);
+
+  function ModelTxt() {
+    _classCallCheck(this, ModelTxt);
+
+    var evs = {
+      loadedLngt: [],
+      //loadedTxt: [],
+      saveLngt: [],
+      setMinPoz: [],
+      changeStateEdit: []
+    };
+
+    var _this = _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));
+
+    _this.file = {
+      name: null,
+      path: null,
+      size: null
+    };
+    _this.current = null;
+    _this.selection = null;
+    _this.last = null;
+    _this.stateEdit = 'add interval'; // or 'delete interval'
+    _this.on('loadedLngt', function (file) {
+      _this.file = file;
+      localStorage.setItem('path-txt', file.path);
+    });
+    return _this;
+  }
+
+  _createClass(ModelTxt, [{
+    key: 'txtToLngt',
+    value: function txtToLngt(str) {
+      var s = str;
+      //Нормализуем - убираем из текста возможные тэги
+      s = s.replace(/</g, '(').replace(/>/g, ')');
+      //s = s.replace(/>/g, ')')
+      //Заменяем абзацы и упорядочиваем пробелы
+      s = s.replace(/\n/g, '<br>');
+      s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+      s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+      s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+      //Добавляем тэги для начальной работы с текстом
+      s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+      //this.publish(0)
+      return s;
+    }
+  }, {
+    key: 'addSelection',
+    value: function addSelection() {
+      if (!this.current) return;
+      var s = this.current.match(/^.+?(\s|<br>)/);
+      if (s) {
+        this.selection += s[0];
+        this.current = this.current.slice(s[0].length);
+      } else {
+        //конец текстового файла
+        this.selection += this.current;
+        this.current = '';
+      }
+    }
+  }, {
+    key: 'reduceSelection',
+    value: function reduceSelection() {
+      if (!this.selection) return;
+      var s = this.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+      if (s) {
+        this.current = s[2] + this.current;
+        this.selection = this.selection.slice(0, -s[2].length);
+      } else {
+        this.current = this.selection + this.current;
+        this.selection = '';
+      }
+    }
+  }, {
+    key: 'save',
+    value: function save(data) {
+      var saveF = {
+        data: data,
+        name: this.file.name
+      };
+      ipcRenderer.on('file-saved', function (event, arg) {
+        //console.log(arg) // prints "pong"
+      });
+      ipcRenderer.send('will-save-file', saveF);
+    }
+  }]);
+
+  return ModelTxt;
+}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (ModelTxt);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = webAudioAPI;
+function webAudioAPI() {
+
+  var contextClass = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext;
+  if (!contextClass) {
+    console.log('Web Audio API недоступно');
+    return;
+  }
+
+  var res = {};
+  var context = void 0,
+      source = void 0,
+      buffer = void 0,
+      playing = void 0,
+      startTime = void 0,
+      startPoz = void 0;
+
+  res.decode = function (rawData, fn) {
+    //if (!(data instanceof ArrayBuffer)) return;
+    context = new contextClass();
+    context.decodeAudioData(rawData, function (audioBuffer) {
+      buffer = audioBuffer;
+      initVars();
+      fn(buffer.duration);
+    }, onError);
+  };
+
+  function initVars() {
+    startTime = startPoz = 0;
+    playing = false;
+  }
+
+  res.play = function (poz) {
+    source = context.createBufferSource();
+    source.connect(context.destination);
+    source.buffer = buffer;
+
+    startTime = context.currentTime;
+    startPoz = poz || 0;
+    source.start(0, startPoz);
+    playing = true;
+  };
+
+  res.getCurrentPoz = function () {
+    if (playing) {
+      return context.currentTime - startTime + startPoz;
+    } else return; // этого нельзя допускать
+  };
+
+  res.stop = function () {
+    source.stop();
+    return res.getCurrentPoz();
+    playing = false;
+  };
+
+  function onError() {}
+
+  return res;
+}
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(5)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n\n#files {\n  margin: 5px; }\n  #files .files {\n    margin-bottom: 3px;\n    margin-top: 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 1 auto;\n  overflow-y: scroll;\n  min-height: 100px; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files .files {\n  display: flex; }\n\n#btn-files-audio, #btn-files-txt {\n  background-color: #8C95AA;\n  color: #e8f3f7;\n  border-radius: 6px;\n  width: 100px;\n  min-width: 100px;\n  margin-right: 5px;\n  padding: 6px;\n  cursor: pointer; }\n\n#field-files-audio, #field-files-txt {\n  background-color: #C2DFEA;\n  flex: 1 1 auto;\n  border: 0.5px solid #8C95AA;\n  padding: 6px; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 50px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex;\n  flex-flow: row wrap; }\n  #btns div {\n    flex: 1 0 270px; }\n    #btns div button {\n      color: #fdfaf2;\n      border-radius: 6px;\n      padding: 5px;\n      width: 80px; }\n  #btns div.btns-interaval button {\n    background-color: #879c64; }\n  #btns div.btns-control button {\n    background-color: #86644f; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px;\n  overflow-y: scroll; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 250px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 150px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 40px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns, #edit-intervals {\n  display: flex;\n  justify-content: space-between; }\n  #btns > div, #edit-intervals > div {\n    display: flex; }\n    #btns > div button, #edit-intervals > div button {\n      background-color: #879c64;\n      color: #e7ece0;\n      border-radius: 5px;\n      margin: 0 1px;\n      padding: 5px 0;\n      cursor: pointer; }\n  #btns .btns-control button, #edit-intervals .btns-control button {\n    width: 60px; }\n  #btns .btns-move button,\n  #btns .btns-from button,\n  #btns .btns-to button, #edit-intervals .btns-move button,\n  #edit-intervals .btns-from button,\n  #edit-intervals .btns-to button {\n    width: 47px; }\n  #btns .btns-from button.z,\n  #btns .btns-to button.z, #edit-intervals .btns-from button.z,\n  #edit-intervals .btns-to button.z {\n    width: 30px; }\n  #btns .toogle, #edit-intervals .toogle {\n    width: 80px;\n    background-color: #586278; }\n\n#edit-intervals {\n  display: none; }\n\n#txt {\n  padding: 5px; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 5 */
+/* 14 */
 /***/ (function(module, exports) {
 
 /*
@@ -321,7 +1262,38 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 6 */
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(13);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(16)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -367,7 +1339,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(7);
+var	fixUrls = __webpack_require__(17);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -680,7 +1652,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 7 */
+/* 17 */
 /***/ (function(module, exports) {
 
 
