@@ -13,12 +13,12 @@ areaTxt.init = function(model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  mTxt.on('saveLngt', () => { //need to replace for named function
-    mTxt.save(area.innerHTML);
-  });
+  mTxt.on('saveLngt', saveLngt); 
+  
   mAudio.on('addInterval', addInterval);
 
-  mTxt.getTxt = function() {
+  ////////////////////////////// ????????????????
+  mTxt.getTxt = function() {  // ?????????????? где используется
     return area.innerHTML;
   };
 
@@ -29,6 +29,8 @@ areaTxt.init = function(model) {
 
 areaTxt.close = function() {
   mTxt.off('loadedLngt', loadHandler);
+  mTxt.off('saveLngt', saveLngt);
+  mAudio.off('addInterval', addInterval);
 
   keyboard('arrowRight', () => {});
   keyboard('arrowLeft', () => {});
@@ -36,11 +38,11 @@ areaTxt.close = function() {
 };
 
 function loadHandler({content}) {
-  area.innerHTML = content
-  selection = document.getElementById('selection-txt')
-  current = document.getElementById('current-txt')
-  mTxt.selection = selection.innerHTML
-  mTxt.current = current.innerHTML
+  area.innerHTML = content;
+  selection = document.getElementById('selection-txt');
+  current = document.getElementById('current-txt');
+  mTxt.selection = selection.innerHTML;
+  mTxt.current = current.innerHTML;
   //mAudio.pozMin = getPozMin()
 }
   function getPozMin() {
@@ -50,11 +52,13 @@ function loadHandler({content}) {
   }
 
 function addSelection() {
+  if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection()
   setFromModel();
 }
 
 function reduceSelection() {
+  if (mTxt.stateEdit === 'delete interval') return;
   mTxt.reduceSelection();
   setFromModel();
 }
@@ -108,5 +112,10 @@ function setFromModel() {
   selection.innerHTML = mTxt.selection;
   current.innerHTML = mTxt.current;
 }
+
+function saveLngt() {
+  mTxt.save(area.innerHTML);
+}
+
 
 export default areaTxt;

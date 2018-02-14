@@ -9,8 +9,8 @@ controlAudio.init = function({txt, audio}) {
   mTxt = txt;
   mAudio = audio;
   mAudio.on('decodedAudio', handlerDecoded);
-  mAudio.on('changeStateAudio', changeBtnPlay);
-  mTxt.on('changeStateEdit', changeStateEdit);
+  mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+  mTxt.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
   //mAudio.on('addInterval', );
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');

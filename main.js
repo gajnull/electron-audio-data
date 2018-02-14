@@ -39,7 +39,7 @@ app.on('activate', function () {
 
 //сохранение файла .lngt
 const fs = require('fs');
-const {ipcMain} = require('electron')
+const {ipcMain} = require('electron');
 ipcMain.on('will-save-file', (event, arg) => {
   fs.writeFile('target/' + arg.name, arg.data, ()=>{
     event.sender.send('file-saved', 'file-saved')

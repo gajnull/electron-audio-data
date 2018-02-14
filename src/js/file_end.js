@@ -8,8 +8,8 @@ let model,
     //btnSave,
     //btnRestore
 
-fileEnd.init = function(fullModel) {
-  model = fullModel.txt
+fileEnd.init = function({txt}) {
+  model = txt;
 
   nameEnd = document.getElementById('name-lngt')
   btnSave = document.querySelector('#file-end button[act=save]')
@@ -27,7 +27,7 @@ fileEnd.close = function() {
 }
 
 function saveFile() {
-//
+  model.publish('saveLngt');
 }
 
 function restoreFile() {

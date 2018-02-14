@@ -248,13 +248,13 @@ areaTxt.init = function (model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  mTxt.on('saveLngt', function () {
-    //need to replace for named function
-    mTxt.save(area.innerHTML);
-  });
+  mTxt.on('saveLngt', saveLngt);
+
   mAudio.on('addInterval', addInterval);
 
+  ////////////////////////////// ????????????????
   mTxt.getTxt = function () {
+    // ?????????????? где используется
     return area.innerHTML;
   };
 
@@ -265,6 +265,8 @@ areaTxt.init = function (model) {
 
 areaTxt.close = function () {
   mTxt.off('loadedLngt', loadHandler);
+  mTxt.off('saveLngt', saveLngt);
+  mAudio.off('addInterval', addInterval);
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
@@ -288,11 +290,13 @@ function getPozMin() {
 }
 
 function addSelection() {
+  if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection();
   setFromModel();
 }
 
 function reduceSelection() {
+  if (mTxt.stateEdit === 'delete interval') return;
   mTxt.reduceSelection();
   setFromModel();
 }
@@ -350,6 +354,10 @@ function setFromModel() {
   current.innerHTML = mTxt.current;
 }
 
+function saveLngt() {
+  mTxt.save(area.innerHTML);
+}
+
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
 /***/ }),
@@ -376,8 +384,8 @@ controlAudio.init = function (_ref) {
   mTxt = txt;
   mAudio = audio;
   mAudio.on('decodedAudio', handlerDecoded);
-  mAudio.on('changeStateAudio', changeBtnPlay);
-  mTxt.on('changeStateEdit', changeStateEdit);
+  mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+  mTxt.on('changeStateEdit', changeStateEdit); //меняем набор кнопок
   //mAudio.on('addInterval', );
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
@@ -567,8 +575,10 @@ var model = void 0,
 //btnSave,
 //btnRestore
 
-fileEnd.init = function (fullModel) {
-  model = fullModel.txt;
+fileEnd.init = function (_ref) {
+  var txt = _ref.txt;
+
+  model = txt;
 
   nameEnd = document.getElementById('name-lngt');
   btnSave = document.querySelector('#file-end button[act=save]');
@@ -586,15 +596,15 @@ fileEnd.close = function () {
 };
 
 function saveFile() {
-  //
+  model.publish('saveLngt');
 }
 
 function restoreFile() {
   //
 }
 
-function writeName(_ref) {
-  var name = _ref.name;
+function writeName(_ref2) {
+  var name = _ref2.name;
 
   var res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
   if (res) nameEnd.value = res[1];
@@ -1091,6 +1101,7 @@ var ModelTxt = function (_Vent) {
       ipcRenderer.on('file-saved', function (event, arg) {
         //console.log(arg) // prints "pong"
       });
+      console.log(data);
       ipcRenderer.send('will-save-file', saveF);
     }
   }]);
@@ -1169,7 +1180,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(false);
+exports = module.exports = __webpack_require__(14)(undefined);
 // imports
 
 

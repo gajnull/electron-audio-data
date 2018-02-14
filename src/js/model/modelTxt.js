@@ -71,11 +71,12 @@ export default class ModelTxt extends Vent {
     const saveF = {
       data,
       name: this.file.name
-    }
+    };
     ipcRenderer.on('file-saved', (event, arg) => {
       //console.log(arg) // prints "pong"
-    })
-    ipcRenderer.send('will-save-file', saveF)
+    });
+    console.log(data);
+    ipcRenderer.send('will-save-file', saveF);
   }
 
 }
