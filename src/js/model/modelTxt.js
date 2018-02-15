@@ -6,7 +6,7 @@ export default class ModelTxt extends Vent {
     const evs = {
       loadedLngt: [],
       //loadedTxt: [],
-      saveLngt: [],
+      //saveLngt: [],
       setMinPoz: [],
       changeStateEdit: []
     }
@@ -67,16 +67,19 @@ export default class ModelTxt extends Vent {
     }
   }
 
-  save(data) {
-    const saveF = {
+  //save(data) {
+  save(nameLngt) {
+    if (!this.getData) return;
+    const data = this.getData()
+    if (data === '') return; 
+    const lngt = {
       data,
-      name: this.file.name
+      name: nameLngt + '.lngt'
     };
     ipcRenderer.on('file-saved', (event, arg) => {
       //console.log(arg) // prints "pong"
     });
-    console.log(data);
-    ipcRenderer.send('will-save-file', saveF);
+    ipcRenderer.send('will-save-file', lngt);
   }
 
 }

@@ -248,13 +248,11 @@ areaTxt.init = function (model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  mTxt.on('saveLngt', saveLngt);
+  //mTxt.on('saveLngt', saveLngt); 
 
   mAudio.on('addInterval', addInterval);
 
-  ////////////////////////////// ????????????????
-  mTxt.getTxt = function () {
-    // ?????????????? где используется
+  mTxt.getData = function () {
     return area.innerHTML;
   };
 
@@ -265,7 +263,7 @@ areaTxt.init = function (model) {
 
 areaTxt.close = function () {
   mTxt.off('loadedLngt', loadHandler);
-  mTxt.off('saveLngt', saveLngt);
+  //mTxt.off('saveLngt', saveLngt);
   mAudio.off('addInterval', addInterval);
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
@@ -596,7 +594,8 @@ fileEnd.close = function () {
 };
 
 function saveFile() {
-  model.publish('saveLngt');
+  if (!nameEnd.value) nameEnd.value = 'noName';
+  model.save(nameEnd.value);
 }
 
 function restoreFile() {
@@ -1024,7 +1023,7 @@ var ModelTxt = function (_Vent) {
     var evs = {
       loadedLngt: [],
       //loadedTxt: [],
-      saveLngt: [],
+      //saveLngt: [],
       setMinPoz: [],
       changeStateEdit: []
     };
@@ -1091,18 +1090,23 @@ var ModelTxt = function (_Vent) {
         this.selection = '';
       }
     }
+
+    //save(data) {
+
   }, {
     key: 'save',
-    value: function save(data) {
-      var saveF = {
+    value: function save(nameLngt) {
+      if (!this.getData) return;
+      var data = this.getData();
+      if (data === '') return;
+      var lngt = {
         data: data,
-        name: this.file.name
+        name: nameLngt + '.lngt'
       };
       ipcRenderer.on('file-saved', function (event, arg) {
         //console.log(arg) // prints "pong"
       });
-      console.log(data);
-      ipcRenderer.send('will-save-file', saveF);
+      ipcRenderer.send('will-save-file', lngt);
     }
   }]);
 

@@ -27,7 +27,8 @@ fileEnd.close = function() {
 }
 
 function saveFile() {
-  model.publish('saveLngt');
+  if (!nameEnd.value) nameEnd.value = 'noName'
+  model.save(nameEnd.value)
 }
 
 function restoreFile() {
@@ -38,7 +39,5 @@ function writeName({name}) {
   const res = name.match(/^(.+)\.\w{2,6}$/i)  // {2,6} - перестраховались
   if(res) nameEnd.value = res[1]
 }
-
-
 
 export default fileEnd

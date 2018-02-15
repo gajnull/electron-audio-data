@@ -13,12 +13,11 @@ areaTxt.init = function(model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  mTxt.on('saveLngt', saveLngt); 
+  //mTxt.on('saveLngt', saveLngt); 
   
   mAudio.on('addInterval', addInterval);
 
-  ////////////////////////////// ????????????????
-  mTxt.getTxt = function() {  // ?????????????? где используется
+  mTxt.getData = function() {
     return area.innerHTML;
   };
 
@@ -29,7 +28,7 @@ areaTxt.init = function(model) {
 
 areaTxt.close = function() {
   mTxt.off('loadedLngt', loadHandler);
-  mTxt.off('saveLngt', saveLngt);
+  //mTxt.off('saveLngt', saveLngt);
   mAudio.off('addInterval', addInterval);
 
   keyboard('arrowRight', () => {});
