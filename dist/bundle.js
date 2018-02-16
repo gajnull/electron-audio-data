@@ -1022,6 +1022,7 @@ var ModelTxt = function (_Vent) {
 
     var evs = {
       loadedLngt: [],
+      //restoredLngt: [],
       //loadedTxt: [],
       //saveLngt: [],
       setMinPoz: [],
@@ -1105,8 +1106,20 @@ var ModelTxt = function (_Vent) {
       };
       ipcRenderer.on('file-saved', function (event, arg) {
         //console.log(arg) // prints "pong"
+        localStorage.setItem('name-result', nameLngt); //если сохранили, запоминаем имя
       });
       ipcRenderer.send('will-save-file', lngt);
+    }
+  }, {
+    key: 'restore',
+    value: function restore() {
+      var nameLngt = localStorage.getItem('name-result');
+      if (!nameLngt) return;
+      ipcRenderer.on('file-restored', function (event, arg) {
+        console.log(arg);
+        //this.publish('loadedLngt', {content: arg})
+      });
+      ipcRenderer.send('will-restore-file', nameLngt);
     }
   }]);
 

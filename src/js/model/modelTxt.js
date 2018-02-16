@@ -5,6 +5,7 @@ export default class ModelTxt extends Vent {
   constructor() {
     const evs = {
       loadedLngt: [],
+      //restoredLngt: [],
       //loadedTxt: [],
       //saveLngt: [],
       setMinPoz: [],
@@ -78,8 +79,21 @@ export default class ModelTxt extends Vent {
     };
     ipcRenderer.on('file-saved', (event, arg) => {
       //console.log(arg) // prints "pong"
+      localStorage.setItem('name-result', nameLngt) //если сохранили, запоминаем имя
     });
     ipcRenderer.send('will-save-file', lngt);
   }
+  
+  restore() {
+    const nameLngt = localStorage.getItem('name-result')
+    if (!nameLngt) return;
+    ipcRenderer.on('file-restored', (event, arg) => {
+      console.log(arg)
+      //this.publish('loadedLngt', {content: arg})
+    });    
+    ipcRenderer.send('will-restore-file', nameLngt);   
+    
 
+  }
+  
 }
