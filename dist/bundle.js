@@ -248,11 +248,14 @@ areaTxt.init = function (model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  //mTxt.on('saveLngt', saveLngt); 
-
   mAudio.on('addInterval', addInterval);
 
   mTxt.getData = function () {
+    // для сохранения
+    if (mTxt.stateEdit === 'delete interval') return;
+    mTxt.current = mTxt.selection + mTxt.current;
+    mTxt.selection = '';
+    setFromModel();
     return area.innerHTML;
   };
 
@@ -328,7 +331,7 @@ function setStateDelete() {
   last = selection.previousSibling;
   if (!last) return false;
   last.id = 'last-txt';
-  mTxt.current += mTxt.selection;
+  mTxt.current = mTxt.selection + mTxt.current;
   mTxt.selection = '';
   mTxt.last = last.innerHTML;
   setFromModel();
@@ -352,9 +355,10 @@ function setFromModel() {
   current.innerHTML = mTxt.current;
 }
 
-function saveLngt() {
-  mTxt.save(area.innerHTML);
-}
+// function saveLngt() {
+//   mTxt.save(area.innerHTML);
+// }
+
 
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
@@ -1091,15 +1095,12 @@ var ModelTxt = function (_Vent) {
         this.selection = '';
       }
     }
-
-    //save(data) {
-
   }, {
     key: 'save',
     value: function save(nameLngt) {
       if (!this.getData) return;
       var data = this.getData();
-      if (data === '') return;
+      if (!data) return;
       var lngt = {
         data: data,
         name: nameLngt + '.lngt'
@@ -1197,7 +1198,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

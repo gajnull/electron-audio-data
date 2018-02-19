@@ -13,11 +13,13 @@ areaTxt.init = function(model) {
   mTxt = model.txt;
   mAudio = model.audio;
   mTxt.on('loadedLngt', loadHandler);
-  //mTxt.on('saveLngt', saveLngt); 
-  
   mAudio.on('addInterval', addInterval);
 
-  mTxt.getData = function() {
+  mTxt.getData = function() { // для сохранения
+    if (mTxt.stateEdit === 'delete interval') return;
+    mTxt.current = mTxt.selection + mTxt.current;
+    mTxt.selection = '';
+    setFromModel();
     return area.innerHTML;
   };
 
@@ -87,22 +89,22 @@ function setStateDelete() { // устанавливает ...
   last = selection.previousSibling;
   if (!last) return false;
   last.id = 'last-txt';
-  mTxt.current += mTxt.selection;
+  mTxt.current = mTxt.selection + mTxt.current;
   mTxt.selection = '';
   mTxt.last = last.innerHTML;
   setFromModel();
   mAudio.pozFrom = + last.getAttribute('from');
   mAudio.pozTo = + last.getAttribute('to');
-  mAudio.pozCurrent = mAudio.pozMin = mAudio.pozFrom; 
+  mAudio.pozCurrent = mAudio.pozMin = mAudio.pozFrom;
   mAudio.changePoz();
   return true;
 }
 
 function setStateAdd() {
-  mTxt.last = '';  
+  mTxt.last = '';
   last.removeAttribute('id');
-  mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo; 
-  mAudio.changePoz();  
+  mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo;
+  mAudio.changePoz();
   last = null;
 }
 
@@ -112,9 +114,9 @@ function setFromModel() {
   current.innerHTML = mTxt.current;
 }
 
-function saveLngt() {
-  mTxt.save(area.innerHTML);
-}
+// function saveLngt() {
+//   mTxt.save(area.innerHTML);
+// }
 
 
 export default areaTxt;

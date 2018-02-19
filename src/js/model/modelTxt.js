@@ -68,11 +68,10 @@ export default class ModelTxt extends Vent {
     }
   }
 
-  //save(data) {
   save(nameLngt) {
     if (!this.getData) return;
     const data = this.getData()
-    if (data === '') return; 
+    if (!data) return;
     const lngt = {
       data,
       name: nameLngt + '.lngt'
@@ -83,17 +82,17 @@ export default class ModelTxt extends Vent {
     });
     ipcRenderer.send('will-save-file', lngt);
   }
-  
+
   restore() {
     const nameLngt = localStorage.getItem('name-result')
     if (!nameLngt) return;
     ipcRenderer.on('file-restored', (event, arg) => {
       console.log(arg)
       //this.publish('loadedLngt', {content: arg})
-    });    
-    ipcRenderer.send('will-restore-file', nameLngt);   
-    
+    });
+    ipcRenderer.send('will-restore-file', nameLngt);
+
 
   }
-  
+
 }
