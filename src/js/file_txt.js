@@ -35,6 +35,7 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   const file = input.files[0]
+  input.value = ''  // единственный способ чтобы заново открыть тотже файл
   const path = file.path
   const name = file.name
 
@@ -49,21 +50,21 @@ function choosedFile() {
   reader.onload = loaded
   reader.onerror = errorHandler
 
-  function startProgress(ev) {
-    progress.style.display = 'block'
-    setWidthProgress(0)
-  }
+  // function startProgress(ev) {
+    // progress.style.display = 'block'
+    // setWidthProgress(0)
+  // }
 
-  function updateProgress(ev) {
-    if (ev.lengthComputable) {
-      var loaded = (ev.loaded / ev.total)
-      if (loaded < 1) {
-        setWidthProgress(loaded)
-      }
-    } else {
-      // тогда будет анимация загрузки средствами css
-    }
-  }
+  // function updateProgress(ev) {
+    // if (ev.lengthComputable) {
+      // var loaded = (ev.loaded / ev.total)
+      // if (loaded < 1) {
+        // setWidthProgress(loaded)
+      // }
+    // } else {
+      //тогда будет анимация загрузки средствами css
+    // }
+  // }
 
   function loaded(ev) {
     let content = ev.target.result
@@ -91,10 +92,10 @@ function choosedFile() {
 
 }
 
-function setWidthProgress(value) {
-  const width = 20 + value * 70
-  progress.style.width = width + '%'
-}
+// function setWidthProgress(value) {
+  // const width = 20 + value * 70
+  // progress.style.width = width + '%'
+// }
 
 
 export default fileTxt

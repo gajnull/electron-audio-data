@@ -68,6 +68,15 @@ export default class ModelTxt extends Vent {
     }
   }
 
+  cleareSelection() {
+    if(this.selection) {
+      this.current = this.selection + this.current
+      this.selection = ''
+    }
+  }  
+  
+  
+
   save(nameLngt) {
     if (!this.getData) return;
     const data = this.getData()

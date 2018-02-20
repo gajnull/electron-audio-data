@@ -17,8 +17,7 @@ areaTxt.init = function(model) {
 
   mTxt.getData = function() { // для сохранения
     if (mTxt.stateEdit === 'delete interval') return;
-    mTxt.current = mTxt.selection + mTxt.current;
-    mTxt.selection = '';
+    mTxt.cleareSelection();
     setFromModel();
     return area.innerHTML;
   };
@@ -42,16 +41,16 @@ function loadHandler({content}) {
   area.innerHTML = content;
   selection = document.getElementById('selection-txt');
   current = document.getElementById('current-txt');
-  mTxt.selection = selection.innerHTML;
-  mTxt.current = current.innerHTML;
+  setToModel();
   //mAudio.pozMin = getPozMin()
 }
-  function getPozMin() {
-    const span = selection.previousElementSibling
-    if (span && span.hasAttribute('to')) return span.getAttribute('to');
-    return 0;
-  }
+  // function getPozMin() {
+    // const span = selection.previousElementSibling
+    // if (span && span.hasAttribute('to')) return span.getAttribute('to');
+    // return 0;
+  // }
 
+//////////////////////////
 function addSelection() {
   if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection()
@@ -64,7 +63,14 @@ function reduceSelection() {
   setFromModel();
 }
 
+function cleareSelection() {
+  mTxt.cleareSelection();
+  setFromModel();  
+}
+
+//////////////////////////
 function addInterval({ pozFrom, pozTo }) {
+  if (mTxt.stateEdit === 'delete interval') return;
   const span = document.createElement('span');
   span.setAttribute('from', pozFrom);
   span.setAttribute('to', pozTo);
@@ -73,6 +79,9 @@ function addInterval({ pozFrom, pozTo }) {
   selection.before(span);
 }
 
+
+
+////////////////////////////
 function changeStateTxt() {
   if (mTxt.stateEdit === 'add interval') {
     if (!setStateDelete()) return;  // если ни одного интервала ещё не установлено
@@ -109,9 +118,16 @@ function setStateAdd() {
 }
 
 
+
+/////////////////////////////////////
 function setFromModel() {
   selection.innerHTML = mTxt.selection;
   current.innerHTML = mTxt.current;
+}
+
+function setToModel() {
+  mTxt.selection = selection.innerHTML;
+  mTxt.current = current.innerHTML;  
 }
 
 // function saveLngt() {

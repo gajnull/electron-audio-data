@@ -253,8 +253,7 @@ areaTxt.init = function (model) {
   mTxt.getData = function () {
     // для сохранения
     if (mTxt.stateEdit === 'delete interval') return;
-    mTxt.current = mTxt.selection + mTxt.current;
-    mTxt.selection = '';
+    mTxt.cleareSelection();
     setFromModel();
     return area.innerHTML;
   };
@@ -280,16 +279,16 @@ function loadHandler(_ref) {
   area.innerHTML = content;
   selection = document.getElementById('selection-txt');
   current = document.getElementById('current-txt');
-  mTxt.selection = selection.innerHTML;
-  mTxt.current = current.innerHTML;
+  setToModel();
   //mAudio.pozMin = getPozMin()
 }
-function getPozMin() {
-  var span = selection.previousElementSibling;
-  if (span && span.hasAttribute('to')) return span.getAttribute('to');
-  return 0;
-}
+// function getPozMin() {
+// const span = selection.previousElementSibling
+// if (span && span.hasAttribute('to')) return span.getAttribute('to');
+// return 0;
+// }
 
+//////////////////////////
 function addSelection() {
   if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection();
@@ -302,10 +301,17 @@ function reduceSelection() {
   setFromModel();
 }
 
+function cleareSelection() {
+  mTxt.cleareSelection();
+  setFromModel();
+}
+
+//////////////////////////
 function addInterval(_ref2) {
   var pozFrom = _ref2.pozFrom,
       pozTo = _ref2.pozTo;
 
+  if (mTxt.stateEdit === 'delete interval') return;
   var span = document.createElement('span');
   span.setAttribute('from', pozFrom);
   span.setAttribute('to', pozTo);
@@ -314,6 +320,7 @@ function addInterval(_ref2) {
   selection.before(span);
 }
 
+////////////////////////////
 function changeStateTxt() {
   if (mTxt.stateEdit === 'add interval') {
     if (!setStateDelete()) return; // если ни одного интервала ещё не установлено
@@ -350,9 +357,15 @@ function setStateAdd() {
   last = null;
 }
 
+/////////////////////////////////////
 function setFromModel() {
   selection.innerHTML = mTxt.selection;
   current.innerHTML = mTxt.current;
+}
+
+function setToModel() {
+  mTxt.selection = selection.innerHTML;
+  mTxt.current = current.innerHTML;
 }
 
 // function saveLngt() {
@@ -657,6 +670,7 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
   var path = file.path;
   var name = file.name;
 
@@ -671,21 +685,21 @@ function choosedFile() {
   reader.onload = loaded;
   reader.onerror = errorHandler;
 
-  function startProgress(ev) {
-    progress.style.display = 'block';
-    setWidthProgress(0);
-  }
+  // function startProgress(ev) {
+  // progress.style.display = 'block'
+  // setWidthProgress(0)
+  // }
 
-  function updateProgress(ev) {
-    if (ev.lengthComputable) {
-      var loaded = ev.loaded / ev.total;
-      if (loaded < 1) {
-        setWidthProgress(loaded);
-      }
-    } else {
-      // тогда будет анимация загрузки средствами css
-    }
-  }
+  // function updateProgress(ev) {
+  // if (ev.lengthComputable) {
+  // var loaded = (ev.loaded / ev.total)
+  // if (loaded < 1) {
+  // setWidthProgress(loaded)
+  // }
+  // } else {
+  //тогда будет анимация загрузки средствами css
+  // }
+  // }
 
   function loaded(ev) {
     var content = ev.target.result;
@@ -712,10 +726,11 @@ function choosedFile() {
   }
 }
 
-function setWidthProgress(value) {
-  var width = 20 + value * 70;
-  progress.style.width = width + '%';
-}
+// function setWidthProgress(value) {
+// const width = 20 + value * 70
+// progress.style.width = width + '%'
+// }
+
 
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
@@ -1096,6 +1111,14 @@ var ModelTxt = function (_Vent) {
       }
     }
   }, {
+    key: 'cleareSelection',
+    value: function cleareSelection() {
+      if (this.selection) {
+        this.current = this.selection + this.current;
+        this.selection = '';
+      }
+    }
+  }, {
     key: 'save',
     value: function save(nameLngt) {
       if (!this.getData) return;
@@ -1198,7 +1221,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(false);
+exports = module.exports = __webpack_require__(14)(undefined);
 // imports
 
 
