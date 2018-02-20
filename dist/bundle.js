@@ -128,26 +128,26 @@ var Vent = function () {
   }
 
   _createClass(Vent, [{
-    key: 'on',
+    key: "on",
     value: function on(ev, fn) {
       this.evs[ev].push(fn);
     }
   }, {
-    key: 'off',
+    key: "off",
     value: function off(ev, fn) {
       this.evs[ev] = this.evs[ev].filter(function (fnEv) {
         return fnEv !== fn;
       });
     }
   }, {
-    key: 'publish',
+    key: "publish",
     value: function publish(ev, data) {
       //console.log(ev)
       //console.log(evs)
-      if (ev !== 'changedPoz') {
-        console.log(ev);
-        console.log(this.evs[ev]);
-      }
+      // if (ev !== 'changedPoz') {
+      //   console.log(ev);
+      //   console.log(this.evs[ev]);
+      // }
       this.evs[ev].forEach(function (fnEv) {
         fnEv(data);
       });
@@ -156,13 +156,6 @@ var Vent = function () {
 
   return Vent;
 }();
-
-//   evs = {
-//     loadLngt: [],
-//     saveLngt: [],
-//     loadAudio: []
-//   }
-
 
 /* harmony default export */ __webpack_exports__["a"] = (Vent);
 
@@ -587,8 +580,6 @@ var model = void 0,
     btnSave = void 0,
     btnRestore = void 0;
 //progress,
-//btnSave,
-//btnRestore
 
 fileEnd.init = function (_ref) {
   var txt = _ref.txt;
@@ -616,7 +607,7 @@ function saveFile() {
 }
 
 function restoreFile() {
-  //
+  model.restore();
 }
 
 function writeName(_ref2) {
@@ -1130,17 +1121,17 @@ var ModelTxt = function (_Vent) {
       };
       ipcRenderer.on('file-saved', function (event, arg) {
         //console.log(arg) // prints "pong"
-        localStorage.setItem('name-result', nameLngt); //если сохранили, запоминаем имя
+        localStorage.setItem('name-lngt', nameLngt); //если сохранили, запоминаем имя
       });
       ipcRenderer.send('will-save-file', lngt);
     }
   }, {
     key: 'restore',
     value: function restore() {
-      var nameLngt = localStorage.getItem('name-result');
+      var nameLngt = localStorage.getItem('name-lngt');
       if (!nameLngt) return;
       ipcRenderer.on('file-restored', function (event, arg) {
-        console.log(arg);
+        //console.log(arg)
         //this.publish('loadedLngt', {content: arg})
       });
       ipcRenderer.send('will-restore-file', nameLngt);
@@ -1221,7 +1212,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

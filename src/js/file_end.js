@@ -5,8 +5,6 @@ let model,
     nameEnd,
     btnSave, btnRestore
     //progress,
-    //btnSave,
-    //btnRestore
 
 fileEnd.init = function({txt}) {
   model = txt;
@@ -32,7 +30,7 @@ function saveFile() {
 }
 
 function restoreFile() {
-//
+  model.restore()
 }
 
 function writeName({name}) {

@@ -16,19 +16,12 @@ export default class Vent {
   publish(ev, data) {
     //console.log(ev)
     //console.log(evs)
-    if (ev !== 'changedPoz') {
-      console.log(ev);
-      console.log(this.evs[ev]);
-    }
+    // if (ev !== 'changedPoz') {
+    //   console.log(ev);
+    //   console.log(this.evs[ev]);
+    // }
     this.evs[ev].forEach(function(fnEv) {
       fnEv(data);
     })
   }
 }
-
-
-//   evs = {
-//     loadLngt: [],
-//     saveLngt: [],
-//     loadAudio: []
-//   }
