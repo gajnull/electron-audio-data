@@ -17,6 +17,7 @@ export default class ModelTxt extends Vent {
       path: null,
       size: null
     }
+    this.subfolder = 'target';  // место, куда сохраняется результат
     this.current = null;
     this.selection = null;
     this.last = null;
@@ -24,6 +25,7 @@ export default class ModelTxt extends Vent {
     this.on('loadedLngt', (file) => {
       this.file = file
       localStorage.setItem('path-txt', file.path)
+      localStorage.setItem('name-txt', file.name)
     })
   }
 
@@ -83,7 +85,8 @@ export default class ModelTxt extends Vent {
     if (!data) return;
     const lngt = {
       data,
-      name: nameLngt + '.lngt'
+      name: nameLngt + '.lngt',
+      path: this.subfolder
     };
     ipcRenderer.on('file-saved', (event, arg) => {
       //console.log(arg) // prints "pong"
@@ -94,12 +97,13 @@ export default class ModelTxt extends Vent {
 
   restore() {
     const nameLngt = localStorage.getItem('name-lngt')
-    if (!nameLngt) return;
+    const pathLngt = localStorage.getItem('path-lngt')
+    if (!nameLngt || !pathLngt) return;
     ipcRenderer.on('file-restored', (event, arg) => {
       //console.log(arg)
       //this.publish('loadedLngt', {content: arg})
     });
-    ipcRenderer.send('will-restore-file', nameLngt);
+    ipcRenderer.send('will-restore-file', {nameLngt, pathLngt});
 
 
   }

@@ -1046,6 +1046,7 @@ var ModelTxt = function (_Vent) {
       path: null,
       size: null
     };
+    _this.subfolder = 'target'; // место, куда сохраняется результат
     _this.current = null;
     _this.selection = null;
     _this.last = null;
@@ -1053,6 +1054,7 @@ var ModelTxt = function (_Vent) {
     _this.on('loadedLngt', function (file) {
       _this.file = file;
       localStorage.setItem('path-txt', file.path);
+      localStorage.setItem('name-txt', file.name);
     });
     return _this;
   }
@@ -1117,7 +1119,8 @@ var ModelTxt = function (_Vent) {
       if (!data) return;
       var lngt = {
         data: data,
-        name: nameLngt + '.lngt'
+        name: nameLngt + '.lngt',
+        path: this.subfolder
       };
       ipcRenderer.on('file-saved', function (event, arg) {
         //console.log(arg) // prints "pong"
@@ -1129,12 +1132,13 @@ var ModelTxt = function (_Vent) {
     key: 'restore',
     value: function restore() {
       var nameLngt = localStorage.getItem('name-lngt');
-      if (!nameLngt) return;
+      var pathLngt = localStorage.getItem('path-lngt');
+      if (!nameLngt || !pathLngt) return;
       ipcRenderer.on('file-restored', function (event, arg) {
         //console.log(arg)
         //this.publish('loadedLngt', {content: arg})
       });
-      ipcRenderer.send('will-restore-file', nameLngt);
+      ipcRenderer.send('will-restore-file', { nameLngt: nameLngt, pathLngt: pathLngt });
     }
   }]);
 

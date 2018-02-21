@@ -65,7 +65,7 @@ function reduceSelection() {
 
 function cleareSelection() {
   mTxt.cleareSelection();
-  setFromModel();  
+  setFromModel();
 }
 
 //////////////////////////
@@ -127,7 +127,7 @@ function setFromModel() {
 
 function setToModel() {
   mTxt.selection = selection.innerHTML;
-  mTxt.current = current.innerHTML;  
+  mTxt.current = current.innerHTML;
 }
 
 // function saveLngt() {

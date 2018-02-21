@@ -41,7 +41,7 @@ app.on('activate', function () {
 const fs = require('fs');
 const {ipcMain} = require('electron');
 ipcMain.on('will-save-file', (event, arg) => {
-  fs.writeFile('target/' + arg.name, arg.data, ()=>{
+  fs.writeFile(arg.path + '/' + arg.name, arg.data, ()=>{
     event.sender.send('file-saved', 'file-saved')
   });
 })
