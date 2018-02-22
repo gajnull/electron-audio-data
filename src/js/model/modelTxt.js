@@ -5,7 +5,6 @@ export default class ModelTxt extends Vent {
   constructor() {
     const evs = {
       loadedLngt: [],
-      //restoredLngt: [],
       //loadedTxt: [],
       //saveLngt: [],
       setMinPoz: [],
@@ -22,11 +21,12 @@ export default class ModelTxt extends Vent {
     this.selection = null;
     this.last = null;
     this.stateEdit = 'add interval';  // or 'delete interval'
-    this.on('loadedLngt', (file) => {
-      this.file = file
-      localStorage.setItem('path-txt', file.path)
-      localStorage.setItem('name-txt', file.name)
-    })
+  }
+
+  setLoadedFile(file) {
+    this.file = file
+    localStorage.setItem('path-lngt', file.path)
+    localStorage.setItem('name-lngt', file.name)
   }
 
   txtToLngt(str) {
@@ -89,8 +89,8 @@ export default class ModelTxt extends Vent {
       path: this.subfolder
     };
     ipcRenderer.on('file-saved', (event, arg) => {
-      //console.log(arg) // prints "pong"
       localStorage.setItem('name-lngt', nameLngt) //если сохранили, запоминаем имя
+      localStorage.setItem('path-lngt', this.subfolder)      
     });
     ipcRenderer.send('will-save-file', lngt);
   }

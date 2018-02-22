@@ -73,11 +73,8 @@ function choosedFile() {
     }
     //setWidthProgress(0)
     //progress.style.display = 'none'
-    model.publish('loadedLngt', {
-      name, path,
-      size: file.size,
-      content
-    })
+    model.setLoadedFile({name, path, size})
+    model.publish('loadedLngt', content)
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //model.publish('setPoz', model.getPoz)
   }

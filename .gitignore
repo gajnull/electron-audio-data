@@ -1,4 +1,4 @@
 node_modules
+dist/bundle.js
 # dist  возможно игнорировать надо не всю папку
-# игнорируем только один файл bundle.js 
-bundle.js
+# игнорируем только один файл bundle.js

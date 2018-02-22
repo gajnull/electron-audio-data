@@ -266,9 +266,7 @@ areaTxt.close = function () {
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
 };
 
-function loadHandler(_ref) {
-  var content = _ref.content;
-
+function loadHandler(content) {
   area.innerHTML = content;
   selection = document.getElementById('selection-txt');
   current = document.getElementById('current-txt');
@@ -300,9 +298,9 @@ function cleareSelection() {
 }
 
 //////////////////////////
-function addInterval(_ref2) {
-  var pozFrom = _ref2.pozFrom,
-      pozTo = _ref2.pozTo;
+function addInterval(_ref) {
+  var pozFrom = _ref.pozFrom,
+      pozTo = _ref.pozTo;
 
   if (mTxt.stateEdit === 'delete interval') return;
   var span = document.createElement('span');
@@ -699,11 +697,8 @@ function choosedFile() {
     }
     //setWidthProgress(0)
     //progress.style.display = 'none'
-    model.publish('loadedLngt', {
-      name: name, path: path,
-      size: file.size,
-      content: content
-    });
+    model.setLoadedFile({ name: name, path: path, size: size });
+    model.publish('loadedLngt', content);
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //model.publish('setPoz', model.getPoz)
   }
@@ -1032,7 +1027,6 @@ var ModelTxt = function (_Vent) {
 
     var evs = {
       loadedLngt: [],
-      //restoredLngt: [],
       //loadedTxt: [],
       //saveLngt: [],
       setMinPoz: [],
@@ -1051,15 +1045,17 @@ var ModelTxt = function (_Vent) {
     _this.selection = null;
     _this.last = null;
     _this.stateEdit = 'add interval'; // or 'delete interval'
-    _this.on('loadedLngt', function (file) {
-      _this.file = file;
-      localStorage.setItem('path-txt', file.path);
-      localStorage.setItem('name-txt', file.name);
-    });
     return _this;
   }
 
   _createClass(ModelTxt, [{
+    key: 'setLoadedFile',
+    value: function setLoadedFile(file) {
+      this.file = file;
+      localStorage.setItem('path-lngt', file.path);
+      localStorage.setItem('name-lngt', file.name);
+    }
+  }, {
     key: 'txtToLngt',
     value: function txtToLngt(str) {
       var s = str;
@@ -1114,6 +1110,8 @@ var ModelTxt = function (_Vent) {
   }, {
     key: 'save',
     value: function save(nameLngt) {
+      var _this2 = this;
+
       if (!this.getData) return;
       var data = this.getData();
       if (!data) return;
@@ -1123,8 +1121,8 @@ var ModelTxt = function (_Vent) {
         path: this.subfolder
       };
       ipcRenderer.on('file-saved', function (event, arg) {
-        //console.log(arg) // prints "pong"
         localStorage.setItem('name-lngt', nameLngt); //если сохранили, запоминаем имя
+        localStorage.setItem('path-lngt', _this2.subfolder);
       });
       ipcRenderer.send('will-save-file', lngt);
     }

@@ -37,7 +37,7 @@ areaTxt.close = function() {
   keyboard('tab', () => {});
 };
 
-function loadHandler({content}) {
+function loadHandler(content) {
   area.innerHTML = content;
   selection = document.getElementById('selection-txt');
   current = document.getElementById('current-txt');
