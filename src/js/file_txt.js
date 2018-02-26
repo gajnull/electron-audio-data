@@ -38,6 +38,7 @@ function choosedFile() {
   input.value = ''  // единственный способ чтобы заново открыть тотже файл
   const path = file.path
   const name = file.name
+  const size = file.size
 
   btn.innerHTML = name
   btn.setAttribute('title', path)
@@ -74,7 +75,7 @@ function choosedFile() {
     //setWidthProgress(0)
     //progress.style.display = 'none'
     model.setLoadedFile({name, path, size})
-    model.publish('loadedLngt', content)
+    model.publish('loadedLngt', {content, name})
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //model.publish('setPoz', model.getPoz)
   }

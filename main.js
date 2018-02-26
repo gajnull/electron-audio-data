@@ -47,7 +47,7 @@ ipcMain.on('will-save-file', (event, arg) => {
 })
 
 ipcMain.on('will-restore-file', (event, arg) => {
-  fs.readFile('target/' + arg + '.lngt', (err, data)=>{
+  fs.readFile(arg.pathLngt, (err, data)=>{
     event.sender.send('file-restored', data)
   });
 })

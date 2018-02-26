@@ -266,7 +266,9 @@ areaTxt.close = function () {
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
 };
 
-function loadHandler(content) {
+function loadHandler(_ref) {
+  var content = _ref.content;
+
   area.innerHTML = content;
   selection = document.getElementById('selection-txt');
   current = document.getElementById('current-txt');
@@ -298,9 +300,9 @@ function cleareSelection() {
 }
 
 //////////////////////////
-function addInterval(_ref) {
-  var pozFrom = _ref.pozFrom,
-      pozTo = _ref.pozTo;
+function addInterval(_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
 
   if (mTxt.stateEdit === 'delete interval') return;
   var span = document.createElement('span');
@@ -662,6 +664,7 @@ function choosedFile() {
   input.value = ''; // единственный способ чтобы заново открыть тотже файл
   var path = file.path;
   var name = file.name;
+  var size = file.size;
 
   btn.innerHTML = name;
   btn.setAttribute('title', path);
@@ -698,7 +701,7 @@ function choosedFile() {
     //setWidthProgress(0)
     //progress.style.display = 'none'
     model.setLoadedFile({ name: name, path: path, size: size });
-    model.publish('loadedLngt', content);
+    model.publish('loadedLngt', { content: content, name: name });
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     //model.publish('setPoz', model.getPoz)
   }
@@ -1115,14 +1118,15 @@ var ModelTxt = function (_Vent) {
       if (!this.getData) return;
       var data = this.getData();
       if (!data) return;
+      var name = nameLngt + '.lngt';
       var lngt = {
         data: data,
-        name: nameLngt + '.lngt',
-        path: this.subfolder
+        name: name,
+        path: this.subfolder + '/' + name
       };
       ipcRenderer.on('file-saved', function (event, arg) {
-        localStorage.setItem('name-lngt', nameLngt); //если сохранили, запоминаем имя
-        localStorage.setItem('path-lngt', _this2.subfolder);
+        localStorage.setItem('name-lngt', lngt.name); //если сохранили, запоминаем имя
+        localStorage.setItem('path-lngt', _this2.subfolder + '/' + lngt.name);
       });
       ipcRenderer.send('will-save-file', lngt);
     }
@@ -1133,10 +1137,10 @@ var ModelTxt = function (_Vent) {
       var pathLngt = localStorage.getItem('path-lngt');
       if (!nameLngt || !pathLngt) return;
       ipcRenderer.on('file-restored', function (event, arg) {
-        //console.log(arg)
+        console.log(arg);
         //this.publish('loadedLngt', {content: arg})
       });
-      ipcRenderer.send('will-restore-file', { nameLngt: nameLngt, pathLngt: pathLngt });
+      ipcRenderer.send('will-restore-file', { pathLngt: pathLngt });
     }
   }]);
 

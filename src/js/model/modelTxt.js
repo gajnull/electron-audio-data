@@ -83,14 +83,15 @@ export default class ModelTxt extends Vent {
     if (!this.getData) return;
     const data = this.getData()
     if (!data) return;
+    const name = nameLngt + '.lngt'
     const lngt = {
       data,
-      name: nameLngt + '.lngt',
-      path: this.subfolder
+      name,
+      path: this.subfolder + '/' + name
     };
     ipcRenderer.on('file-saved', (event, arg) => {
-      localStorage.setItem('name-lngt', nameLngt) //если сохранили, запоминаем имя
-      localStorage.setItem('path-lngt', this.subfolder)      
+      localStorage.setItem('name-lngt', lngt.name) //если сохранили, запоминаем имя
+      localStorage.setItem('path-lngt', this.subfolder + '/' + lngt.name)
     });
     ipcRenderer.send('will-save-file', lngt);
   }
@@ -100,12 +101,10 @@ export default class ModelTxt extends Vent {
     const pathLngt = localStorage.getItem('path-lngt')
     if (!nameLngt || !pathLngt) return;
     ipcRenderer.on('file-restored', (event, arg) => {
-      //console.log(arg)
+      console.log(arg)
       //this.publish('loadedLngt', {content: arg})
     });
-    ipcRenderer.send('will-restore-file', {nameLngt, pathLngt});
-
-
+    ipcRenderer.send('will-restore-file', {pathLngt});
   }
 
 }
