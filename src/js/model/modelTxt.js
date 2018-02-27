@@ -1,11 +1,37 @@
 import Vent from './Vent'
 const {ipcRenderer} = window.require('electron')
 
-export default class ModelTxt extends Vent {
+class ModelTxt extends Vent {
   constructor() {
     const evs = {
       loadedLngt: [],
-      //loadedTxt: [],
+      setMinPoz: [],
+      changeStateEdit: []
+    }
+    super(evs)
+  }
+}
+
+const subfolder = 'target'
+
+let nodeTxt = null
+
+const modelTxt = new ModelTxt()
+
+modelTxt.init = (root) => {
+  nodeTxt = root
+}
+
+
+
+
+
+export default modelTxt;
+
+class ModelTxtOld extends Vent {
+  constructor() {
+    const evs = {
+      loadedLngt: [],
       //saveLngt: [],
       setMinPoz: [],
       changeStateEdit: []
@@ -17,6 +43,7 @@ export default class ModelTxt extends Vent {
       size: null
     }
     this.subfolder = 'target';  // место, куда сохраняется результат
+
     this.current = null;
     this.selection = null;
     this.last = null;

@@ -1030,28 +1030,57 @@ var ModelTxt = function (_Vent) {
 
     var evs = {
       loadedLngt: [],
-      //loadedTxt: [],
+      setMinPoz: [],
+      changeStateEdit: []
+    };
+    return _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));
+  }
+
+  return ModelTxt;
+}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
+
+var subfolder = 'target';
+
+var nodeTxt = null;
+
+var modelTxt = new ModelTxt();
+
+modelTxt.init = function (root) {
+  nodeTxt = root;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
+
+var ModelTxtOld = function (_Vent2) {
+  _inherits(ModelTxtOld, _Vent2);
+
+  function ModelTxtOld() {
+    _classCallCheck(this, ModelTxtOld);
+
+    var evs = {
+      loadedLngt: [],
       //saveLngt: [],
       setMinPoz: [],
       changeStateEdit: []
     };
 
-    var _this = _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));
+    var _this2 = _possibleConstructorReturn(this, (ModelTxtOld.__proto__ || Object.getPrototypeOf(ModelTxtOld)).call(this, evs));
 
-    _this.file = {
+    _this2.file = {
       name: null,
       path: null,
       size: null
     };
-    _this.subfolder = 'target'; // место, куда сохраняется результат
-    _this.current = null;
-    _this.selection = null;
-    _this.last = null;
-    _this.stateEdit = 'add interval'; // or 'delete interval'
-    return _this;
+    _this2.subfolder = 'target'; // место, куда сохраняется результат
+
+    _this2.current = null;
+    _this2.selection = null;
+    _this2.last = null;
+    _this2.stateEdit = 'add interval'; // or 'delete interval'
+    return _this2;
   }
 
-  _createClass(ModelTxt, [{
+  _createClass(ModelTxtOld, [{
     key: 'setLoadedFile',
     value: function setLoadedFile(file) {
       this.file = file;
@@ -1113,7 +1142,7 @@ var ModelTxt = function (_Vent) {
   }, {
     key: 'save',
     value: function save(nameLngt) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.getData) return;
       var data = this.getData();
@@ -1126,7 +1155,7 @@ var ModelTxt = function (_Vent) {
       };
       ipcRenderer.on('file-saved', function (event, arg) {
         localStorage.setItem('name-lngt', lngt.name); //если сохранили, запоминаем имя
-        localStorage.setItem('path-lngt', _this2.subfolder + '/' + lngt.name);
+        localStorage.setItem('path-lngt', _this3.subfolder + '/' + lngt.name);
       });
       ipcRenderer.send('will-save-file', lngt);
     }
@@ -1144,10 +1173,8 @@ var ModelTxt = function (_Vent) {
     }
   }]);
 
-  return ModelTxt;
+  return ModelTxtOld;
 }(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
-
-/* harmony default export */ __webpack_exports__["a"] = (ModelTxt);
 
 /***/ }),
 /* 12 */
