@@ -10,9 +10,6 @@ const fileTxt = {}
 let model,
     btn,
     input
-    //progress,
-    //btnSave,
-    //btnRestore
 
 fileTxt.init = function(fullModel) {
   model = fullModel.txt
@@ -51,49 +48,38 @@ function choosedFile() {
   reader.onload = loaded
   reader.onerror = errorHandler
 
-  // function startProgress(ev) {
-    // progress.style.display = 'block'
-    // setWidthProgress(0)
-  // }
-
-  // function updateProgress(ev) {
-    // if (ev.lengthComputable) {
-      // var loaded = (ev.loaded / ev.total)
-      // if (loaded < 1) {
-        // setWidthProgress(loaded)
-      // }
-    // } else {
-      //тогда будет анимация загрузки средствами css
-    // }
-  // }
 
   function loaded(ev) {
     let content = ev.target.result
     if (/\.txt$/.test(name)) {
-      content = model.txtToLngt(content)
+      content = txtToLngt(content)
     }
-    //setWidthProgress(0)
-    //progress.style.display = 'none'
-    model.setLoadedFile({name, path, size})
-    model.publish('loadedLngt', {content, name})
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //model.publish('setPoz', model.getPoz)
+
+    model.setLoadedFile({name, path, size, content})
+  }
+  
+  txtToLngt(str) {
+    let s = str
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')')
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>')
+    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp') //для отступа
+    s = s.replace(/\s+/g, ' ') //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1') //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = `<span id="selection-txt"></span>
+         <span id="current-txt">&nbsp&nbsp${s}</span>`
+    return s;
   }
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {
       btn.innerHTML = 'Выберите другой текстовой файл'
-      //setWidthProgress(0)
-      //progress.style.display = 'none'
     }
   }
 
 }
-
-// function setWidthProgress(value) {
-  // const width = 20 + value * 70
-  // progress.style.width = width + '%'
-// }
 
 
 export default fileTxt

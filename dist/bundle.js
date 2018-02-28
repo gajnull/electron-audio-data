@@ -169,7 +169,9 @@ var Vent = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__js_file_txt__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__ = __webpack_require__(10);
@@ -193,13 +195,13 @@ var Vent = function () {
 function work() {
 
   var model = {
-    txt: new __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__["a" /* default */](),
+    txt: new __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__["default"](),
     audio: new __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__["a" /* default */]()
   };
 
   __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
 
-  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(model);
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["default"].init(model);
   __WEBPACK_IMPORTED_MODULE_4__js_area_txt__["a" /* default */].init(model);
   __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(model);
 
@@ -621,107 +623,10 @@ function writeName(_ref2) {
 
 /***/ }),
 /* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, __webpack_exports__) {
 
 "use strict";
-/****************************************************************
-  Компонент для загрузки текстового файла.
-  во внешнем модуле используется fileTxt.init(model) и
-   fileTxt.close()
-  генерирует событие получения контента текстового файл
-*****************************************************************/
-
-var fileTxt = {};
-
-var model = void 0,
-    btn = void 0,
-    input = void 0;
-//progress,
-//btnSave,
-//btnRestore
-
-fileTxt.init = function (fullModel) {
-  model = fullModel.txt;
-  btn = document.getElementById('file-txt');
-  input = document.getElementById('input-txt');
-
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', choosedFile);
-};
-
-fileTxt.close = function () {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', choosedFile);
-};
-
-function clickInput() {
-  input.click();
-}
-
-function choosedFile() {
-  if (input.files.length === 0) return; //здесь ";" обязательно
-  var file = input.files[0];
-  input.value = ''; // единственный способ чтобы заново открыть тотже файл
-  var path = file.path;
-  var name = file.name;
-  var size = file.size;
-
-  btn.innerHTML = name;
-  btn.setAttribute('title', path);
-
-  var reader = new FileReader();
-  reader.readAsText(file);
-
-  //reader.onloadstart = startProgress
-  //reader.onprogress = updateProgress
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  // function startProgress(ev) {
-  // progress.style.display = 'block'
-  // setWidthProgress(0)
-  // }
-
-  // function updateProgress(ev) {
-  // if (ev.lengthComputable) {
-  // var loaded = (ev.loaded / ev.total)
-  // if (loaded < 1) {
-  // setWidthProgress(loaded)
-  // }
-  // } else {
-  //тогда будет анимация загрузки средствами css
-  // }
-  // }
-
-  function loaded(ev) {
-    var content = ev.target.result;
-    if (/\.txt$/.test(name)) {
-      content = model.txtToLngt(content);
-    }
-    //setWidthProgress(0)
-    //progress.style.display = 'none'
-    model.setLoadedFile({ name: name, path: path, size: size });
-    model.publish('loadedLngt', { content: content, name: name });
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //model.publish('setPoz', model.getPoz)
-  }
-
-  function errorHandler(ev) {
-    if (ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой текстовой файл';
-      //setWidthProgress(0)
-      //progress.style.display = 'none'
-    }
-  }
-}
-
-// function setWidthProgress(value) {
-// const width = 20 + value * 70
-// progress.style.width = width + '%'
-// }
-
-
-/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
+throw new Error("Module build failed: SyntaxError: C:/MyProject/technologies/electron-create-audio-data/src/js/file_txt.js: Unexpected token, expected ; (61:17)\n\n\u001b[0m \u001b[90m 59 | \u001b[39m  }\n \u001b[90m 60 | \u001b[39m  \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 61 | \u001b[39m  txtToLngt(str) {\n \u001b[90m    | \u001b[39m                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 62 | \u001b[39m    let s \u001b[33m=\u001b[39m str\n \u001b[90m 63 | \u001b[39m    \u001b[90m//Нормализуем - убираем из текста возможные тэги\u001b[39m\n \u001b[90m 64 | \u001b[39m    s \u001b[33m=\u001b[39m s\u001b[33m.\u001b[39mreplace(\u001b[35m/</g\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'('\u001b[39m)\u001b[33m.\u001b[39mreplace(\u001b[35m/>/g\u001b[39m\u001b[33m,\u001b[39m \u001b[32m')'\u001b[39m)\u001b[0m\n");
 
 /***/ }),
 /* 9 */
@@ -1005,176 +910,10 @@ var ModelAudio = function (_Vent) {
 
 /***/ }),
 /* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, __webpack_exports__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var _window$require = window.require('electron'),
-    ipcRenderer = _window$require.ipcRenderer;
-
-var ModelTxt = function (_Vent) {
-  _inherits(ModelTxt, _Vent);
-
-  function ModelTxt() {
-    _classCallCheck(this, ModelTxt);
-
-    var evs = {
-      loadedLngt: [],
-      setMinPoz: [],
-      changeStateEdit: []
-    };
-    return _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));
-  }
-
-  return ModelTxt;
-}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
-
-var subfolder = 'target';
-
-var nodeTxt = null;
-
-var modelTxt = new ModelTxt();
-
-modelTxt.init = function (root) {
-  nodeTxt = root;
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
-
-var ModelTxtOld = function (_Vent2) {
-  _inherits(ModelTxtOld, _Vent2);
-
-  function ModelTxtOld() {
-    _classCallCheck(this, ModelTxtOld);
-
-    var evs = {
-      loadedLngt: [],
-      //saveLngt: [],
-      setMinPoz: [],
-      changeStateEdit: []
-    };
-
-    var _this2 = _possibleConstructorReturn(this, (ModelTxtOld.__proto__ || Object.getPrototypeOf(ModelTxtOld)).call(this, evs));
-
-    _this2.file = {
-      name: null,
-      path: null,
-      size: null
-    };
-    _this2.subfolder = 'target'; // место, куда сохраняется результат
-
-    _this2.current = null;
-    _this2.selection = null;
-    _this2.last = null;
-    _this2.stateEdit = 'add interval'; // or 'delete interval'
-    return _this2;
-  }
-
-  _createClass(ModelTxtOld, [{
-    key: 'setLoadedFile',
-    value: function setLoadedFile(file) {
-      this.file = file;
-      localStorage.setItem('path-lngt', file.path);
-      localStorage.setItem('name-lngt', file.name);
-    }
-  }, {
-    key: 'txtToLngt',
-    value: function txtToLngt(str) {
-      var s = str;
-      //Нормализуем - убираем из текста возможные тэги
-      s = s.replace(/</g, '(').replace(/>/g, ')');
-      //s = s.replace(/>/g, ')')
-      //Заменяем абзацы и упорядочиваем пробелы
-      s = s.replace(/\n/g, '<br>');
-      s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-      s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-      s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-      //Добавляем тэги для начальной работы с текстом
-      s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-      //this.publish(0)
-      return s;
-    }
-  }, {
-    key: 'addSelection',
-    value: function addSelection() {
-      if (!this.current) return;
-      var s = this.current.match(/^.+?(\s|<br>)/);
-      if (s) {
-        this.selection += s[0];
-        this.current = this.current.slice(s[0].length);
-      } else {
-        //конец текстового файла
-        this.selection += this.current;
-        this.current = '';
-      }
-    }
-  }, {
-    key: 'reduceSelection',
-    value: function reduceSelection() {
-      if (!this.selection) return;
-      var s = this.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
-      if (s) {
-        this.current = s[2] + this.current;
-        this.selection = this.selection.slice(0, -s[2].length);
-      } else {
-        this.current = this.selection + this.current;
-        this.selection = '';
-      }
-    }
-  }, {
-    key: 'cleareSelection',
-    value: function cleareSelection() {
-      if (this.selection) {
-        this.current = this.selection + this.current;
-        this.selection = '';
-      }
-    }
-  }, {
-    key: 'save',
-    value: function save(nameLngt) {
-      var _this3 = this;
-
-      if (!this.getData) return;
-      var data = this.getData();
-      if (!data) return;
-      var name = nameLngt + '.lngt';
-      var lngt = {
-        data: data,
-        name: name,
-        path: this.subfolder + '/' + name
-      };
-      ipcRenderer.on('file-saved', function (event, arg) {
-        localStorage.setItem('name-lngt', lngt.name); //если сохранили, запоминаем имя
-        localStorage.setItem('path-lngt', _this3.subfolder + '/' + lngt.name);
-      });
-      ipcRenderer.send('will-save-file', lngt);
-    }
-  }, {
-    key: 'restore',
-    value: function restore() {
-      var nameLngt = localStorage.getItem('name-lngt');
-      var pathLngt = localStorage.getItem('path-lngt');
-      if (!nameLngt || !pathLngt) return;
-      ipcRenderer.on('file-restored', function (event, arg) {
-        console.log(arg);
-        //this.publish('loadedLngt', {content: arg})
-      });
-      ipcRenderer.send('will-restore-file', { pathLngt: pathLngt });
-    }
-  }]);
-
-  return ModelTxtOld;
-}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
+throw new Error("Module build failed: SyntaxError: C:/MyProject/technologies/electron-create-audio-data/src/js/model/modelTxt.js: Unexpected token, expected ; (29:55)\n\n\u001b[0m \u001b[90m 27 | \u001b[39m}\n \u001b[90m 28 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 | \u001b[39mmodelTxt\u001b[33m.\u001b[39msetLoadedFile \u001b[33m=\u001b[39m ({name\u001b[33m,\u001b[39m path\u001b[33m,\u001b[39m size\u001b[33m,\u001b[39m content}) {\n \u001b[90m    | \u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 | \u001b[39m  file \u001b[33m=\u001b[39m {name\u001b[33m,\u001b[39m path\u001b[33m,\u001b[39m size}  \n \u001b[90m 31 | \u001b[39m  nodeTxt\u001b[33m.\u001b[39minnerHTML \u001b[33m=\u001b[39m content\n \u001b[90m 32 | \u001b[39m\u001b[0m\n");
 
 /***/ }),
 /* 12 */
@@ -1245,7 +984,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(false);
+exports = module.exports = __webpack_require__(14)(undefined);
 // imports
 
 

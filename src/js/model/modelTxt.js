@@ -13,16 +13,25 @@ class ModelTxt extends Vent {
 }
 
 const subfolder = 'target'
-
+let file = null
 let nodeTxt = null
+let current = null
+let selection = null
+let last = null
 
 const modelTxt = new ModelTxt()
 
-modelTxt.init = (root) => {
+
+modelTxt.setRoot = (root) => {
   nodeTxt = root
 }
 
+modelTxt.setLoadedFile = ({name, path, size, content}) {
+  file = {name, path, size}  
+  nodeTxt.innerHTML = content
 
+  this.publish('loadedLngt' , file)
+}
 
 
 
@@ -56,22 +65,7 @@ class ModelTxtOld extends Vent {
     localStorage.setItem('name-lngt', file.name)
   }
 
-  txtToLngt(str) {
-    let s = str
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')')
-    //s = s.replace(/>/g, ')')
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>')
-    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp') //для отступа
-    s = s.replace(/\s+/g, ' ') //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1') //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = `<span id="selection-txt"></span>
-         <span id="current-txt">&nbsp&nbsp${s}</span>`
-    //this.publish(0)
-    return s;
-  }
+
 
   addSelection() {
     if (!this.current) return;
