@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,68 +116,19 @@ function keyboardHandler(ev) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Vent = function () {
-  function Vent(evs) {
-    _classCallCheck(this, Vent);
-
-    this.evs = evs;
-  }
-
-  _createClass(Vent, [{
-    key: "on",
-    value: function on(ev, fn) {
-      this.evs[ev].push(fn);
-    }
-  }, {
-    key: "off",
-    value: function off(ev, fn) {
-      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
-        return fnEv !== fn;
-      });
-    }
-  }, {
-    key: "publish",
-    value: function publish(ev, data) {
-      //console.log(ev)
-      //console.log(evs)
-      // if (ev !== 'changedPoz') {
-      //   console.log(ev);
-      //   console.log(this.evs[ev]);
-      // }
-      this.evs[ev].forEach(function (fnEv) {
-        fnEv(data);
-      });
-    }
-  }]);
-
-  return Vent;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Vent);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__js_file_txt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(8);
 
 
 
@@ -201,7 +152,7 @@ function work() {
 
   __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
 
-  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["default"].init(model);
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(model);
   __WEBPACK_IMPORTED_MODULE_4__js_area_txt__["a" /* default */].init(model);
   __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(model);
 
@@ -211,18 +162,18 @@ function work() {
 }
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(1);
 
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -242,7 +193,6 @@ areaTxt.init = function (model) {
 
   mTxt = model.txt;
   mAudio = model.audio;
-  mTxt.on('loadedLngt', loadHandler);
   mAudio.on('addInterval', addInterval);
 
   mTxt.getData = function () {
@@ -259,7 +209,6 @@ areaTxt.init = function (model) {
 };
 
 areaTxt.close = function () {
-  mTxt.off('loadedLngt', loadHandler);
   //mTxt.off('saveLngt', saveLngt);
   mAudio.off('addInterval', addInterval);
 
@@ -267,21 +216,6 @@ areaTxt.close = function () {
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
 };
-
-function loadHandler(_ref) {
-  var content = _ref.content;
-
-  area.innerHTML = content;
-  selection = document.getElementById('selection-txt');
-  current = document.getElementById('current-txt');
-  setToModel();
-  //mAudio.pozMin = getPozMin()
-}
-// function getPozMin() {
-// const span = selection.previousElementSibling
-// if (span && span.hasAttribute('to')) return span.getAttribute('to');
-// return 0;
-// }
 
 //////////////////////////
 function addSelection() {
@@ -302,9 +236,9 @@ function cleareSelection() {
 }
 
 //////////////////////////
-function addInterval(_ref2) {
-  var pozFrom = _ref2.pozFrom,
-      pozTo = _ref2.pozTo;
+function addInterval(_ref) {
+  var pozFrom = _ref.pozFrom,
+      pozTo = _ref.pozTo;
 
   if (mTxt.stateEdit === 'delete interval') return;
   var span = document.createElement('span');
@@ -371,7 +305,7 @@ function setToModel() {
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -457,7 +391,7 @@ function changeStateEdit() {
 /* harmony default export */ __webpack_exports__["a"] = (controlAudio);
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -570,7 +504,7 @@ function setWidthProgress(value) {
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -622,14 +556,94 @@ function writeName(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
 
 /***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__) {
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: C:/MyProject/technologies/electron-create-audio-data/src/js/file_txt.js: Unexpected token, expected ; (61:17)\n\n\u001b[0m \u001b[90m 59 | \u001b[39m  }\n \u001b[90m 60 | \u001b[39m  \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 61 | \u001b[39m  txtToLngt(str) {\n \u001b[90m    | \u001b[39m                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 62 | \u001b[39m    let s \u001b[33m=\u001b[39m str\n \u001b[90m 63 | \u001b[39m    \u001b[90m//Нормализуем - убираем из текста возможные тэги\u001b[39m\n \u001b[90m 64 | \u001b[39m    s \u001b[33m=\u001b[39m s\u001b[33m.\u001b[39mreplace(\u001b[35m/</g\u001b[39m\u001b[33m,\u001b[39m \u001b[32m'('\u001b[39m)\u001b[33m.\u001b[39mreplace(\u001b[35m/>/g\u001b[39m\u001b[33m,\u001b[39m \u001b[32m')'\u001b[39m)\u001b[0m\n");
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init(model) и
+   fileTxt.close()
+  генерирует событие получения контента текстового файл
+*****************************************************************/
+
+var fileTxt = {};
+
+var model = void 0,
+    btn = void 0,
+    input = void 0;
+
+fileTxt.init = function (fullModel) {
+  model = fullModel.txt;
+  btn = document.getElementById('file-txt');
+  input = document.getElementById('input-txt');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+};
+
+fileTxt.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  var size = file.size;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    if (/\.txt$/.test(name)) {
+      content = txtToLngt(content);
+    }
+
+    model.setLoadedFile({ name: name, path: path, size: size, content: content });
+  }
+
+  function txtToLngt(str) {
+    var s = str;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    return s;
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -674,11 +688,59 @@ function showChangedPoz(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (infoTiming);
 
 /***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Vent = function () {
+  function Vent(evs) {
+    _classCallCheck(this, Vent);
+
+    this.evs = evs;
+  }
+
+  _createClass(Vent, [{
+    key: "on",
+    value: function on(ev, fn) {
+      this.evs[ev].push(fn);
+    }
+  }, {
+    key: "off",
+    value: function off(ev, fn) {
+      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    }
+  }, {
+    key: "publish",
+    value: function publish(ev, data) {
+      //console.log(ev)
+      //console.log(evs)
+      // if (ev !== 'changedPoz') {
+      //   console.log(ev);
+      //   console.log(this.evs[ev]);
+      // }
+      this.evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    }
+  }]);
+
+  return Vent;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Vent);
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -913,7 +975,7 @@ var ModelAudio = function (_Vent) {
 /***/ (function(module, __webpack_exports__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: C:/MyProject/technologies/electron-create-audio-data/src/js/model/modelTxt.js: Unexpected token, expected ; (29:55)\n\n\u001b[0m \u001b[90m 27 | \u001b[39m}\n \u001b[90m 28 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 29 | \u001b[39mmodelTxt\u001b[33m.\u001b[39msetLoadedFile \u001b[33m=\u001b[39m ({name\u001b[33m,\u001b[39m path\u001b[33m,\u001b[39m size\u001b[33m,\u001b[39m content}) {\n \u001b[90m    | \u001b[39m                                                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 30 | \u001b[39m  file \u001b[33m=\u001b[39m {name\u001b[33m,\u001b[39m path\u001b[33m,\u001b[39m size}  \n \u001b[90m 31 | \u001b[39m  nodeTxt\u001b[33m.\u001b[39minnerHTML \u001b[33m=\u001b[39m content\n \u001b[90m 32 | \u001b[39m\u001b[0m\n");
+throw new Error("Module build failed: SyntaxError: C:/MyProjects/electron-audio-data/src/js/model/modelTxt.js: Unexpected token, expected ; (40:15)\n\n\u001b[0m \u001b[90m 38 | \u001b[39m}\n \u001b[90m 39 | \u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 40 | \u001b[39msave(nameLngt) {\n \u001b[90m    | \u001b[39m               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 41 | \u001b[39m  \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mnodeTxt) \u001b[36mreturn\u001b[39m\u001b[33m;\u001b[39m\n \u001b[90m 42 | \u001b[39m  \u001b[36mconst\u001b[39m content \u001b[33m=\u001b[39m nodeTxt\u001b[33m.\u001b[39minnerHTML\n \u001b[90m 43 | \u001b[39m  \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mcontent) \u001b[36mreturn\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n");
 
 /***/ }),
 /* 12 */
@@ -984,7 +1046,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

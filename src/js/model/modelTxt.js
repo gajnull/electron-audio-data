@@ -13,7 +13,8 @@ class ModelTxt extends Vent {
 }
 
 const subfolder = 'target'
-let file = null
+let file = null       // {name, path, size, content}
+                      // path: fullPath + name
 let nodeTxt = null
 let current = null
 let selection = null
@@ -26,11 +27,41 @@ modelTxt.setRoot = (root) => {
   nodeTxt = root
 }
 
-modelTxt.setLoadedFile = ({name, path, size, content}) {
-  file = {name, path, size}  
+modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeTxt.innerHTML = content
-
+  selection = nodeTxt.getElementById('selection-txt')
+  current = nodeTxt.getElementById('current-txt')
+  file = {name, path, size}
+  localStorage.setItem('path-lngt', path)
+  localStorage.setItem('name-lngt', name)
   this.publish('loadedLngt' , file)
+}
+
+modelTxt.save = (nameLngt) => {
+  if (!nodeTxt) return;
+  const content = nodeTxt.innerHTML
+  if (!content) return;
+
+  const name = nameLngt + '.lngt'
+  const path = subfolder + '/' + name
+  const lngt = {name,  path, content}
+
+  ipcRenderer.on('file-saved', (event, arg) => {
+    localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
+    localStorage.setItem('path-lngt', path)
+  });
+  ipcRenderer.send('will-save-file', lngt);
+}
+
+modelTxt.restore = () => {
+  const nameLngt = localStorage.getItem('name-lngt')
+  const pathLngt = localStorage.getItem('path-lngt')
+  if (!nameLngt || !pathLngt) return;
+  ipcRenderer.on('file-restored', (event, arg) => {
+    console.log(arg)
+    //this.publish('loadedLngt', {content: arg})
+  });
+  ipcRenderer.send('will-restore-file', {pathLngt});
 }
 
 

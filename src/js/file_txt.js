@@ -57,8 +57,8 @@ function choosedFile() {
 
     model.setLoadedFile({name, path, size, content})
   }
-  
-  txtToLngt(str) {
+
+  function txtToLngt(str) {
     let s = str
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')')

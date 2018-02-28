@@ -12,7 +12,6 @@ areaTxt.init = function(model) {
 
   mTxt = model.txt;
   mAudio = model.audio;
-  mTxt.on('loadedLngt', loadHandler);
   mAudio.on('addInterval', addInterval);
 
   mTxt.getData = function() { // для сохранения
@@ -28,7 +27,6 @@ areaTxt.init = function(model) {
 };
 
 areaTxt.close = function() {
-  mTxt.off('loadedLngt', loadHandler);
   //mTxt.off('saveLngt', saveLngt);
   mAudio.off('addInterval', addInterval);
 
@@ -37,18 +35,7 @@ areaTxt.close = function() {
   keyboard('tab', () => {});
 };
 
-function loadHandler({content}) {
-  area.innerHTML = content;
-  selection = document.getElementById('selection-txt');
-  current = document.getElementById('current-txt');
-  setToModel();
-  //mAudio.pozMin = getPozMin()
-}
-  // function getPozMin() {
-    // const span = selection.previousElementSibling
-    // if (span && span.hasAttribute('to')) return span.getAttribute('to');
-    // return 0;
-  // }
+
 
 //////////////////////////
 function addSelection() {
