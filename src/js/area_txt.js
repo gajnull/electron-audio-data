@@ -1,23 +1,20 @@
 import keyboard from './keyboard';
 
 const areaTxt = {};
-let mTxt, mAudio,
-    area,
-    last,
-    selection,
-    current;
+let mTxt, mAudio, area
+
 
 areaTxt.init = function(model) {
   area = document.getElementById('txt');
 
-  mTxt = model.txt;
-  mAudio = model.audio;
-  mAudio.on('addInterval', addInterval);
+  mTxt = model.txt
+  mTxt.setRoot(area)
+  mAudio = model.audio
+  mAudio.on('addInterval', addInterval)
 
   mTxt.getData = function() { // для сохранения
     if (mTxt.stateEdit === 'delete interval') return;
     mTxt.cleareSelection();
-    setFromModel();
     return area.innerHTML;
   };
 
@@ -27,7 +24,6 @@ areaTxt.init = function(model) {
 };
 
 areaTxt.close = function() {
-  //mTxt.off('saveLngt', saveLngt);
   mAudio.off('addInterval', addInterval);
 
   keyboard('arrowRight', () => {});
@@ -41,18 +37,15 @@ areaTxt.close = function() {
 function addSelection() {
   if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection()
-  setFromModel();
 }
 
 function reduceSelection() {
   if (mTxt.stateEdit === 'delete interval') return;
-  mTxt.reduceSelection();
-  setFromModel();
+  mTxt.reduceSelection()
 }
 
 function cleareSelection() {
-  mTxt.cleareSelection();
-  setFromModel();
+  mTxt.cleareSelection()
 }
 
 //////////////////////////
@@ -105,17 +98,6 @@ function setStateAdd() {
 }
 
 
-
-/////////////////////////////////////
-function setFromModel() {
-  selection.innerHTML = mTxt.selection;
-  current.innerHTML = mTxt.current;
-}
-
-function setToModel() {
-  mTxt.selection = selection.innerHTML;
-  mTxt.current = current.innerHTML;
-}
 
 // function saveLngt() {
 //   mTxt.save(area.innerHTML);

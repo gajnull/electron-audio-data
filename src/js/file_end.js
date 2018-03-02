@@ -25,8 +25,9 @@ fileEnd.close = function() {
 }
 
 function saveFile() {
-  if (!nameEnd.value) nameEnd.value = 'noName'
-  model.save(nameEnd.value)
+  let name = nameEnd.value
+  if (!name) nameEnd.value = name = 'noName'
+  model.save(name)
 }
 
 function restoreFile() {

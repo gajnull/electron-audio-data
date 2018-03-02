@@ -2,7 +2,7 @@ import './scss/style.scss'
 
 import hotKeys from './js/keyboard'
 
-import ModelTxt from './js/model/modelTxt'
+import modelTxt from './js/model/modelTxt'
 import fileTxt from './js/file_txt'
 import areaTxt from './js/area_txt'
 import fileEnd from './js/file_end'
@@ -15,7 +15,7 @@ import infoTiming from './js/infoTiming'
 export default function work() {
 
   const model = {
-    txt: new ModelTxt(),
+    txt: modelTxt,
     audio: new ModelAudio()
   }
 

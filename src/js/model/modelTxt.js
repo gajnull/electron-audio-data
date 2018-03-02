@@ -5,6 +5,7 @@ class ModelTxt extends Vent {
   constructor() {
     const evs = {
       loadedLngt: [],
+      savedLngt: [],
       setMinPoz: [],
       changeStateEdit: []
     }
@@ -16,12 +17,13 @@ const subfolder = 'target'
 let file = null       // {name, path, size, content}
                       // path: fullPath + name
 let nodeTxt = null
-let current = null
-let selection = null
-let last = null
+let nodeCurrent = null
+let nodeSelection = null
+let nodeLast = null
 
 const modelTxt = new ModelTxt()
 
+modelTxt.stateEdit = 'add interval'  // 'delete interval'
 
 modelTxt.setRoot = (root) => {
   nodeTxt = root
@@ -29,12 +31,12 @@ modelTxt.setRoot = (root) => {
 
 modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeTxt.innerHTML = content
-  selection = nodeTxt.getElementById('selection-txt')
-  current = nodeTxt.getElementById('current-txt')
+  nodeSelection = nodeTxt.querySelector('#selection-txt')  // метод getElementById есть только у document
+  nodeCurrent = nodeTxt.querySelector('#current-txt')
   file = {name, path, size}
   localStorage.setItem('path-lngt', path)
   localStorage.setItem('name-lngt', name)
-  this.publish('loadedLngt' , file)
+  modelTxt.publish('loadedLngt' , file) //почему-то this здесь не работает ??????
 }
 
 modelTxt.save = (nameLngt) => {
@@ -47,116 +49,63 @@ modelTxt.save = (nameLngt) => {
   const lngt = {name,  path, content}
 
   ipcRenderer.on('file-saved', (event, arg) => {
+    if (arg) {
+      console.log(arg)  // in arg i send err
+      return;
+    }
     localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
     localStorage.setItem('path-lngt', path)
+    modelTxt.publish('savedLngt', {name, path})
   });
   ipcRenderer.send('will-save-file', lngt);
 }
 
 modelTxt.restore = () => {
-  const nameLngt = localStorage.getItem('name-lngt')
-  const pathLngt = localStorage.getItem('path-lngt')
-  if (!nameLngt || !pathLngt) return;
+  const name = localStorage.getItem('name-lngt')
+  const path = localStorage.getItem('path-lngt')
+  if (!name || !path) return;
   ipcRenderer.on('file-restored', (event, arg) => {
-    console.log(arg)
-    //this.publish('loadedLngt', {content: arg})
-  });
-  ipcRenderer.send('will-restore-file', {pathLngt});
+    this.setLoadedFile({name, path, size: arg.size, content: arg.content})
+  })
+  ipcRenderer.send('will-restore-file', {path});
 }
 
+modelTxt.addSelection = () => {
+  let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML
+  if (!current) return;
+  const s = current.match(/^.+?(\s|<br>)/)
+  if (s) {
+    nodeSelection.innerHTML = selection + s[0]
+    nodeCurrent.innerHTML = current.slice(s[0].length)
+  } else {  //конец текстового файла
+    nodeSelection.innerHTML = selection + current
+    nodeCurrent.innerHTML = ''
+  }
+}
 
+modelTxt.reduceSelection = () => {
+  let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML  
+  if(selection) return;
+  const s = this.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  if(s) {
+    nodeCurrent.innerHTML = s[2] + current;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+
+modelTxt.cleareSelection = () => {
+  let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML   
+  if(selection) {
+    nodeCurrent.innerHTML = selection + current
+    nodeSelection.innerHTML = ''
+  }
+}
 
 export default modelTxt;
 
-class ModelTxtOld extends Vent {
-  constructor() {
-    const evs = {
-      loadedLngt: [],
-      //saveLngt: [],
-      setMinPoz: [],
-      changeStateEdit: []
-    }
-    super(evs);
-    this.file = {
-      name: null,
-      path: null,
-      size: null
-    }
-    this.subfolder = 'target';  // место, куда сохраняется результат
-
-    this.current = null;
-    this.selection = null;
-    this.last = null;
-    this.stateEdit = 'add interval';  // or 'delete interval'
-  }
-
-  setLoadedFile(file) {
-    this.file = file
-    localStorage.setItem('path-lngt', file.path)
-    localStorage.setItem('name-lngt', file.name)
-  }
-
-
-
-  addSelection() {
-    if (!this.current) return;
-    const s = this.current.match(/^.+?(\s|<br>)/)
-    if (s) {
-      this.selection += s[0]
-      this.current = this.current.slice(s[0].length)
-    } else {  //конец текстового файла
-      this.selection += this.current
-      this.current = ''
-    }
-  }
-
-  reduceSelection() {
-    if(!this.selection) return;
-    const s = this.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
-    if(s) {
-      this.current = s[2] + this.current;
-      this.selection = this.selection.slice(0, -s[2].length);
-    } else {
-      this.current = this.selection + this.current;
-      this.selection = '';
-    }
-  }
-
-  cleareSelection() {
-    if(this.selection) {
-      this.current = this.selection + this.current
-      this.selection = ''
-    }
-  }
-
-
-
-  save(nameLngt) {
-    if (!this.getData) return;
-    const data = this.getData()
-    if (!data) return;
-    const name = nameLngt + '.lngt'
-    const lngt = {
-      data,
-      name,
-      path: this.subfolder + '/' + name
-    };
-    ipcRenderer.on('file-saved', (event, arg) => {
-      localStorage.setItem('name-lngt', lngt.name) //если сохранили, запоминаем имя
-      localStorage.setItem('path-lngt', this.subfolder + '/' + lngt.name)
-    });
-    ipcRenderer.send('will-save-file', lngt);
-  }
-
-  restore() {
-    const nameLngt = localStorage.getItem('name-lngt')
-    const pathLngt = localStorage.getItem('path-lngt')
-    if (!nameLngt || !pathLngt) return;
-    ipcRenderer.on('file-restored', (event, arg) => {
-      console.log(arg)
-      //this.publish('loadedLngt', {content: arg})
-    });
-    ipcRenderer.send('will-restore-file', {pathLngt});
-  }
-
-}

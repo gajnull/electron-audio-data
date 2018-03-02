@@ -41,10 +41,11 @@ app.on('activate', function () {
 const fs = require('fs');
 const {ipcMain} = require('electron');
 ipcMain.on('will-save-file', (event, arg) => {
-  fs.writeFile(arg.path + '/' + arg.name, arg.data, ()=>{
-    event.sender.send('file-saved', 'file-saved')
+  fs.writeFile(arg.path, arg.content, (err)=>{
+    event.sender.send('file-saved', err)
   });
 })
+
 
 ipcMain.on('will-restore-file', (event, arg) => {
   fs.readFile(arg.pathLngt, (err, data)=>{

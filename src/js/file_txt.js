@@ -11,19 +11,23 @@ let model,
     btn,
     input
 
-fileTxt.init = function(fullModel) {
-  model = fullModel.txt
+fileTxt.init = function({txt}) {
+  model = txt
   btn = document.getElementById('file-txt')
   input = document.getElementById('input-txt')
 
   btn.addEventListener('click', clickInput)
   input.addEventListener('change', choosedFile)
+  model.on('loadedLngt', setInfoLodedLngt)
+  model.on('savedLngt', setInfoLodedLngt)  
 }
 
 fileTxt.close = function() {
   btn.removeEventListener('click', clickInput)
   input.removeEventListener('change', choosedFile)
-}
+  model.off('loadedLngt', setInfoLodedLngt)  
+  model.on('savedLngt', setInfoLodedLngt) // 'savedLngt' нельзя объеденить с 'loadedLngt' 
+}                                         // так как на loadedLngt меняется содержимое текста 
 
 function clickInput() {
   input.click()
@@ -37,8 +41,7 @@ function choosedFile() {
   const name = file.name
   const size = file.size
 
-  btn.innerHTML = name
-  btn.setAttribute('title', path)
+  btn.innerHTML = 'loding...'
 
   const reader = new FileReader()
   reader.readAsText(file)
@@ -81,5 +84,9 @@ function choosedFile() {
 
 }
 
+function setInfoLodedLngt({path, name}) {
+  btn.innerHTML = name
+  btn.setAttribute('title', path)
+}  
 
 export default fileTxt
