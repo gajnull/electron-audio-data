@@ -20,10 +20,9 @@ let nodeTxt = null
 let nodeCurrent = null
 let nodeSelection = null
 let nodeLast = null
+let stateEdit = 'add interval'  // 'delete interval'
 
 const modelTxt = new ModelTxt()
-
-modelTxt.stateEdit = 'add interval'  // 'delete interval'
 
 modelTxt.setRoot = (root) => {
   nodeTxt = root
@@ -44,6 +43,7 @@ modelTxt.save = (nameLngt) => {
   const content = nodeTxt.innerHTML
   if (!content) return;
 
+  cleareSelection()
   const name = nameLngt + '.lngt'
   const path = subfolder + '/' + name
   const lngt = {name,  path, content}
@@ -71,6 +71,7 @@ modelTxt.restore = () => {
 }
 
 modelTxt.addSelection = () => {
+  if (stateEdit === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if (!current) return;
@@ -85,10 +86,11 @@ modelTxt.addSelection = () => {
 }
 
 modelTxt.reduceSelection = () => {
+  if (stateEdit === 'delete interval') return;
   let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML  
-  if(selection) return;
-  const s = this.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  let selection = nodeSelection.innerHTML
+  if(!selection) return;
+  const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
   if(s) {
     nodeCurrent.innerHTML = s[2] + current;
     nodeSelection.innerHTML = selection.slice(0, -s[2].length);
@@ -98,14 +100,30 @@ modelTxt.reduceSelection = () => {
   }
 }
 
-modelTxt.cleareSelection = () => {
+modelTxt.toogleState = () => {
+  let from, to
+  if (stateEdit === 'delete interval') {
+    nodeLast = null
+    stateEdit = 'add interval'
+  } else {
+    nodeLast = selection.previousSibling
+    if(!nodeLast || !nodeLast.hasAttribute('from')) return;
+    cleareSelection()
+    stateEdit = 'delete interval'
+  }
+  modelTxt.publish('changeStateEdit', {stateEdit, from, to})
+
+}
+
+function cleareSelection() {
   let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML   
+  let selection = nodeSelection.innerHTML
   if(selection) {
     nodeCurrent.innerHTML = selection + current
     nodeSelection.innerHTML = ''
   }
 }
 
-export default modelTxt;
 
+
+export default modelTxt;

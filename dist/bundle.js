@@ -232,24 +232,20 @@ var mTxt = void 0,
     mAudio = void 0,
     area = void 0;
 
-areaTxt.init = function (model) {
+areaTxt.init = function (_ref) {
+  var txt = _ref.txt,
+      audio = _ref.audio;
+
   area = document.getElementById('txt');
 
-  mTxt = model.txt;
+  mTxt = txt;
   mTxt.setRoot(area);
-  mAudio = model.audio;
+  mAudio = audio;
   mAudio.on('addInterval', addInterval);
-
-  mTxt.getData = function () {
-    // для сохранения
-    if (mTxt.stateEdit === 'delete interval') return;
-    mTxt.cleareSelection();
-    return area.innerHTML;
-  };
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', changeStateTxt);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', toogleState);
 };
 
 areaTxt.close = function () {
@@ -262,23 +258,21 @@ areaTxt.close = function () {
 
 //////////////////////////
 function addSelection() {
-  if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection();
 }
 
 function reduceSelection() {
-  if (mTxt.stateEdit === 'delete interval') return;
   mTxt.reduceSelection();
 }
 
-function cleareSelection() {
-  mTxt.cleareSelection();
-}
+// function cleareSelection() {
+//   mTxt.cleareSelection()
+// }
 
 //////////////////////////
-function addInterval(_ref) {
-  var pozFrom = _ref.pozFrom,
-      pozTo = _ref.pozTo;
+function addInterval(_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
 
   if (mTxt.stateEdit === 'delete interval') return;
   var span = document.createElement('span');
@@ -290,7 +284,9 @@ function addInterval(_ref) {
 }
 
 ////////////////////////////
-function changeStateTxt() {
+function toogleState() {
+  mTxt.toogleState();
+
   if (mTxt.stateEdit === 'add interval') {
     if (!setStateDelete()) return; // если ни одного интервала ещё не установлено
     mTxt.stateEdit = 'delete interval';
@@ -325,11 +321,6 @@ function setStateAdd() {
   mAudio.changePoz();
   last = null;
 }
-
-// function saveLngt() {
-//   mTxt.save(area.innerHTML);
-// }
-
 
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
@@ -1009,10 +1000,9 @@ var nodeTxt = null;
 var nodeCurrent = null;
 var nodeSelection = null;
 var nodeLast = null;
+var stateEdit = 'add interval'; // 'delete interval'
 
 var modelTxt = new ModelTxt();
-
-modelTxt.stateEdit = 'add interval'; // 'delete interval'
 
 modelTxt.setRoot = function (root) {
   nodeTxt = root;
@@ -1038,6 +1028,7 @@ modelTxt.save = function (nameLngt) {
   var content = nodeTxt.innerHTML;
   if (!content) return;
 
+  cleareSelection();
   var name = nameLngt + '.lngt';
   var path = subfolder + '/' + name;
   var lngt = { name: name, path: path, content: content };
@@ -1065,6 +1056,7 @@ modelTxt.restore = function () {
 };
 
 modelTxt.addSelection = function () {
+  if (stateEdit === 'delete interval') return;
   var current = nodeCurrent.innerHTML;
   var selection = nodeSelection.innerHTML;
   if (!current) return;
@@ -1080,10 +1072,11 @@ modelTxt.addSelection = function () {
 };
 
 modelTxt.reduceSelection = function () {
+  if (stateEdit === 'delete interval') return;
   var current = nodeCurrent.innerHTML;
   var selection = nodeSelection.innerHTML;
-  if (selection) return;
-  var s = _this2.selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  if (!selection) return;
+  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
   if (s) {
     nodeCurrent.innerHTML = s[2] + current;
     nodeSelection.innerHTML = selection.slice(0, -s[2].length);
@@ -1093,14 +1086,29 @@ modelTxt.reduceSelection = function () {
   }
 };
 
-modelTxt.cleareSelection = function () {
+modelTxt.toogleState = function () {
+  var from = void 0,
+      to = void 0;
+  if (stateEdit === 'delete interval') {
+    nodeLast = null;
+    stateEdit = 'add interval';
+  } else {
+    nodeLast = selection.previousSibling;
+    if (!nodeLast || !nodeLast.hasAttribute('from')) return;
+    cleareSelection();
+    stateEdit = 'delete interval';
+  }
+  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, from: from, to: to });
+};
+
+function cleareSelection() {
   var current = nodeCurrent.innerHTML;
   var selection = nodeSelection.innerHTML;
   if (selection) {
     nodeCurrent.innerHTML = selection + current;
     nodeSelection.innerHTML = '';
   }
-};
+}
 
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
@@ -1173,7 +1181,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

@@ -4,49 +4,41 @@ const areaTxt = {};
 let mTxt, mAudio, area
 
 
-areaTxt.init = function(model) {
+areaTxt.init = function({txt, audio}) {
   area = document.getElementById('txt');
 
-  mTxt = model.txt
+  mTxt = txt
   mTxt.setRoot(area)
-  mAudio = model.audio
+  mAudio = audio
   mAudio.on('addInterval', addInterval)
 
-  mTxt.getData = function() { // для сохранения
-    if (mTxt.stateEdit === 'delete interval') return;
-    mTxt.cleareSelection();
-    return area.innerHTML;
-  };
-
-  keyboard('arrowRight', addSelection);
-  keyboard('arrowLeft', reduceSelection);
-  keyboard('tab', changeStateTxt);
+  keyboard('arrowRight', addSelection)
+  keyboard('arrowLeft', reduceSelection)
+  keyboard('tab', toogleState)
 };
 
 areaTxt.close = function() {
-  mAudio.off('addInterval', addInterval);
+  mAudio.off('addInterval', addInterval)
 
-  keyboard('arrowRight', () => {});
-  keyboard('arrowLeft', () => {});
-  keyboard('tab', () => {});
+  keyboard('arrowRight', () => {})
+  keyboard('arrowLeft', () => {})
+  keyboard('tab', () => {})
 };
 
 
 
 //////////////////////////
 function addSelection() {
-  if (mTxt.stateEdit === 'delete interval') return; //не очень правильный вариант
   mTxt.addSelection()
 }
 
 function reduceSelection() {
-  if (mTxt.stateEdit === 'delete interval') return;
   mTxt.reduceSelection()
 }
 
-function cleareSelection() {
-  mTxt.cleareSelection()
-}
+// function cleareSelection() {
+//   mTxt.cleareSelection()
+// }
 
 //////////////////////////
 function addInterval({ pozFrom, pozTo }) {
@@ -62,7 +54,11 @@ function addInterval({ pozFrom, pozTo }) {
 
 
 ////////////////////////////
-function changeStateTxt() {
+function toogleState() {
+  mTxt.toogleState()
+
+
+
   if (mTxt.stateEdit === 'add interval') {
     if (!setStateDelete()) return;  // если ни одного интервала ещё не установлено
     mTxt.stateEdit = 'delete interval';
@@ -96,12 +92,6 @@ function setStateAdd() {
   mAudio.changePoz();
   last = null;
 }
-
-
-
-// function saveLngt() {
-//   mTxt.save(area.innerHTML);
-// }
 
 
 export default areaTxt;
