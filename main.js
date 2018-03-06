@@ -37,18 +37,18 @@ app.on('activate', function () {
   }
 })
 
-//сохранение файла .lngt
+
 const fs = require('fs');
 const {ipcMain} = require('electron');
+//сохранение файла .lngt
 ipcMain.on('will-save-file', (event, arg) => {
   fs.writeFile(arg.path, arg.content, (err)=>{
     event.sender.send('file-saved', err)
   });
 })
-
-
+//восстановление файла
 ipcMain.on('will-restore-file', (event, arg) => {
-  fs.readFile(arg.pathLngt, (err, data)=>{
+  fs.readFile(arg.path, (err, data)=>{
     event.sender.send('file-restored', data)
   });
 })

@@ -39,7 +39,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
 }
 
 modelTxt.save = (nameLngt) => {
-  if (!nodeTxt) return;
+  if (!nodeTxt || !file) return;
   const content = nodeTxt.innerHTML
   if (!content) return;
 
@@ -47,28 +47,33 @@ modelTxt.save = (nameLngt) => {
   const name = nameLngt + '.lngt'
   const path = subfolder + '/' + name
   const lngt = {name,  path, content}
-
-  ipcRenderer.on('file-saved', (event, arg) => {
-    if (arg) {
-      console.log(arg)  // in arg i send err
-      return;
-    }
-    localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path)
-    modelTxt.publish('savedLngt', {name, path})
-  });
-  ipcRenderer.send('will-save-file', lngt);
+  file.temp = {name, path}
+  ipcRenderer.send('will-save-file', lngt)
 }
+
+ipcRenderer.on('file-saved', (event, arg) => {
+  const {name, path} = file.temp
+  if (arg) {
+    console.log(arg)  // in arg i send err
+    return;
+  }
+  localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
+  localStorage.setItem('path-lngt', path)
+  modelTxt.publish('savedLngt', {name, path})
+});
 
 modelTxt.restore = () => {
   const name = localStorage.getItem('name-lngt')
   const path = localStorage.getItem('path-lngt')
   if (!name || !path) return;
-  ipcRenderer.on('file-restored', (event, arg) => {
-    this.setLoadedFile({name, path, size: arg.size, content: arg.content})
-  })
+  file.temp = {name, path}
   ipcRenderer.send('will-restore-file', {path});
 }
+
+ipcRenderer.on('file-restored', (event, arg) => {
+  const {name, path} = file.temp
+  modelTxt.setLoadedFile({name, path, content: arg, size: file.size})
+})
 
 modelTxt.addSelection = () => {
   if (stateEdit === 'delete interval') return;

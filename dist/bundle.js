@@ -962,8 +962,6 @@ var ModelAudio = function (_Vent) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
-var _this2 = this;
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -1024,7 +1022,7 @@ modelTxt.setLoadedFile = function (_ref) {
 };
 
 modelTxt.save = function (nameLngt) {
-  if (!nodeTxt) return;
+  if (!nodeTxt || !file) return;
   var content = nodeTxt.innerHTML;
   if (!content) return;
 
@@ -1032,28 +1030,39 @@ modelTxt.save = function (nameLngt) {
   var name = nameLngt + '.lngt';
   var path = subfolder + '/' + name;
   var lngt = { name: name, path: path, content: content };
-
-  ipcRenderer.on('file-saved', function (event, arg) {
-    if (arg) {
-      console.log(arg); // in arg i send err
-      return;
-    }
-    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path);
-    modelTxt.publish('savedLngt', { name: name, path: path });
-  });
+  file.temp = { name: name, path: path };
   ipcRenderer.send('will-save-file', lngt);
 };
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  var _file$temp = file.temp,
+      name = _file$temp.name,
+      path = _file$temp.path;
+
+  if (arg) {
+    console.log(arg); // in arg i send err
+    return;
+  }
+  localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+  localStorage.setItem('path-lngt', path);
+  modelTxt.publish('savedLngt', { name: name, path: path });
+});
 
 modelTxt.restore = function () {
   var name = localStorage.getItem('name-lngt');
   var path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
-  ipcRenderer.on('file-restored', function (event, arg) {
-    _this2.setLoadedFile({ name: name, path: path, size: arg.size, content: arg.content });
-  });
+  file.temp = { name: name, path: path };
   ipcRenderer.send('will-restore-file', { path: path });
 };
+
+ipcRenderer.on('file-restored', function (event, arg) {
+  var _file$temp2 = file.temp,
+      name = _file$temp2.name,
+      path = _file$temp2.path;
+
+  modelTxt.setLoadedFile({ name: name, path: path, content: arg, size: file.size });
+});
 
 modelTxt.addSelection = function () {
   if (stateEdit === 'delete interval') return;
