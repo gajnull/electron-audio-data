@@ -398,8 +398,10 @@ function changeBtnPlay() {
   }
 }
 
-function changeStateEdit() {
-  if (mTxt.stateEdit === 'add interval') {
+function changeStateEdit(_ref2) {
+  var stateEdit = _ref2.stateEdit;
+
+  if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
   } else {
@@ -1002,6 +1004,7 @@ var stateEdit = 'add interval'; // 'delete interval'
 
 var modelTxt = new ModelTxt();
 
+// установка 
 modelTxt.setRoot = function (root) {
   nodeTxt = root;
 };
@@ -1021,12 +1024,14 @@ modelTxt.setLoadedFile = function (_ref) {
   modelTxt.publish('loadedLngt', file); //почему-то this здесь не работает ??????
 };
 
+// Сохранение файла
 modelTxt.save = function (nameLngt) {
   if (!nodeTxt || !file) return;
   var content = nodeTxt.innerHTML;
   if (!content) return;
 
   cleareSelection();
+  content = nodeTxt.innerHTML;
   var name = nameLngt + '.lngt';
   var path = subfolder + '/' + name;
   var lngt = { name: name, path: path, content: content };
@@ -1040,7 +1045,8 @@ ipcRenderer.on('file-saved', function (event, arg) {
       path = _file$temp.path;
 
   if (arg) {
-    console.log(arg); // in arg i send err
+    console.log('error in saving:'); // in arg i send err
+    console.log(arg);
     return;
   }
   localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
@@ -1048,6 +1054,7 @@ ipcRenderer.on('file-saved', function (event, arg) {
   modelTxt.publish('savedLngt', { name: name, path: path });
 });
 
+// Восстановление файла
 modelTxt.restore = function () {
   var name = localStorage.getItem('name-lngt');
   var path = localStorage.getItem('path-lngt');
@@ -1064,6 +1071,7 @@ ipcRenderer.on('file-restored', function (event, arg) {
   modelTxt.setLoadedFile({ name: name, path: path, content: arg, size: file.size });
 });
 
+// Изменение области выделения
 modelTxt.addSelection = function () {
   if (stateEdit === 'delete interval') return;
   var current = nodeCurrent.innerHTML;
@@ -1095,9 +1103,10 @@ modelTxt.reduceSelection = function () {
   }
 };
 
+// изменение состояния
 modelTxt.toogleState = function () {
-  var from = void 0,
-      to = void 0;
+  var _from = void 0,
+      to = void 0; // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
     nodeLast = null;
     stateEdit = 'add interval';
@@ -1107,7 +1116,7 @@ modelTxt.toogleState = function () {
     cleareSelection();
     stateEdit = 'delete interval';
   }
-  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, from: from, to: to });
+  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, _from: _from, to: to });
 };
 
 function cleareSelection() {
@@ -1190,7 +1199,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(false);
+exports = module.exports = __webpack_require__(14)(undefined);
 // imports
 
 

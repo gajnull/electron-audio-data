@@ -55,8 +55,8 @@ function changeBtnPlay() {
   }
 }
 
-function changeStateEdit() {
-  if (mTxt.stateEdit === 'add interval') {
+function changeStateEdit({stateEdit}) {
+  if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
   } else {

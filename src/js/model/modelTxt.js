@@ -24,6 +24,7 @@ let stateEdit = 'add interval'  // 'delete interval'
 
 const modelTxt = new ModelTxt()
 
+// установка 
 modelTxt.setRoot = (root) => {
   nodeTxt = root
 }
@@ -38,12 +39,14 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   modelTxt.publish('loadedLngt' , file) //почему-то this здесь не работает ??????
 }
 
+// Сохранение файла
 modelTxt.save = (nameLngt) => {
   if (!nodeTxt || !file) return;
-  const content = nodeTxt.innerHTML
+  let content = nodeTxt.innerHTML
   if (!content) return;
 
   cleareSelection()
+  content = nodeTxt.innerHTML
   const name = nameLngt + '.lngt'
   const path = subfolder + '/' + name
   const lngt = {name,  path, content}
@@ -51,17 +54,19 @@ modelTxt.save = (nameLngt) => {
   ipcRenderer.send('will-save-file', lngt)
 }
 
-ipcRenderer.on('file-saved', (event, arg) => {
-  const {name, path} = file.temp
-  if (arg) {
-    console.log(arg)  // in arg i send err
-    return;
-  }
-  localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
-  localStorage.setItem('path-lngt', path)
-  modelTxt.publish('savedLngt', {name, path})
-});
+  ipcRenderer.on('file-saved', (event, arg) => {
+    const {name, path} = file.temp
+    if (arg) {
+      console.log('error in saving:')  // in arg i send err
+      console.log(arg) 
+      return;
+    }
+    localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
+    localStorage.setItem('path-lngt', path)
+    modelTxt.publish('savedLngt', {name, path})
+  });
 
+// Восстановление файла
 modelTxt.restore = () => {
   const name = localStorage.getItem('name-lngt')
   const path = localStorage.getItem('path-lngt')
@@ -70,11 +75,12 @@ modelTxt.restore = () => {
   ipcRenderer.send('will-restore-file', {path});
 }
 
-ipcRenderer.on('file-restored', (event, arg) => {
-  const {name, path} = file.temp
-  modelTxt.setLoadedFile({name, path, content: arg, size: file.size})
-})
+  ipcRenderer.on('file-restored', (event, arg) => {
+    const {name, path} = file.temp
+    modelTxt.setLoadedFile({name, path, content: arg, size: file.size})
+  })
 
+// Изменение области выделения
 modelTxt.addSelection = () => {
   if (stateEdit === 'delete interval') return;
   let current = nodeCurrent.innerHTML
@@ -105,8 +111,9 @@ modelTxt.reduceSelection = () => {
   }
 }
 
+// изменение состояния
 modelTxt.toogleState = () => {
-  let from, to
+  let _from, to   // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
     nodeLast = null
     stateEdit = 'add interval'
@@ -116,7 +123,7 @@ modelTxt.toogleState = () => {
     cleareSelection()
     stateEdit = 'delete interval'
   }
-  modelTxt.publish('changeStateEdit', {stateEdit, from, to})
+  modelTxt.publish('changeStateEdit', {stateEdit, _from, to})
 
 }
 
