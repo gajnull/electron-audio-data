@@ -241,7 +241,7 @@ areaTxt.init = function (_ref) {
   mTxt = txt;
   mTxt.setRoot(area);
   mAudio = audio;
-  mAudio.on('addInterval', addInterval);
+  //mAudio.on('addInterval', addInterval)
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
@@ -249,7 +249,7 @@ areaTxt.init = function (_ref) {
 };
 
 areaTxt.close = function () {
-  mAudio.off('addInterval', addInterval);
+  //mAudio.off('addInterval', addInterval)
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
@@ -265,62 +265,31 @@ function reduceSelection() {
   mTxt.reduceSelection();
 }
 
-// function cleareSelection() {
-//   mTxt.cleareSelection()
-// }
-
-//////////////////////////
-function addInterval(_ref2) {
-  var pozFrom = _ref2.pozFrom,
-      pozTo = _ref2.pozTo;
-
-  if (mTxt.stateEdit === 'delete interval') return;
-  var span = document.createElement('span');
-  span.setAttribute('from', pozFrom);
-  span.setAttribute('to', pozTo);
-  span.innerHTML = mTxt.selection;
-  selection.innerHTML = mTxt.selection = '';
-  selection.before(span);
-}
-
-////////////////////////////
 function toogleState() {
   mTxt.toogleState();
-
-  if (mTxt.stateEdit === 'add interval') {
-    if (!setStateDelete()) return; // если ни одного интервала ещё не установлено
-    mTxt.stateEdit = 'delete interval';
-    mTxt.publish('changeStateEdit');
-  } else {
-    setStateAdd();
-    mTxt.stateEdit = 'add interval';
-    mTxt.publish('changeStateEdit');
-  }
 }
 
-function setStateDelete() {
-  // устанавливает ...
-  last = selection.previousSibling;
-  if (!last) return false;
-  last.id = 'last-txt';
-  mTxt.current = mTxt.selection + mTxt.current;
-  mTxt.selection = '';
-  mTxt.last = last.innerHTML;
-  setFromModel();
-  mAudio.pozFrom = +last.getAttribute('from');
-  mAudio.pozTo = +last.getAttribute('to');
-  mAudio.pozCurrent = mAudio.pozMin = mAudio.pozFrom;
-  mAudio.changePoz();
-  return true;
-}
+//////////////////////////
+// function addInterval({ pozFrom, pozTo }) {
+//   if (mTxt.stateEdit === 'delete interval') return;
+//   const span = document.createElement('span');
+//   span.setAttribute('from', pozFrom);
+//   span.setAttribute('to', pozTo);
+//   span.innerHTML = mTxt.selection;
+//   selection.innerHTML = mTxt.selection = '';
+//   selection.before(span);
+// }
+//
+//
+//
+// function setStateAdd() {
+//   mTxt.last = '';
+//   last.removeAttribute('id');
+//   mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo;
+//   mAudio.changePoz();
+//   last = null;
+// }
 
-function setStateAdd() {
-  mTxt.last = '';
-  last.removeAttribute('id');
-  mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo;
-  mAudio.changePoz();
-  last = null;
-}
 
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
@@ -1004,7 +973,7 @@ var stateEdit = 'add interval'; // 'delete interval'
 
 var modelTxt = new ModelTxt();
 
-// установка 
+// установка
 modelTxt.setRoot = function (root) {
   nodeTxt = root;
 };
@@ -1029,6 +998,7 @@ modelTxt.save = function (nameLngt) {
   if (!nodeTxt || !file) return;
   var content = nodeTxt.innerHTML;
   if (!content) return;
+  if (stateEdit === 'delete interval') modelTxt.toogleState();
 
   cleareSelection();
   content = nodeTxt.innerHTML;
@@ -1108,11 +1078,15 @@ modelTxt.toogleState = function () {
   var _from = void 0,
       to = void 0; // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
+    nodeLast.removeAttribute('id');
     nodeLast = null;
     stateEdit = 'add interval';
   } else {
-    nodeLast = selection.previousSibling;
+    nodeLast = nodeSelection.previousSibling;
     if (!nodeLast || !nodeLast.hasAttribute('from')) return;
+    _from = nodeLast.getAttribute('from');
+    to = nodeLast.getAttribute('to');
+    nodeLast.id = 'last-txt';
     cleareSelection();
     stateEdit = 'delete interval';
   }
@@ -1199,7 +1173,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

@@ -24,7 +24,7 @@ let stateEdit = 'add interval'  // 'delete interval'
 
 const modelTxt = new ModelTxt()
 
-// установка 
+// установка
 modelTxt.setRoot = (root) => {
   nodeTxt = root
 }
@@ -44,6 +44,7 @@ modelTxt.save = (nameLngt) => {
   if (!nodeTxt || !file) return;
   let content = nodeTxt.innerHTML
   if (!content) return;
+  if (stateEdit === 'delete interval') modelTxt.toogleState();
 
   cleareSelection()
   content = nodeTxt.innerHTML
@@ -58,7 +59,7 @@ modelTxt.save = (nameLngt) => {
     const {name, path} = file.temp
     if (arg) {
       console.log('error in saving:')  // in arg i send err
-      console.log(arg) 
+      console.log(arg)
       return;
     }
     localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
@@ -113,26 +114,29 @@ modelTxt.reduceSelection = () => {
 
 // изменение состояния
 modelTxt.toogleState = () => {
-  let _from, to   // from - показывает ключевое слово
+  let _from, to;   // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
-    nodeLast = null
-    stateEdit = 'add interval'
+    nodeLast.removeAttribute('id');
+    nodeLast = null;
+    stateEdit = 'add interval';
   } else {
-    nodeLast = selection.previousSibling
+    nodeLast = nodeSelection.previousSibling;
     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
-    cleareSelection()
-    stateEdit = 'delete interval'
+    _from = nodeLast.getAttribute('from');
+    to = nodeLast.getAttribute('to');
+    nodeLast.id = 'last-txt';
+    cleareSelection();
+    stateEdit = 'delete interval';
   }
-  modelTxt.publish('changeStateEdit', {stateEdit, _from, to})
-
+  modelTxt.publish('changeStateEdit', {stateEdit, _from, to});
 }
 
 function cleareSelection() {
-  let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML
+  const current = nodeCurrent.innerHTML;
+  const selection = nodeSelection.innerHTML;
   if(selection) {
-    nodeCurrent.innerHTML = selection + current
-    nodeSelection.innerHTML = ''
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
   }
 }
 
