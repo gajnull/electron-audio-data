@@ -6,11 +6,11 @@ export default class ModelAudio extends Vent {
     const evs = {
       decodedAudio: [],
       changedPoz: [],
-      changeStateAudio: [],
-      addInterval: []
+      changeStateAudio: []
+      //addInterval: []
     }
     super(evs)
-    this.file = {
+    this.file = { // пока не используется
       name: null,
       path: null,
       size: null
@@ -71,11 +71,11 @@ export default class ModelAudio extends Vent {
   }
 
   stop() {
-    if(!this.playing) return;
+    if(!this.playing) return; //не должно быть
     this.pozCurrent = this.api.stop()
     this.playing = false
     this.publish('changeStateAudio')
-    if(this.pozCurrent > this.duration) this.pozCurrent = this.duration
+    if(this.pozCurrent > this.duration) this.pozCurrent = this.duration //не должно быть - может превысить на доли секунды
     clearInterval(this.timer)
     if (this.timerStop) { clearTimeout(this.timerStop) }
     this.changePoz()
@@ -93,14 +93,16 @@ export default class ModelAudio extends Vent {
   }
 
   addInterval() {
+    if(this.playing) return;  // на всякий случай    
     const pozFrom = this.pozFrom;
     const pozTo = this.pozTo;
-    this.publish('addInterval', { pozFrom, pozTo });
+    //this.publish('addInterval', { pozFrom, pozTo });
     this.pozMin = this.pozFrom = this.pozCurrent = pozTo;
     this.changePoz();
+    return { pozFrom, pozTo };
   }
 
-//// переход позиции старт, от и до
+//// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
   gotoStart() {
     if(this.playing) return;
     this.pozCurrent = this.pozMin
@@ -122,16 +124,16 @@ export default class ModelAudio extends Vent {
 
 //// установка и изменение позицй от и до
   fromMoveBack() {
-    let newPoz = Math.round((this.pozFrom - this.delta) * 10) / 10
-    if(newPoz < this.pozMin) { newPoz = this.pozMin } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
-    this.pozFrom = newPoz
-    this.changePoz()
+    let newPoz = Math.round((this.pozFrom - this.delta) * 10) / 10;
+    if(newPoz < this.pozMin) { newPoz = this.pozMin; } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
+    this.pozFrom = newPoz;
+    this.changePoz();
   }
 
   fromSet() {
-    this.pozFrom = + this.pozCurrent.toFixed(1)
-    if (this.pozTo < this.pozFrom) this.pozTo = this.pozFrom
-    this.changePoz()
+    this.pozFrom = + this.pozCurrent.toFixed(1);
+    if (this.pozTo < this.pozFrom) this.pozTo = this.pozFrom;
+    this.changePoz();
   }
 
   fromMoveForward() {

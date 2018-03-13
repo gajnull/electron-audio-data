@@ -8,13 +8,14 @@ let mTxt, mAudio, btns, intervals, btnPlay;
 controlAudio.init = function({txt, audio}) {
   mTxt = txt;
   mAudio = audio;
-  mAudio.on('decodedAudio', handlerDecoded);
-  mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
-  mTxt.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
-  //mAudio.on('addInterval', );
+  
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
+  
+  mTxt.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок  
+  mAudio.on('decodedAudio', handlerDecoded);
+  mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
 controlAudio.close = function() {
@@ -35,10 +36,7 @@ function handlerDecoded() {
       const attr = target.getAttribute('act');
       switch (attr) {
         case 'addInterval':
-          if (mTxt.selection.trim() !== '') { mAudio[attr](); }
-          break;
-        case 'resetInterval':
-          //
+          mTxt.addInterval(mAudio.addInterval());
           break;
         default:
           mAudio[attr]();

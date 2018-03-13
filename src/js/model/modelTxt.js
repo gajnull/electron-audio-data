@@ -112,6 +112,16 @@ modelTxt.reduceSelection = () => {
   }
 }
 
+// Установка аудиоинтервала в выделеный участок
+modelTxt.addInterval = ({ pozFrom, pozTo }) => {
+  if (!pozFrom || !pozTo) return;
+  //if (stateEdit === 'delete interval') return; этого не должно быть
+  let selection = nodeSelection.innerHTML  
+  let current = nodeCurrent.innerHTML
+  if (selection.trim() === '') return;
+  if ()
+} 
+
 // изменение состояния
 modelTxt.toogleState = () => {
   let _from, to;   // from - показывает ключевое слово
