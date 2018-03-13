@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,67 +116,18 @@ function keyboardHandler(ev) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Vent = function () {
-  function Vent(evs) {
-    _classCallCheck(this, Vent);
-
-    this.evs = evs;
-  }
-
-  _createClass(Vent, [{
-    key: "on",
-    value: function on(ev, fn) {
-      this.evs[ev].push(fn);
-    }
-  }, {
-    key: "off",
-    value: function off(ev, fn) {
-      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
-        return fnEv !== fn;
-      });
-    }
-  }, {
-    key: "publish",
-    value: function publish(ev, data) {
-      //console.log(ev)
-      //console.log(evs)
-      // if (ev !== 'changedPoz') {
-      //   console.log(ev);
-      //   console.log(this.evs[ev]);
-      // }
-      this.evs[ev].forEach(function (fnEv) {
-        fnEv(data);
-      });
-    }
-  }]);
-
-  return Vent;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Vent);
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(8);
 
 
 
@@ -194,7 +145,7 @@ var Vent = function () {
 function work() {
 
   var model = {
-    txt: __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__["default"],
+    txt: __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__["a" /* default */],
     audio: new __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__["a" /* default */]()
   };
 
@@ -210,18 +161,18 @@ function work() {
 }
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(1);
 
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -295,7 +246,7 @@ function toogleState() {
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -322,7 +273,7 @@ controlAudio.init = function (_ref) {
   intervals = document.getElementById('edit-intervals');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
-  mTxt.on('changeStateEdit', changeStateEdit); //меняем набор кнопок  
+  mTxt.on('changeStateEdit', changeStateEdit); //меняем набор кнопок
   mAudio.on('decodedAudio', handlerDecoded);
   mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
@@ -347,7 +298,8 @@ function handlerDecoded() {
       var attr = target.getAttribute('act');
       switch (attr) {
         case 'addInterval':
-          mTxt.addInterval(mAudio.addInterval());
+          var b = mTxt.addInterval(mAudio.getInterval());
+          if (b) mAudio.nextInterval();
           break;
         default:
           mAudio[attr]();
@@ -379,7 +331,7 @@ function changeStateEdit(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (controlAudio);
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -492,7 +444,7 @@ function setWidthProgress(value) {
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -545,7 +497,7 @@ function writeName(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -645,7 +597,7 @@ function setInfoLodedLngt(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -690,11 +642,59 @@ function showChangedPoz(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (infoTiming);
 
 /***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Vent = function () {
+  function Vent(evs) {
+    _classCallCheck(this, Vent);
+
+    this.evs = evs;
+  }
+
+  _createClass(Vent, [{
+    key: "on",
+    value: function on(ev, fn) {
+      this.evs[ev].push(fn);
+    }
+  }, {
+    key: "off",
+    value: function off(ev, fn) {
+      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    }
+  }, {
+    key: "publish",
+    value: function publish(ev, data) {
+      //console.log(ev)
+      //console.log(evs)
+      // if (ev !== 'changedPoz') {
+      //   console.log(ev);
+      //   console.log(this.evs[ev]);
+      // }
+      this.evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    }
+  }]);
+
+  return Vent;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Vent);
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -717,7 +717,6 @@ var ModelAudio = function (_Vent) {
       decodedAudio: [],
       changedPoz: [],
       changeStateAudio: []
-      //addInterval: []
     };
 
     var _this = _possibleConstructorReturn(this, (ModelAudio.__proto__ || Object.getPrototypeOf(ModelAudio)).call(this, evs));
@@ -728,21 +727,21 @@ var ModelAudio = function (_Vent) {
       size: null
     };
     _this.api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
+
+    _this.pozMin = 0; // Позиция конца предыдущего отрезка
+    _this.pozCurrent = 0; // Текущая позиция
+    _this.duration = 0; // Продолжительность всего ауиотрека.
+    // Запомненный отрезок
+    _this.pozFrom = 0;
+    _this.pozTo = 0;
+    _this.delta = 0.1; // Шаг изменения позиции отрезка
     return _this;
   }
 
   _createClass(ModelAudio, [{
     key: 'decode',
     value: function decode(rawData) {
-      this.pozMin = 0; // Позиция конца предыдущего отрезка
-      this.pozCurrent = 0; // Текущая позиция
-      this.duration = 0; // Продолжительность всего ауиотрека.
-      // Запомненный отрезок
-      this.pozFrom = 0;
-      this.pozTo = 0;
-
       this.playing = false;
-      this.delta = 0.1; // Шаг изменения позиции отрезка
 
       this.timer = null;
       this.timerStop = null;
@@ -821,16 +820,20 @@ var ModelAudio = function (_Vent) {
         _this3.stop();
       }, period);
     }
+
+    // установка выбранного интервала
+
   }, {
-    key: 'addInterval',
-    value: function addInterval() {
-      if (this.playing) return; // на всякий случай    
-      var pozFrom = this.pozFrom;
-      var pozTo = this.pozTo;
-      //this.publish('addInterval', { pozFrom, pozTo });
-      this.pozMin = this.pozFrom = this.pozCurrent = pozTo;
+    key: 'getInterval',
+    value: function getInterval() {
+      if (this.playing) return;
+      return { pozFrom: this.pozFrom, pozTo: this.pozTo };
+    }
+  }, {
+    key: 'nextInterval',
+    value: function nextInterval() {
+      this.pozMin = this.pozFrom = this.pozCurrent = this.pozTo;
       this.changePoz();
-      return { pozFrom: pozFrom, pozTo: pozTo };
     }
 
     //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
@@ -928,10 +931,198 @@ var ModelAudio = function (_Vent) {
 
 /***/ }),
 /* 11 */
-/***/ (function(module, __webpack_exports__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-throw new Error("Module build failed: SyntaxError: C:/MyProject/technologies/electron-create-audio-data/src/js/model/modelTxt.js: Unexpected token (122:6)\n\n\u001b[0m \u001b[90m 120 | \u001b[39m  let current \u001b[33m=\u001b[39m nodeCurrent\u001b[33m.\u001b[39minnerHTML\n \u001b[90m 121 | \u001b[39m  \u001b[36mif\u001b[39m (selection\u001b[33m.\u001b[39mtrim() \u001b[33m===\u001b[39m \u001b[32m''\u001b[39m) \u001b[36mreturn\u001b[39m\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 122 | \u001b[39m  \u001b[36mif\u001b[39m ()\n \u001b[90m     | \u001b[39m      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 123 | \u001b[39m} \n \u001b[90m 124 | \u001b[39m\n \u001b[90m 125 | \u001b[39m\u001b[90m// изменение состояния\u001b[39m\u001b[0m\n");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(9);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var ModelTxt = function (_Vent) {
+  _inherits(ModelTxt, _Vent);
+
+  function ModelTxt() {
+    _classCallCheck(this, ModelTxt);
+
+    var evs = {
+      loadedLngt: [],
+      savedLngt: [],
+      setMinPoz: [],
+      changeStateEdit: []
+    };
+    return _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));
+  }
+
+  return ModelTxt;
+}(__WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]);
+
+var subfolder = 'target';
+var file = null; // {name, path, size, content}
+// path: fullPath + name
+var nodeTxt = null;
+var nodeCurrent = null;
+var nodeSelection = null;
+var nodeLast = null;
+var stateEdit = 'add interval'; // 'delete interval'
+
+var modelTxt = new ModelTxt();
+
+// установка
+modelTxt.setRoot = function (root) {
+  nodeTxt = root;
+};
+
+modelTxt.setLoadedFile = function (_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      size = _ref.size,
+      content = _ref.content;
+
+  nodeTxt.innerHTML = content;
+  nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
+  nodeCurrent = nodeTxt.querySelector('#current-txt');
+  file = { name: name, path: path, size: size };
+  localStorage.setItem('path-lngt', path);
+  localStorage.setItem('name-lngt', name);
+  modelTxt.publish('loadedLngt', file); //почему-то this здесь не работает ??????
+};
+
+// Сохранение файла
+modelTxt.save = function (nameLngt) {
+  if (!nodeTxt || !file) return;
+  var content = nodeTxt.innerHTML;
+  if (!content) return;
+  if (stateEdit === 'delete interval') modelTxt.toogleState();
+
+  cleareSelection();
+  content = nodeTxt.innerHTML;
+  var name = nameLngt + '.lngt';
+  var path = subfolder + '/' + name;
+  var lngt = { name: name, path: path, content: content };
+  file.temp = { name: name, path: path };
+  ipcRenderer.send('will-save-file', lngt);
+};
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  var _file$temp = file.temp,
+      name = _file$temp.name,
+      path = _file$temp.path;
+
+  if (arg) {
+    console.log('error in saving:'); // in arg i send err
+    console.log(arg);
+    return;
+  }
+  localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+  localStorage.setItem('path-lngt', path);
+  modelTxt.publish('savedLngt', { name: name, path: path });
+});
+
+// Восстановление файла
+modelTxt.restore = function () {
+  var name = localStorage.getItem('name-lngt');
+  var path = localStorage.getItem('path-lngt');
+  if (!name || !path) return;
+  file.temp = { name: name, path: path };
+  ipcRenderer.send('will-restore-file', { path: path });
+};
+
+ipcRenderer.on('file-restored', function (event, arg) {
+  var _file$temp2 = file.temp,
+      name = _file$temp2.name,
+      path = _file$temp2.path;
+
+  modelTxt.setLoadedFile({ name: name, path: path, content: arg, size: file.size });
+});
+
+// Изменение области выделения
+modelTxt.addSelection = function () {
+  if (stateEdit === 'delete interval') return;
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (!current) return;
+  var s = current.match(/^.+?(\s|<br>)/);
+  if (s) {
+    nodeSelection.innerHTML = selection + s[0];
+    nodeCurrent.innerHTML = current.slice(s[0].length);
+  } else {
+    //конец текстового файла
+    nodeSelection.innerHTML = selection + current;
+    nodeCurrent.innerHTML = '';
+  }
+};
+
+modelTxt.reduceSelection = function () {
+  if (stateEdit === 'delete interval') return;
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (!selection) return;
+  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  if (s) {
+    nodeCurrent.innerHTML = s[2] + current;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+};
+
+// Установка аудиоинтервала в выделеный участок
+modelTxt.addInterval = function (_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
+
+  if (!pozFrom || !pozTo) return false;
+  //if (stateEdit === 'delete interval') return; этого не должно быть
+  var selection = nodeSelection.innerHTML;
+  if (selection.trim() === '') return false;
+  nodeSelection.innerHTML = '';
+  var span = document.createElement('span');
+  span.innerHTML = selection;
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  nodeSelection.before(span);
+  return true;
+};
+
+// изменение состояния
+modelTxt.toogleState = function () {
+  var _from = void 0,
+      to = void 0; // from - показывает ключевое слово
+  if (stateEdit === 'delete interval') {
+    nodeLast.removeAttribute('id');
+    nodeLast = null;
+    stateEdit = 'add interval';
+  } else {
+    nodeLast = nodeSelection.previousSibling;
+    if (!nodeLast || !nodeLast.hasAttribute('from')) return;
+    _from = nodeLast.getAttribute('from');
+    to = nodeLast.getAttribute('to');
+    nodeLast.id = 'last-txt';
+    cleareSelection();
+    stateEdit = 'delete interval';
+  }
+  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, _from: _from, to: to });
+};
+
+function cleareSelection() {
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (selection) {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
 /***/ }),
 /* 12 */
@@ -1002,7 +1193,7 @@ function webAudioAPI() {
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(14)(undefined);
+exports = module.exports = __webpack_require__(14)(false);
 // imports
 
 

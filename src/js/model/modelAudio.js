@@ -7,7 +7,6 @@ export default class ModelAudio extends Vent {
       decodedAudio: [],
       changedPoz: [],
       changeStateAudio: []
-      //addInterval: []
     }
     super(evs)
     this.file = { // пока не используется
@@ -15,19 +14,19 @@ export default class ModelAudio extends Vent {
       path: null,
       size: null
     }
-    this.api = webAudioAPI()
+    this.api = webAudioAPI();
+
+    this.pozMin = 0;   // Позиция конца предыдущего отрезка
+    this.pozCurrent = 0; // Текущая позиция
+    this.duration = 0; // Продолжительность всего ауиотрека.
+    // Запомненный отрезок
+    this.pozFrom = 0;
+    this.pozTo = 0;
+    this.delta = 0.1; // Шаг изменения позиции отрезка
   }
 
   decode(rawData) {
-    this.pozMin = 0   // Позиция конца предыдущего отрезка
-    this.pozCurrent = 0 // Текущая позиция
-    this.duration = 0 // Продолжительность всего ауиотрека.
-    // Запомненный отрезок
-    this.pozFrom = 0
-    this.pozTo = 0
-
     this.playing = false
-    this.delta = 0.1 // Шаг изменения позиции отрезка
 
     this.timer = null
     this.timerStop = null
@@ -92,14 +91,14 @@ export default class ModelAudio extends Vent {
     this.timerStop = setTimeout(() => { this.stop() }, period)
   }
 
-  addInterval() {
-    if(this.playing) return;  // на всякий случай    
-    const pozFrom = this.pozFrom;
-    const pozTo = this.pozTo;
-    //this.publish('addInterval', { pozFrom, pozTo });
-    this.pozMin = this.pozFrom = this.pozCurrent = pozTo;
+// установка выбранного интервала
+  getInterval() {
+    if(this.playing) return;
+    return { pozFrom: this.pozFrom, pozTo: this.pozTo };
+  }
+  nextInterval() {
+    this.pozMin = this.pozFrom = this.pozCurrent = this.pozTo;
     this.changePoz();
-    return { pozFrom, pozTo };
   }
 
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
