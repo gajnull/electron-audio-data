@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -116,18 +116,66 @@ function keyboardHandler(ev) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Vent = function () {
+  function Vent(evs) {
+    _classCallCheck(this, Vent);
+
+    this.evs = evs;
+  }
+
+  _createClass(Vent, [{
+    key: "on",
+    value: function on(ev, fn) {
+      this.evs[ev].push(fn);
+    }
+  }, {
+    key: "off",
+    value: function off(ev, fn) {
+      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    }
+  }, {
+    key: "publish",
+    value: function publish(ev, data) {
+      //console.log(ev)
+      //console.log(evs)
+      // if (ev !== 'changedPoz') {
+      //   console.log(ev);
+      //   console.log(this.evs[ev]);
+      // }
+      this.evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    }
+  }]);
+
+  return Vent;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Vent);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_modelTxt__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_model_modelAudio__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_file_audio__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_control_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_infoTiming__ = __webpack_require__(9);
 
 
 
@@ -161,18 +209,18 @@ function work() {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
 
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -193,6 +241,8 @@ areaTxt.init = function (_ref) {
   mTxt = txt;
   mTxt.setRoot(area);
   mAudio = audio;
+
+  mTxt.on('loadedLngt', setPozAudio);
   //mAudio.on('addInterval', addInterval)
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
@@ -202,11 +252,19 @@ areaTxt.init = function (_ref) {
 
 areaTxt.close = function () {
   //mAudio.off('addInterval', addInterval)
+  mTxt.off('loadedLngt', setPozAudio);
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
 };
+
+function setPozAudio(_ref2) {
+  var poz = _ref2.poz;
+
+  console.log(poz);
+  mAudio.pozMin = mAudio.pozCurrent = poz;
+}
 
 //////////////////////////
 function addSelection() {
@@ -246,7 +304,7 @@ function toogleState() {
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -331,7 +389,7 @@ function changeStateEdit(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (controlAudio);
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -444,7 +502,7 @@ function setWidthProgress(value) {
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -497,7 +555,7 @@ function writeName(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -597,7 +655,7 @@ function setInfoLodedLngt(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -642,59 +700,11 @@ function showChangedPoz(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (infoTiming);
 
 /***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Vent = function () {
-  function Vent(evs) {
-    _classCallCheck(this, Vent);
-
-    this.evs = evs;
-  }
-
-  _createClass(Vent, [{
-    key: "on",
-    value: function on(ev, fn) {
-      this.evs[ev].push(fn);
-    }
-  }, {
-    key: "off",
-    value: function off(ev, fn) {
-      this.evs[ev] = this.evs[ev].filter(function (fnEv) {
-        return fnEv !== fn;
-      });
-    }
-  }, {
-    key: "publish",
-    value: function publish(ev, data) {
-      //console.log(ev)
-      //console.log(evs)
-      // if (ev !== 'changedPoz') {
-      //   console.log(ev);
-      //   console.log(this.evs[ev]);
-      // }
-      this.evs[ev].forEach(function (fnEv) {
-        fnEv(data);
-      });
-    }
-  }]);
-
-  return Vent;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Vent);
-
-/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(12);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -934,7 +944,7 @@ var ModelAudio = function (_Vent) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -989,7 +999,10 @@ modelTxt.setLoadedFile = function (_ref) {
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
-  file = { name: name, path: path, size: size };
+  var poz = 0;
+  var span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = span.getAttribute('to');
+  file = { name: name, path: path, size: size, poz: poz };
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
   modelTxt.publish('loadedLngt', file); //почему-то this здесь не работает ??????
@@ -1102,7 +1115,7 @@ modelTxt.toogleState = function () {
     nodeLast = null;
     stateEdit = 'add interval';
   } else {
-    nodeLast = nodeSelection.previousSibling;
+    nodeLast = nodeSelection.previousElementSibling;
     if (!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');
     to = nodeLast.getAttribute('to');

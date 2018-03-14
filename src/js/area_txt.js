@@ -7,9 +7,11 @@ let mTxt, mAudio, area
 areaTxt.init = function({txt, audio}) {
   area = document.getElementById('txt');
 
-  mTxt = txt
-  mTxt.setRoot(area)
-  mAudio = audio
+  mTxt = txt;
+  mTxt.setRoot(area);
+  mAudio = audio;
+
+  mTxt.on('loadedLngt', setPozAudio);
   //mAudio.on('addInterval', addInterval)
 
   keyboard('arrowRight', addSelection);
@@ -19,13 +21,17 @@ areaTxt.init = function({txt, audio}) {
 
 areaTxt.close = function() {
   //mAudio.off('addInterval', addInterval)
+  mTxt.off('loadedLngt', setPozAudio);
 
   keyboard('arrowRight', () => {});
   keyboard('arrowLeft', () => {});
   keyboard('tab', () => {});
 };
 
-
+function setPozAudio({poz}) {
+  console.log(poz)
+  mAudio.pozMin = mAudio.pozCurrent = poz;
+}
 
 //////////////////////////
 function addSelection() {

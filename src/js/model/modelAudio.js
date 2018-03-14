@@ -80,7 +80,6 @@ export default class ModelAudio extends Vent {
     this.changePoz()
   }
 
-
   repeate() { //проигрываем выбранный отрезок
     if(this.playing) return;
     this.pozCurrent = this.pozFrom
@@ -119,7 +118,6 @@ export default class ModelAudio extends Vent {
     this.pozCurrent = this.pozTo
     this.changePoz()
   }
-
 
 //// установка и изменение позицй от и до
   fromMoveBack() {

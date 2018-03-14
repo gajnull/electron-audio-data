@@ -32,11 +32,14 @@ modelTxt.setRoot = (root) => {
 modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeTxt.innerHTML = content
   nodeSelection = nodeTxt.querySelector('#selection-txt')  // метод getElementById есть только у document
-  nodeCurrent = nodeTxt.querySelector('#current-txt')
-  file = {name, path, size}
-  localStorage.setItem('path-lngt', path)
-  localStorage.setItem('name-lngt', name)
-  modelTxt.publish('loadedLngt' , file) //почему-то this здесь не работает ??????
+  nodeCurrent = nodeTxt.querySelector('#current-txt');
+  let poz = 0;
+  const span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = span.getAttribute('to');
+  file = {name, path, size, poz};
+  localStorage.setItem('path-lngt', path);
+  localStorage.setItem('name-lngt', name);
+  modelTxt.publish('loadedLngt' , file); //почему-то this здесь не работает ??????
 }
 
 // Сохранение файла
@@ -135,7 +138,7 @@ modelTxt.toogleState = () => {
     nodeLast = null;
     stateEdit = 'add interval';
   } else {
-    nodeLast = nodeSelection.previousSibling;
+    nodeLast = nodeSelection.previousElementSibling;
     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');
     to = nodeLast.getAttribute('to');
