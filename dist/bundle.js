@@ -262,8 +262,8 @@ areaTxt.close = function () {
 function setPozAudio(_ref2) {
   var poz = _ref2.poz;
 
-  console.log(poz);
-  mAudio.pozMin = mAudio.pozCurrent = poz;
+  //console.log(poz)
+  mAudio.setStartPoz(poz);
 }
 
 //////////////////////////
@@ -589,8 +589,8 @@ fileTxt.close = function () {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', choosedFile);
   model.off('loadedLngt', setInfoLodedLngt);
-  model.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt' 
-}; // так как на loadedLngt меняется содержимое текста 
+  model.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+}; // так как на loadedLngt меняется содержимое текста
 
 function clickInput() {
   input.click();
@@ -932,6 +932,12 @@ var ModelAudio = function (_Vent) {
       this.pozTo = newPoz;
       this.changePoz();
     }
+  }, {
+    key: 'setStartPoz',
+    value: function setStartPoz(poz) {
+      this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = poz;
+      //this.changePoz(); звуковой файл ещё может быть не загружен
+    }
   }]);
 
   return ModelAudio;
@@ -965,7 +971,7 @@ var ModelTxt = function (_Vent) {
     var evs = {
       loadedLngt: [],
       savedLngt: [],
-      setMinPoz: [],
+      //changePozAudio: [],
       changeStateEdit: []
     };
     return _possibleConstructorReturn(this, (ModelTxt.__proto__ || Object.getPrototypeOf(ModelTxt)).call(this, evs));

@@ -29,8 +29,8 @@ areaTxt.close = function() {
 };
 
 function setPozAudio({poz}) {
-  console.log(poz)
-  mAudio.pozMin = mAudio.pozCurrent = poz;
+  //console.log(poz)
+  mAudio.setStartPoz(poz);
 }
 
 //////////////////////////

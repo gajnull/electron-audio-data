@@ -6,23 +6,23 @@ class ModelTxt extends Vent {
     const evs = {
       loadedLngt: [],
       savedLngt: [],
-      setMinPoz: [],
+      //changePozAudio: [],
       changeStateEdit: []
     }
     super(evs)
   }
 }
 
-const subfolder = 'target'
-let file = null       // {name, path, size, content}
+const subfolder = 'target';
+let file = null;       // {name, path, size, content}
                       // path: fullPath + name
-let nodeTxt = null
-let nodeCurrent = null
-let nodeSelection = null
-let nodeLast = null
-let stateEdit = 'add interval'  // 'delete interval'
+let nodeTxt = null;
+let nodeCurrent = null;
+let nodeSelection = null;
+let nodeLast = null;
+let stateEdit = 'add interval';  // 'delete interval'
 
-const modelTxt = new ModelTxt()
+const modelTxt = new ModelTxt();
 
 // установка
 modelTxt.setRoot = (root) => {
