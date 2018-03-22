@@ -29,7 +29,6 @@ areaTxt.close = function() {
 };
 
 function setPozAudio({poz}) {
-  //console.log(poz)
   mAudio.setStartPoz(poz);
 }
 
@@ -47,17 +46,6 @@ function toogleState() {
 }
 
 //////////////////////////
-// function addInterval({ pozFrom, pozTo }) {
-//   if (mTxt.stateEdit === 'delete interval') return;
-//   const span = document.createElement('span');
-//   span.setAttribute('from', pozFrom);
-//   span.setAttribute('to', pozTo);
-//   span.innerHTML = mTxt.selection;
-//   selection.innerHTML = mTxt.selection = '';
-//   selection.before(span);
-// }
-//
-//
 //
 // function setStateAdd() {
 //   mTxt.last = '';

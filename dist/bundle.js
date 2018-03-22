@@ -262,7 +262,6 @@ areaTxt.close = function () {
 function setPozAudio(_ref2) {
   var poz = _ref2.poz;
 
-  //console.log(poz)
   mAudio.setStartPoz(poz);
 }
 
@@ -280,17 +279,6 @@ function toogleState() {
 }
 
 //////////////////////////
-// function addInterval({ pozFrom, pozTo }) {
-//   if (mTxt.stateEdit === 'delete interval') return;
-//   const span = document.createElement('span');
-//   span.setAttribute('from', pozFrom);
-//   span.setAttribute('to', pozTo);
-//   span.innerHTML = mTxt.selection;
-//   selection.innerHTML = mTxt.selection = '';
-//   selection.before(span);
-// }
-//
-//
 //
 // function setStateAdd() {
 //   mTxt.last = '';
@@ -1121,6 +1109,7 @@ modelTxt.toogleState = function () {
     nodeLast = null;
     stateEdit = 'add interval';
   } else {
+    if (!nodeSelection) return;
     nodeLast = nodeSelection.previousElementSibling;
     if (!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');

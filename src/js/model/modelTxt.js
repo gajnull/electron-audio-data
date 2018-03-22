@@ -138,6 +138,7 @@ modelTxt.toogleState = () => {
     nodeLast = null;
     stateEdit = 'add interval';
   } else {
+    if (!nodeSelection) return;
     nodeLast = nodeSelection.previousElementSibling;
     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');
