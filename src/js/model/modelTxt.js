@@ -35,7 +35,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeCurrent = nodeTxt.querySelector('#current-txt');
   let poz = 0;
   const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = span.getAttribute('to');
+  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);

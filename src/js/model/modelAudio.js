@@ -168,7 +168,7 @@ export default class ModelAudio extends Vent {
   }
 
   setStartPoz(poz) {
-    this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = poz;
+    this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = +poz;
     //this.changePoz(); звуковой файл ещё может быть не загружен
   }
 

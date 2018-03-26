@@ -679,8 +679,8 @@ function showChangedPoz(_ref) {
   var localPoz = (pozCurrent - pozMin).toFixed(1);
   var localFrom = (pozFrom - pozMin).toFixed(1);
   var localTo = (pozTo - pozMin).toFixed(1);
-  var totalPoz = pozCurrent.toFixed(1);
-  var total = duration.toFixed(1);
+  var totalPoz = (+pozCurrent).toFixed(1);
+  var total = (+duration).toFixed(1);
 
   info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
 }
@@ -923,7 +923,7 @@ var ModelAudio = function (_Vent) {
   }, {
     key: 'setStartPoz',
     value: function setStartPoz(poz) {
-      this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = poz;
+      this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = +poz;
       //this.changePoz(); звуковой файл ещё может быть не загружен
     }
   }]);
@@ -995,7 +995,7 @@ modelTxt.setLoadedFile = function (_ref) {
   nodeCurrent = nodeTxt.querySelector('#current-txt');
   var poz = 0;
   var span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = span.getAttribute('to');
+  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
   file = { name: name, path: path, size: size, poz: poz };
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
