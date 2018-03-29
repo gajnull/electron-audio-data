@@ -327,7 +327,7 @@ controlAudio.init = function (_ref) {
 controlAudio.close = function () {
   mAudio.off('decodedAudio', handlerDecoded);
   mAudio.off('changeStateAudio', changeBtnPlay);
-  mTxt.on('changeStateEdit', changeStateEdit);
+  mTxt.off('changeStateEdit', changeStateEdit);
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {});
   btns.onclick = '';
   btns = null;
@@ -363,14 +363,18 @@ function changeBtnPlay() {
 }
 
 function changeStateEdit(_ref2) {
-  var stateEdit = _ref2.stateEdit;
+  var stateEdit = _ref2.stateEdit,
+      _from = _ref2._from,
+      _to = _ref2._to;
 
   if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
+    mAudio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
+    mAudio.gotoInterval(_from, _to);
   }
 }
 
@@ -819,7 +823,7 @@ var ModelAudio = function (_Vent) {
       }, period);
     }
 
-    // установка выбранного интервала
+    // внесение в текстовой файл выбранный интервал
 
   }, {
     key: 'getInterval',
@@ -831,6 +835,16 @@ var ModelAudio = function (_Vent) {
     key: 'nextInterval',
     value: function nextInterval() {
       this.pozMin = this.pozFrom = this.pozCurrent = this.pozTo;
+      this.changePoz();
+    }
+
+    // установка аудиоинтервала
+
+  }, {
+    key: 'gotoInterval',
+    value: function gotoInterval(_from, _to) {
+      this.pozMin = this.pozCurrent = this.pozFrom = +_from;
+      this.pozTo = +_to;
       this.changePoz();
     }
 
@@ -1103,7 +1117,7 @@ modelTxt.addInterval = function (_ref2) {
 // изменение состояния
 modelTxt.toogleState = function () {
   var _from = void 0,
-      to = void 0; // from - показывает ключевое слово
+      _to = void 0; // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
     nodeLast.removeAttribute('id');
     nodeLast = null;
@@ -1113,12 +1127,12 @@ modelTxt.toogleState = function () {
     nodeLast = nodeSelection.previousElementSibling;
     if (!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');
-    to = nodeLast.getAttribute('to');
+    _to = nodeLast.getAttribute('to');
     nodeLast.id = 'last-txt';
     cleareSelection();
     stateEdit = 'delete interval';
   }
-  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, _from: _from, to: to });
+  modelTxt.publish('changeStateEdit', { stateEdit: stateEdit, _from: _from, _to: _to });
 };
 
 function cleareSelection() {

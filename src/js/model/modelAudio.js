@@ -90,7 +90,7 @@ export default class ModelAudio extends Vent {
     this.timerStop = setTimeout(() => { this.stop() }, period)
   }
 
-// установка выбранного интервала
+// внесение в текстовой файл выбранный интервал
   getInterval() {
     if(this.playing) return;
     return { pozFrom: this.pozFrom, pozTo: this.pozTo };
@@ -100,11 +100,18 @@ export default class ModelAudio extends Vent {
     this.changePoz();
   }
 
+// установка аудиоинтервала
+  gotoInterval(_from, _to) {
+    this.pozMin = this.pozCurrent = this.pozFrom = +_from;
+    this.pozTo = +_to;
+    this.changePoz();
+  }
+
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
   gotoStart() {
     if(this.playing) return;
-    this.pozCurrent = this.pozMin
-    this.changePoz()
+    this.pozCurrent = this.pozMin;
+    this.changePoz();
   }
 
   gotoFrom() {

@@ -132,7 +132,7 @@ modelTxt.addInterval = ({ pozFrom, pozTo }) => {
 
 // изменение состояния
 modelTxt.toogleState = () => {
-  let _from, to;   // from - показывает ключевое слово
+  let _from, _to;   // from - показывает ключевое слово
   if (stateEdit === 'delete interval') {
     nodeLast.removeAttribute('id');
     nodeLast = null;
@@ -142,12 +142,12 @@ modelTxt.toogleState = () => {
     nodeLast = nodeSelection.previousElementSibling;
     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
     _from = nodeLast.getAttribute('from');
-    to = nodeLast.getAttribute('to');
+    _to = nodeLast.getAttribute('to');
     nodeLast.id = 'last-txt';
     cleareSelection();
     stateEdit = 'delete interval';
   }
-  modelTxt.publish('changeStateEdit', {stateEdit, _from, to});
+  modelTxt.publish('changeStateEdit', {stateEdit, _from, _to});
 }
 
 function cleareSelection() {

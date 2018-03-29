@@ -21,7 +21,7 @@ controlAudio.init = function({txt, audio}) {
 controlAudio.close = function() {
   mAudio.off('decodedAudio', handlerDecoded);
   mAudio.off('changeStateAudio', changeBtnPlay);
-  mTxt.on('changeStateEdit', changeStateEdit);
+  mTxt.off('changeStateEdit', changeStateEdit);
   keyboard('space', () => {});
   btns.onclick = '';
   btns = null;
@@ -54,13 +54,15 @@ function changeBtnPlay() {
   }
 }
 
-function changeStateEdit({stateEdit}) {
+function changeStateEdit({stateEdit, _from, _to}) {
   if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
+    mAudio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
+    mAudio.gotoInterval(_from, _to);
   }
 }
 
