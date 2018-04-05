@@ -5,33 +5,23 @@
 *****************************************************************/
 
 const fileAudio = {}
-// const file = {
-//   buffer: null,
-//   name: '',
-//   duration: 0,
-//   size: null,  //if !computable then will be null
-//   path: ''  //with name
-// }
+
 let model,
     btn,
     input
-    //path,
-    //progress
 
 fileAudio.init = function(mAudio) {
-  model = mAudio
-  btn = document.getElementById('file-audio')
-  input = document.getElementById('input-audio')
+  model = mAudio;
+  btn = document.getElementById('file-audio');
+  input = document.getElementById('input-audio');
 
-  btn.addEventListener('click', clickInput)
-  input.addEventListener('change', choosedFile)
-  //model.on('decodedAudio', handleDecodedAudio)
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
 }
 
 fileAudio.close = function() {
-  btn.removeEventListener('click', clickInput)
-  input.removeEventListener('change', chooseFile)
-  //model.off('decodedAudio', handleDecodedAudio)
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', chooseFile);
 }
 
 function clickInput() {

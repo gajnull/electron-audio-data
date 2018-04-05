@@ -1,15 +1,16 @@
 const infoTiming = {}
 
-let model, info
+let mAudio, mVent, info;
 
-infoTiming.init = function(audio) {
-  model = audio
-  model.on('changedPoz', showChangedPoz)
+infoTiming.init = function({vent, audio}) {
+  mAudio = audio;
+  mVent = vent;
+  mVent.on('changedPoz', showChangedPoz)
   info = document.getElementById('info')
 }
 
 infoTiming.close = function() {
-  model.off('changedPoz', showChangedPoz)
+  mVent.off('changedPoz', showChangedPoz)
   info = null
 }
 
@@ -21,7 +22,7 @@ function showChangedPoz({ pozCurrent = 0, duration = 0,
   const localFrom = (pozFrom - pozMin).toFixed(1)
   const localTo = (pozTo - pozMin).toFixed(1)
   const totalPoz = (+pozCurrent).toFixed(1)
-  const total = (+duration).toFixed(1)  
+  const total = (+duration).toFixed(1)
 
   info.innerHTML = `
     <div>

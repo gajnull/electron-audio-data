@@ -7,26 +7,28 @@
 
 const fileTxt = {}
 
-let model,
+let mTxt,
+    mVent,
     btn,
     input
 
-fileTxt.init = function({txt}) {
-  model = txt
+fileTxt.init = function({vent, txt}) {
+  mTxt = txt;
+  mVent =vent;
   btn = document.getElementById('file-txt')
   input = document.getElementById('input-txt')
 
   btn.addEventListener('click', clickInput)
   input.addEventListener('change', choosedFile)
-  model.on('loadedLngt', setInfoLodedLngt)
-  model.on('savedLngt', setInfoLodedLngt)
+  mVent.on('loadedLngt', setInfoLodedLngt)
+  mVent.on('savedLngt', setInfoLodedLngt)
 }
 
 fileTxt.close = function() {
   btn.removeEventListener('click', clickInput)
   input.removeEventListener('change', choosedFile)
-  model.off('loadedLngt', setInfoLodedLngt)
-  model.on('savedLngt', setInfoLodedLngt) // 'savedLngt' нельзя объеденить с 'loadedLngt'
+  mVent.off('loadedLngt', setInfoLodedLngt)
+  mVent.on('savedLngt', setInfoLodedLngt) // 'savedLngt' нельзя объеденить с 'loadedLngt'
 }                                         // так как на loadedLngt меняется содержимое текста
 
 function clickInput() {
@@ -58,7 +60,7 @@ function choosedFile() {
       content = txtToLngt(content)
     }
 
-    model.setLoadedFile({name, path, size, content})
+    mTxt.setLoadedFile({name, path, size, content})
   }
 
   function txtToLngt(str) {

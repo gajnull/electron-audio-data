@@ -1,13 +1,15 @@
 //export const something = 'test'
 const fileEnd = {}
 
-let model,
+let mTxt,
+    mVent,
     nameEnd,
     btnSave, btnRestore
     //progress,
 
-fileEnd.init = function({txt}) {
-  model = txt;
+fileEnd.init = function({vent, txt}) {
+  mTxt = txt;
+  mVent = vent;
 
   nameEnd = document.getElementById('name-lngt')
   btnSave = document.querySelector('#file-end button[act=save]')
@@ -15,23 +17,23 @@ fileEnd.init = function({txt}) {
 
   btnSave.addEventListener('click', saveFile)
   btnRestore.addEventListener('click', restoreFile)
-  model.on('loadedLngt', writeName)
+  mVent.on('loadedLngt', writeName)
 }
 
 fileEnd.close = function() {
   btnSave.removeEventListener('click', saveFile)
   btnRestore.removeEventListener('click', restoreFile)
-  model.off('loadedLngt', writeName)
+  mVent.off('loadedLngt', writeName)
 }
 
 function saveFile() {
-  let name = nameEnd.value
-  if (!name) nameEnd.value = name = 'noName'
-  model.save(name)
+  let name = nameEnd.value;
+  if (!name) nameEnd.value = name = 'noName';
+  mTxt.save(name);
 }
 
 function restoreFile() {
-  model.restore()
+  mTxt.restore();
 }
 
 function writeName({name}) {

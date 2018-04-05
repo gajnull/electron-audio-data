@@ -1,17 +1,18 @@
 import keyboard from './keyboard';
 
 const areaTxt = {};
-let mTxt, mAudio, area
+let mTxt, mAudio, mVent, area
 
 
-areaTxt.init = function({txt, audio}) {
+areaTxt.init = function({vent, txt, audio}) {
   area = document.getElementById('txt');
 
+  mVent = vent;
   mTxt = txt;
   mTxt.setRoot(area);
   mAudio = audio;
 
-  mTxt.on('loadedLngt', setPozAudio);
+  mVent.on('loadedLngt', setPozAudio);
   //mAudio.on('addInterval', addInterval)
 
   keyboard('arrowRight', addSelection);
@@ -21,7 +22,7 @@ areaTxt.init = function({txt, audio}) {
 
 areaTxt.close = function() {
   //mAudio.off('addInterval', addInterval)
-  mTxt.off('loadedLngt', setPozAudio);
+  mVent.off('loadedLngt', setPozAudio);
 
   keyboard('arrowRight', () => {});
   keyboard('arrowLeft', () => {});
@@ -45,15 +46,6 @@ function toogleState() {
   mTxt.toogleState()
 }
 
-//////////////////////////
-//
-// function setStateAdd() {
-//   mTxt.last = '';
-//   last.removeAttribute('id');
-//   mAudio.pozFrom = mAudio.pozCurrent = mAudio.pozFrom = mAudio.pozTo;
-//   mAudio.changePoz();
-//   last = null;
-// }
 
 
 export default areaTxt;

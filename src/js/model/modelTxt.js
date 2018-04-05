@@ -1,17 +1,9 @@
 import Vent from './Vent'
 const {ipcRenderer} = window.require('electron')
 
-class ModelTxt extends Vent {
-  constructor() {
-    const evs = {
-      loadedLngt: [],
-      savedLngt: [],
-      //changePozAudio: [],
-      changeStateEdit: []
-    }
-    super(evs)
-  }
-}
+const modelTxt = {};
+
+let vent;
 
 const subfolder = 'target';
 let file = null;       // {name, path, size, content}
@@ -22,7 +14,10 @@ let nodeSelection = null;
 let nodeLast = null;
 let stateEdit = 'add interval';  // 'delete interval'
 
-const modelTxt = new ModelTxt();
+
+modelTxt.setVent = (_vent) => {
+  vent = _vent;
+}
 
 // установка
 modelTxt.setRoot = (root) => {
@@ -39,7 +34,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
-  modelTxt.publish('loadedLngt' , file); //почему-то this здесь не работает ??????
+  vent.publish('loadedLngt' , file); //почему-то this здесь не работает ??????
 }
 
 // Сохранение файла
@@ -67,7 +62,7 @@ modelTxt.save = (nameLngt) => {
     }
     localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
     localStorage.setItem('path-lngt', path)
-    modelTxt.publish('savedLngt', {name, path})
+    vent.publish('savedLngt', {name, path})
   });
 
 // Восстановление файла
@@ -147,7 +142,7 @@ modelTxt.toogleState = () => {
     cleareSelection();
     stateEdit = 'delete interval';
   }
-  modelTxt.publish('changeStateEdit', {stateEdit, _from, _to});
+  vent.publish('changeStateEdit', {stateEdit, _from, _to});
 }
 
 function cleareSelection() {

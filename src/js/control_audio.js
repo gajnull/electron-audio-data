@@ -3,25 +3,26 @@ import keyboard from './keyboard'
 
 const controlAudio = {};
 
-let mTxt, mAudio, btns, intervals, btnPlay;
+let mTxt, mAudio, mVent, btns, intervals, btnPlay;
 
-controlAudio.init = function({txt, audio}) {
+controlAudio.init = function({vent, txt, audio}) {
   mTxt = txt;
   mAudio = audio;
+  mVent = vent;
 
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
-  mTxt.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
-  mAudio.on('decodedAudio', handlerDecoded);
-  mAudio.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+  vent.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
+  vent.on('decodedAudio', handlerDecoded);
+  vent.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
 controlAudio.close = function() {
-  mAudio.off('decodedAudio', handlerDecoded);
-  mAudio.off('changeStateAudio', changeBtnPlay);
-  mTxt.off('changeStateEdit', changeStateEdit);
+  vent.off('decodedAudio', handlerDecoded);
+  vent.off('changeStateAudio', changeBtnPlay);
+  vent.off('changeStateEdit', changeStateEdit);
   keyboard('space', () => {});
   btns.onclick = '';
   btns = null;

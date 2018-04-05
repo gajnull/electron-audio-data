@@ -3,7 +3,7 @@ import Vent from './Vent';
 import ModelAudio from './modelAudio';
 import modelTxt from './modelTxt';
 
-const model = new Vent({
+const vent = new Vent({
   //lngt events
   loadedLngt: [],
   savedLngt: [],
@@ -13,13 +13,12 @@ const model = new Vent({
   changedPoz: [],
 });
 
-model.audio = new ModelAudio();
-model.txt = modelTxt;
+const model = {
+  vent,
+  audio: new ModelAudio(vent),
+  txt: modelTxt
+}
 
-
-
-
-
-
+modelTxt.setVent(vent);
 
 export default model;

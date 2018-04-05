@@ -1,14 +1,10 @@
 import Vent from './Vent'
 import webAudioAPI from './webAudioAPI'
 
-export default class ModelAudio extends Vent {
-  constructor() {
-    const evs = {
-      decodedAudio: [],
-      changedPoz: [],
-      changeStateAudio: []
-    }
-    super(evs)
+export default class ModelAudio {
+  constructor(_vent) {
+    this.vent = _vent;
+
     this.file = { // пока не используется
       name: null,
       path: null,
@@ -26,27 +22,27 @@ export default class ModelAudio extends Vent {
   }
 
   decode(rawData) {
-    this.playing = false
+    this.playing = false;
 
-    this.timer = null
-    this.timerStop = null
+    this.timer = null;
+    this.timerStop = null;
 
-    this.api.decode(rawData, decodedAudio.bind(this))
+    this.api.decode(rawData, decodedAudio.bind(this));
 
     function decodedAudio(duration) {
-      this.duration = duration
-      this.publish('decodedAudio')
-      this.changePoz()
+      this.duration = duration;
+      this.vent.publish('decodedAudio');
+      this.changePoz();
     }
 
   }
 
   changePoz() {
-    this.publish('changedPoz', { pozMin: this.pozMin,
-                                duration: this.duration,
-                                pozCurrent: this.pozCurrent,
-                                pozFrom: this.pozFrom,
-                                pozTo: this.pozTo })
+    this.vent.publish('changedPoz', { pozMin: this.pozMin,
+                                  duration: this.duration,
+                                  pozCurrent: this.pozCurrent,
+                                  pozFrom: this.pozFrom,
+                                  pozTo: this.pozTo })
   }
 
 ///// проигрывание/остановка
@@ -82,12 +78,11 @@ export default class ModelAudio extends Vent {
 
   repeate() { //проигрываем выбранный отрезок
     if(this.playing) return;
-    this.pozCurrent = this.pozFrom
-    this.play()
-    this.playing = true
-    //this.publish('changeStateAudio')
-    const period = (this.pozTo - this.pozFrom) * 1000
-    this.timerStop = setTimeout(() => { this.stop() }, period)
+    this.pozCurrent = this.pozFrom;
+    this.play();
+    this.playing = true;
+    const period = (this.pozTo - this.pozFrom) * 1000;
+    this.timerStop = setTimeout(() => { this.stop() }, period);
   }
 
 // внесение в текстовой файл выбранный интервал
