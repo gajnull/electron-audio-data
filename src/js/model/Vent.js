@@ -1,10 +1,10 @@
 export default class Vent {
   constructor(evs) {
-    this.evs = evs
+    this.evs = evs;
   }
 
   on(ev, fn) {
-    this.evs[ev].push(fn)
+    this.evs[ev].push(fn);
   }
 
   off(ev, fn) {

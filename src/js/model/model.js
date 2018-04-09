@@ -11,6 +11,7 @@ const vent = new Vent({
   //audio events
   decodedAudio: [],
   changedPoz: [],
+  changeStateAudio: []
 });
 
 const model = {

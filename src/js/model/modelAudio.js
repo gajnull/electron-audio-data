@@ -57,7 +57,7 @@ export default class ModelAudio {
   play() {
     this.api.play(this.pozCurrent)
     this.playing = true
-    this.publish('changeStateAudio')
+    this.vent.publish('changeStateAudio')
     this.timer = setInterval(() => {
                   this.pozCurrent = this.api.getCurrentPoz()
                   if(this.pozCurrent > this.duration) this.stop()
@@ -69,7 +69,7 @@ export default class ModelAudio {
     if(!this.playing) return; //не должно быть
     this.pozCurrent = this.api.stop()
     this.playing = false
-    this.publish('changeStateAudio')
+    this.vent.publish('changeStateAudio')
     if(this.pozCurrent > this.duration) this.pozCurrent = this.duration //не должно быть - может превысить на доли секунды
     clearInterval(this.timer)
     if (this.timerStop) { clearTimeout(this.timerStop) }

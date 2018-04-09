@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -164,6 +164,566 @@ var Vent = function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = work;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_model__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(9);
+
+
+
+
+
+
+//import modelTxt from './js/model/modelTxt'
+
+
+
+
+//import ModelAudio from './js/model/modelAudio'
+
+
+
+
+function work() {
+
+  __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
+
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+  __WEBPACK_IMPORTED_MODULE_4__js_area_txt__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+  __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+
+  __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+  __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
+
+
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
+
+
+var areaTxt = {};
+var mTxt = void 0,
+    mAudio = void 0,
+    mVent = void 0,
+    area = void 0;
+
+areaTxt.init = function (_ref) {
+  var vent = _ref.vent,
+      txt = _ref.txt,
+      audio = _ref.audio;
+
+  area = document.getElementById('txt');
+
+  mVent = vent;
+  mTxt = txt;
+  mTxt.setRoot(area);
+  mAudio = audio;
+
+  mVent.on('loadedLngt', setPozAudio);
+  //mAudio.on('addInterval', addInterval)
+
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', toogleState);
+};
+
+areaTxt.close = function () {
+  //mAudio.off('addInterval', addInterval)
+  mVent.off('loadedLngt', setPozAudio);
+
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
+};
+
+function setPozAudio(_ref2) {
+  var poz = _ref2.poz;
+
+  mAudio.setStartPoz(poz);
+}
+
+//////////////////////////
+function addSelection() {
+  mTxt.addSelection();
+}
+
+function reduceSelection() {
+  mTxt.reduceSelection();
+}
+
+function toogleState() {
+  mTxt.toogleState();
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (areaTxt);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
+
+
+
+var controlAudio = {};
+
+var mTxt = void 0,
+    mAudio = void 0,
+    mVent = void 0,
+    btns = void 0,
+    intervals = void 0,
+    btnPlay = void 0;
+
+controlAudio.init = function (_ref) {
+  var vent = _ref.vent,
+      txt = _ref.txt,
+      audio = _ref.audio;
+
+  mTxt = txt;
+  mAudio = audio;
+  mVent = vent;
+
+  btns = document.getElementById('btns');
+  intervals = document.getElementById('edit-intervals');
+  btnPlay = btns.querySelector('button[act="tooglePlay"]');
+
+  vent.on('changeStateEdit', changeStateEdit); //меняем набор кнопок
+  vent.on('decodedAudio', handlerDecoded);
+  vent.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+};
+
+controlAudio.close = function () {
+  vent.off('decodedAudio', handlerDecoded);
+  vent.off('changeStateAudio', changeBtnPlay);
+  vent.off('changeStateEdit', changeStateEdit);
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {});
+  btns.onclick = '';
+  btns = null;
+};
+
+function handlerDecoded() {
+  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {
+    mAudio.tooglePlay();
+  });
+  btns.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      switch (attr) {
+        case 'addInterval':
+          var b = mTxt.addInterval(mAudio.getInterval());
+          if (b) mAudio.nextInterval();
+          break;
+        default:
+          mAudio[attr]();
+      }
+    }
+  };
+}
+
+function changeBtnPlay() {
+  if (mAudio.playing) {
+    btnPlay.innerHTML = 'Stop';
+  } else {
+    btnPlay.innerHTML = 'Play';
+  }
+}
+
+function changeStateEdit(_ref2) {
+  var stateEdit = _ref2.stateEdit,
+      _from = _ref2._from,
+      _to = _ref2._to;
+
+  if (stateEdit === 'add interval') {
+    btns.style.display = 'flex';
+    intervals.style.display = 'none';
+    mAudio.nextInterval();
+  } else {
+    btns.style.display = 'none';
+    intervals.style.display = 'flex';
+    mAudio.gotoInterval(_from, _to);
+  }
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (controlAudio);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/****************************************************************
+  во внешнем модуле используется fileAudio.init(model) и
+  fileAudio.close(model)
+
+*****************************************************************/
+
+var fileAudio = {};
+
+var model = void 0,
+    btn = void 0,
+    input = void 0;
+
+fileAudio.init = function (_ref) {
+  var audio = _ref.audio;
+
+  model = audio;
+  btn = document.getElementById('file-audio');
+  input = document.getElementById('input-audio');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+};
+
+fileAudio.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', chooseFile);
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  var path = file.path;
+  var name = file.name;
+
+  btn.innerHTML = file.name;
+  btn.setAttribute('title', path);
+
+  var reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+  /*
+    reader.onloadstart = startProgress
+    reader.onprogress = updateProgress
+    */
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  /*
+    function startProgress(ev) {
+      progress.style.display = 'block'
+      setWidthProgress(0)
+    }
+  
+    function updateProgress(ev) {
+      //console.log(ev.loaded)
+      if (ev.lengthComputable) {
+        var loaded = (ev.loaded / ev.total)
+        if (loaded < 1) {
+          setWidthProgress(loaded)  //остальную половину будет декодироваться аудио
+        }
+      } else {
+        // тогда будет анимация загрузки средствами css
+      }
+    }
+  */
+
+  function loaded(ev) {
+    //setWidthProgress(0)
+    model.file = { name: name, path: path, size: file.size };
+    model.decode(ev.target.result);
+    /*    model.decode(ev.target.result, function(duration) {
+          model.file = {name, path, size: file.size}
+          model.duration = duration
+          model.publish('decodedAudio')
+          //model.changePoz()
+        })
+    */
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      path.innerHTML = 'Выберите другой звуковой файл';
+    }
+  }
+}
+
+function handleDecodedAudio(data) {} // пока не используется (ф-ция подписчмк на декодирование)
+
+/*
+function setWidthProgress(value) {
+  const width = 20 + value * 70
+  progress.style.width = width + '%'
+}
+*/
+
+/* harmony default export */ __webpack_exports__["a"] = (fileAudio);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+//export const something = 'test'
+var fileEnd = {};
+
+var mTxt = void 0,
+    mVent = void 0,
+    nameEnd = void 0,
+    btnSave = void 0,
+    btnRestore = void 0;
+//progress,
+
+fileEnd.init = function (_ref) {
+  var vent = _ref.vent,
+      txt = _ref.txt;
+
+  mTxt = txt;
+  mVent = vent;
+
+  nameEnd = document.getElementById('name-lngt');
+  btnSave = document.querySelector('#file-end button[act=save]');
+  btnRestore = document.querySelector('#file-end button[act=restore]');
+
+  btnSave.addEventListener('click', saveFile);
+  btnRestore.addEventListener('click', restoreFile);
+  mVent.on('loadedLngt', writeName);
+};
+
+fileEnd.close = function () {
+  btnSave.removeEventListener('click', saveFile);
+  btnRestore.removeEventListener('click', restoreFile);
+  mVent.off('loadedLngt', writeName);
+};
+
+function saveFile() {
+  var name = nameEnd.value;
+  if (!name) nameEnd.value = name = 'noName';
+  mTxt.save(name);
+}
+
+function restoreFile() {
+  mTxt.restore();
+}
+
+function writeName(_ref2) {
+  var name = _ref2.name;
+
+  var res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
+  if (res) nameEnd.value = res[1];
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileEnd);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init(model) и
+   fileTxt.close()
+  генерирует событие получения контента текстового файл
+*****************************************************************/
+
+var fileTxt = {};
+
+var mTxt = void 0,
+    mVent = void 0,
+    btn = void 0,
+    input = void 0;
+
+fileTxt.init = function (_ref) {
+  var vent = _ref.vent,
+      txt = _ref.txt;
+
+  mTxt = txt;
+  mVent = vent;
+  btn = document.getElementById('file-txt');
+  input = document.getElementById('input-txt');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  mVent.on('loadedLngt', setInfoLodedLngt);
+  mVent.on('savedLngt', setInfoLodedLngt);
+};
+
+fileTxt.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  mVent.off('loadedLngt', setInfoLodedLngt);
+  mVent.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+}; // так как на loadedLngt меняется содержимое текста
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  var size = file.size;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    if (/\.txt$/.test(name)) {
+      content = txtToLngt(content);
+    }
+
+    mTxt.setLoadedFile({ name: name, path: path, size: size, content: content });
+  }
+
+  function txtToLngt(str) {
+    var s = str;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    return s;
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+function setInfoLodedLngt(_ref2) {
+  var path = _ref2.path,
+      name = _ref2.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var infoTiming = {};
+
+var mAudio = void 0,
+    mVent = void 0,
+    info = void 0;
+
+infoTiming.init = function (_ref) {
+  var vent = _ref.vent,
+      audio = _ref.audio;
+
+  mAudio = audio;
+  mVent = vent;
+  mVent.on('changedPoz', showChangedPoz);
+  info = document.getElementById('info');
+};
+
+infoTiming.close = function () {
+  mVent.off('changedPoz', showChangedPoz);
+  info = null;
+};
+
+function showChangedPoz(_ref2) {
+  var _ref2$pozCurrent = _ref2.pozCurrent,
+      pozCurrent = _ref2$pozCurrent === undefined ? 0 : _ref2$pozCurrent,
+      _ref2$duration = _ref2.duration,
+      duration = _ref2$duration === undefined ? 0 : _ref2$duration,
+      _ref2$pozMin = _ref2.pozMin,
+      pozMin = _ref2$pozMin === undefined ? 0 : _ref2$pozMin,
+      _ref2$pozFrom = _ref2.pozFrom,
+      pozFrom = _ref2$pozFrom === undefined ? 0 : _ref2$pozFrom,
+      _ref2$pozTo = _ref2.pozTo,
+      pozTo = _ref2$pozTo === undefined ? 0 : _ref2$pozTo;
+
+
+  var localPoz = (pozCurrent - pozMin).toFixed(1);
+  var localFrom = (pozFrom - pozMin).toFixed(1);
+  var localTo = (pozTo - pozMin).toFixed(1);
+  var totalPoz = (+pozCurrent).toFixed(1);
+  var total = (+duration).toFixed(1);
+
+  info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (infoTiming);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(12);
+//export const something = 'test'
+
+
+
+
+var vent = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
+  //lngt events
+  loadedLngt: [],
+  savedLngt: [],
+  changeStateEdit: [],
+  //audio events
+  decodedAudio: [],
+  changedPoz: [],
+  changeStateAudio: []
+});
+
+var model = {
+  vent: vent,
+  audio: new __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */](vent),
+  txt: __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */]
+};
+
+__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setVent(vent);
+
+/* harmony default export */ __webpack_exports__["a"] = (model);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(13);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -240,7 +800,7 @@ var ModelAudio = function () {
 
       this.api.play(this.pozCurrent);
       this.playing = true;
-      this.publish('changeStateAudio');
+      this.vent.publish('changeStateAudio');
       this.timer = setInterval(function () {
         _this.pozCurrent = _this.api.getCurrentPoz();
         if (_this.pozCurrent > _this.duration) _this.stop();
@@ -253,7 +813,7 @@ var ModelAudio = function () {
       if (!this.playing) return; //не должно быть
       this.pozCurrent = this.api.stop();
       this.playing = false;
-      this.publish('changeStateAudio');
+      this.vent.publish('changeStateAudio');
       if (this.pozCurrent > this.duration) this.pozCurrent = this.duration; //не должно быть - может превысить на доли секунды
       clearInterval(this.timer);
       if (this.timerStop) {
@@ -402,7 +962,7 @@ var ModelAudio = function () {
 /* harmony default export */ __webpack_exports__["a"] = (ModelAudio);
 
 /***/ }),
-/* 3 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -582,563 +1142,6 @@ function cleareSelection() {
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = work;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_model__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_area_txt__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(11);
-
-
-
-
-
-
-//import modelTxt from './js/model/modelTxt'
-
-
-
-
-//import ModelAudio from './js/model/modelAudio'
-
-
-
-
-function work() {
-
-  __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
-
-  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-  __WEBPACK_IMPORTED_MODULE_4__js_area_txt__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-  __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-
-  __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-  __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-}
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(4);
-
-
-__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
-
-
-var areaTxt = {};
-var mTxt = void 0,
-    mAudio = void 0,
-    mVent = void 0,
-    area = void 0;
-
-areaTxt.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt,
-      audio = _ref.audio;
-
-  area = document.getElementById('txt');
-
-  mVent = vent;
-  mTxt = txt;
-  mTxt.setRoot(area);
-  mAudio = audio;
-
-  mVent.on('loadedLngt', setPozAudio);
-  //mAudio.on('addInterval', addInterval)
-
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', toogleState);
-};
-
-areaTxt.close = function () {
-  //mAudio.off('addInterval', addInterval)
-  mVent.off('loadedLngt', setPozAudio);
-
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
-};
-
-function setPozAudio(_ref2) {
-  var poz = _ref2.poz;
-
-  mAudio.setStartPoz(poz);
-}
-
-//////////////////////////
-function addSelection() {
-  mTxt.addSelection();
-}
-
-function reduceSelection() {
-  mTxt.reduceSelection();
-}
-
-function toogleState() {
-  mTxt.toogleState();
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (areaTxt);
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
-
-
-
-var controlAudio = {};
-
-var mTxt = void 0,
-    mAudio = void 0,
-    mVent = void 0,
-    btns = void 0,
-    intervals = void 0,
-    btnPlay = void 0;
-
-controlAudio.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt,
-      audio = _ref.audio;
-
-  mTxt = txt;
-  mAudio = audio;
-  mVent = vent;
-
-  btns = document.getElementById('btns');
-  intervals = document.getElementById('edit-intervals');
-  btnPlay = btns.querySelector('button[act="tooglePlay"]');
-
-  vent.on('changeStateEdit', changeStateEdit); //меняем набор кнопок
-  vent.on('decodedAudio', handlerDecoded);
-  vent.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
-};
-
-controlAudio.close = function () {
-  vent.off('decodedAudio', handlerDecoded);
-  vent.off('changeStateAudio', changeBtnPlay);
-  vent.off('changeStateEdit', changeStateEdit);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {});
-  btns.onclick = '';
-  btns = null;
-};
-
-function handlerDecoded() {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {
-    mAudio.tooglePlay();
-  });
-  btns.onclick = function (event) {
-    var target = event.target;
-    if (target.hasAttribute('act')) {
-      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
-      var attr = target.getAttribute('act');
-      switch (attr) {
-        case 'addInterval':
-          var b = mTxt.addInterval(mAudio.getInterval());
-          if (b) mAudio.nextInterval();
-          break;
-        default:
-          mAudio[attr]();
-      }
-    }
-  };
-}
-
-function changeBtnPlay() {
-  if (mAudio.playing) {
-    btnPlay.innerHTML = 'Stop';
-  } else {
-    btnPlay.innerHTML = 'Play';
-  }
-}
-
-function changeStateEdit(_ref2) {
-  var stateEdit = _ref2.stateEdit,
-      _from = _ref2._from,
-      _to = _ref2._to;
-
-  if (stateEdit === 'add interval') {
-    btns.style.display = 'flex';
-    intervals.style.display = 'none';
-    mAudio.nextInterval();
-  } else {
-    btns.style.display = 'none';
-    intervals.style.display = 'flex';
-    mAudio.gotoInterval(_from, _to);
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (controlAudio);
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/****************************************************************
-  во внешнем модуле используется fileAudio.init(model) и
-  fileAudio.close(model)
-
-*****************************************************************/
-
-var fileAudio = {};
-
-var model = void 0,
-    btn = void 0,
-    input = void 0;
-
-fileAudio.init = function (mAudio) {
-  model = mAudio;
-  btn = document.getElementById('file-audio');
-  input = document.getElementById('input-audio');
-
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', choosedFile);
-};
-
-fileAudio.close = function () {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', chooseFile);
-};
-
-function clickInput() {
-  input.click();
-}
-
-function choosedFile() {
-  if (input.files.length === 0) return; //здесь ";" обязательно
-  var file = input.files[0];
-  var path = file.path;
-  var name = file.name;
-
-  btn.innerHTML = file.name;
-  btn.setAttribute('title', path);
-
-  var reader = new FileReader();
-  reader.readAsArrayBuffer(file);
-  /*
-    reader.onloadstart = startProgress
-    reader.onprogress = updateProgress
-    */
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  /*
-    function startProgress(ev) {
-      progress.style.display = 'block'
-      setWidthProgress(0)
-    }
-  
-    function updateProgress(ev) {
-      //console.log(ev.loaded)
-      if (ev.lengthComputable) {
-        var loaded = (ev.loaded / ev.total)
-        if (loaded < 1) {
-          setWidthProgress(loaded)  //остальную половину будет декодироваться аудио
-        }
-      } else {
-        // тогда будет анимация загрузки средствами css
-      }
-    }
-  */
-
-  function loaded(ev) {
-    //setWidthProgress(0)
-    model.file = { name: name, path: path, size: file.size };
-    model.decode(ev.target.result);
-    /*    model.decode(ev.target.result, function(duration) {
-          model.file = {name, path, size: file.size}
-          model.duration = duration
-          model.publish('decodedAudio')
-          //model.changePoz()
-        })
-    */
-  }
-
-  function errorHandler(ev) {
-    if (ev.target.error.name == "NotReadableError") {
-      path.innerHTML = 'Выберите другой звуковой файл';
-    }
-  }
-}
-
-function handleDecodedAudio(data) {} // пока не используется (ф-ция подписчмк на декодирование)
-
-/*
-function setWidthProgress(value) {
-  const width = 20 + value * 70
-  progress.style.width = width + '%'
-}
-*/
-
-/* harmony default export */ __webpack_exports__["a"] = (fileAudio);
-
-/***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-//export const something = 'test'
-var fileEnd = {};
-
-var mTxt = void 0,
-    mVent = void 0,
-    nameEnd = void 0,
-    btnSave = void 0,
-    btnRestore = void 0;
-//progress,
-
-fileEnd.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt;
-
-  mTxt = txt;
-  mVent = vent;
-
-  nameEnd = document.getElementById('name-lngt');
-  btnSave = document.querySelector('#file-end button[act=save]');
-  btnRestore = document.querySelector('#file-end button[act=restore]');
-
-  btnSave.addEventListener('click', saveFile);
-  btnRestore.addEventListener('click', restoreFile);
-  mVent.on('loadedLngt', writeName);
-};
-
-fileEnd.close = function () {
-  btnSave.removeEventListener('click', saveFile);
-  btnRestore.removeEventListener('click', restoreFile);
-  mVent.off('loadedLngt', writeName);
-};
-
-function saveFile() {
-  var name = nameEnd.value;
-  if (!name) nameEnd.value = name = 'noName';
-  mTxt.save(name);
-}
-
-function restoreFile() {
-  mTxt.restore();
-}
-
-function writeName(_ref2) {
-  var name = _ref2.name;
-
-  var res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
-  if (res) nameEnd.value = res[1];
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (fileEnd);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/****************************************************************
-  Компонент для загрузки текстового файла.
-  во внешнем модуле используется fileTxt.init(model) и
-   fileTxt.close()
-  генерирует событие получения контента текстового файл
-*****************************************************************/
-
-var fileTxt = {};
-
-var mTxt = void 0,
-    mVent = void 0,
-    btn = void 0,
-    input = void 0;
-
-fileTxt.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt;
-
-  mTxt = txt;
-  mVent = vent;
-  btn = document.getElementById('file-txt');
-  input = document.getElementById('input-txt');
-
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', choosedFile);
-  mVent.on('loadedLngt', setInfoLodedLngt);
-  mVent.on('savedLngt', setInfoLodedLngt);
-};
-
-fileTxt.close = function () {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', choosedFile);
-  mVent.off('loadedLngt', setInfoLodedLngt);
-  mVent.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
-}; // так как на loadedLngt меняется содержимое текста
-
-function clickInput() {
-  input.click();
-}
-
-function choosedFile() {
-  if (input.files.length === 0) return; //здесь ";" обязательно
-  var file = input.files[0];
-  input.value = ''; // единственный способ чтобы заново открыть тотже файл
-  var path = file.path;
-  var name = file.name;
-  var size = file.size;
-
-  btn.innerHTML = 'loding...';
-
-  var reader = new FileReader();
-  reader.readAsText(file);
-
-  //reader.onloadstart = startProgress
-  //reader.onprogress = updateProgress
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  function loaded(ev) {
-    var content = ev.target.result;
-    if (/\.txt$/.test(name)) {
-      content = txtToLngt(content);
-    }
-
-    mTxt.setLoadedFile({ name: name, path: path, size: size, content: content });
-  }
-
-  function txtToLngt(str) {
-    var s = str;
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')');
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-    return s;
-  }
-
-  function errorHandler(ev) {
-    if (ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой текстовой файл';
-    }
-  }
-}
-
-function setInfoLodedLngt(_ref2) {
-  var path = _ref2.path,
-      name = _ref2.name;
-
-  btn.innerHTML = name;
-  btn.setAttribute('title', path);
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var infoTiming = {};
-
-var mAudio = void 0,
-    mVent = void 0,
-    info = void 0;
-
-infoTiming.init = function (_ref) {
-  var vent = _ref.vent,
-      audio = _ref.audio;
-
-  mAudio = audio;
-  mVent = vent;
-  mVent.on('changedPoz', showChangedPoz);
-  info = document.getElementById('info');
-};
-
-infoTiming.close = function () {
-  mVent.off('changedPoz', showChangedPoz);
-  info = null;
-};
-
-function showChangedPoz(_ref2) {
-  var _ref2$pozCurrent = _ref2.pozCurrent,
-      pozCurrent = _ref2$pozCurrent === undefined ? 0 : _ref2$pozCurrent,
-      _ref2$duration = _ref2.duration,
-      duration = _ref2$duration === undefined ? 0 : _ref2$duration,
-      _ref2$pozMin = _ref2.pozMin,
-      pozMin = _ref2$pozMin === undefined ? 0 : _ref2$pozMin,
-      _ref2$pozFrom = _ref2.pozFrom,
-      pozFrom = _ref2$pozFrom === undefined ? 0 : _ref2$pozFrom,
-      _ref2$pozTo = _ref2.pozTo,
-      pozTo = _ref2$pozTo === undefined ? 0 : _ref2$pozTo;
-
-
-  var localPoz = (pozCurrent - pozMin).toFixed(1);
-  var localFrom = (pozFrom - pozMin).toFixed(1);
-  var localTo = (pozTo - pozMin).toFixed(1);
-  var totalPoz = (+pozCurrent).toFixed(1);
-  var total = (+duration).toFixed(1);
-
-  info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (infoTiming);
-
-/***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Vent__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(3);
-//export const something = 'test'
-
-
-
-
-var vent = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
-  //lngt events
-  loadedLngt: [],
-  savedLngt: [],
-  changeStateEdit: [],
-  //audio events
-  decodedAudio: [],
-  changedPoz: []
-});
-
-var model = {
-  vent: vent,
-  audio: new __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */](vent),
-  txt: __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */]
-};
-
-__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setVent(vent);
-
-/* harmony default export */ __webpack_exports__["a"] = (model);
 
 /***/ }),
 /* 13 */

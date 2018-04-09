@@ -10,8 +10,8 @@ let model,
     btn,
     input
 
-fileAudio.init = function(mAudio) {
-  model = mAudio;
+fileAudio.init = function({audio}) {
+  model = audio;
   btn = document.getElementById('file-audio');
   input = document.getElementById('input-audio');
 
