@@ -7,7 +7,7 @@ let model, txt, audio, vent, btns, intervals, btnPlay;
 
 controlAudio.init = function(_model) {
   model = _model;
-  {txt, audio, vent} = model;
+  let {txt, audio, vent} = model; // let нужен по синтаксу es6
 
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');

@@ -15,11 +15,16 @@ const vent = new Vent({
 });
 
 modelTxt.setVent(vent);
+const audio = new ModelAudio(vent);
 
 const model = {
   vent,
-  audio: new ModelAudio(vent),
+  audio,
   txt: modelTxt
+}
+
+model.toogleState = () => {
+  modelTxt.toogleState();
 }
 
 export default model;
