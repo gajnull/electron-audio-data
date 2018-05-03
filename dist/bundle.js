@@ -174,6 +174,7 @@ var Vent = function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_end__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__js_control_audio__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(9);
 
 
@@ -200,7 +201,7 @@ function work() {
   __WEBPACK_IMPORTED_MODULE_5__js_file_end__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
 
   __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
-  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
+  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["default"].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
   __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init(__WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */]);
 }
 
@@ -281,95 +282,10 @@ function toogleState() {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, __webpack_exports__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__keyboard__ = __webpack_require__(0);
-
-
-
-var controlAudio = {};
-
-var mTxt = void 0,
-    mAudio = void 0,
-    mVent = void 0,
-    btns = void 0,
-    intervals = void 0,
-    btnPlay = void 0;
-
-controlAudio.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt,
-      audio = _ref.audio;
-
-  mTxt = txt;
-  mAudio = audio;
-  mVent = vent;
-
-  btns = document.getElementById('btns');
-  intervals = document.getElementById('edit-intervals');
-  btnPlay = btns.querySelector('button[act="tooglePlay"]');
-
-  vent.on('changeStateEdit', changeStateEdit); //меняем набор кнопок
-  vent.on('decodedAudio', handlerDecoded);
-  vent.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
-};
-
-controlAudio.close = function () {
-  vent.off('decodedAudio', handlerDecoded);
-  vent.off('changeStateAudio', changeBtnPlay);
-  vent.off('changeStateEdit', changeStateEdit);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {});
-  btns.onclick = '';
-  btns = null;
-};
-
-function handlerDecoded() {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('space', function () {
-    mAudio.tooglePlay();
-  });
-  btns.onclick = function (event) {
-    var target = event.target;
-    if (target.hasAttribute('act')) {
-      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
-      var attr = target.getAttribute('act');
-      switch (attr) {
-        case 'addInterval':
-          var b = mTxt.addInterval(mAudio.getInterval());
-          if (b) mAudio.nextInterval();
-          break;
-        default:
-          mAudio[attr]();
-      }
-    }
-  };
-}
-
-function changeBtnPlay() {
-  if (mAudio.playing) {
-    btnPlay.innerHTML = 'Stop';
-  } else {
-    btnPlay.innerHTML = 'Play';
-  }
-}
-
-function changeStateEdit(_ref2) {
-  var stateEdit = _ref2.stateEdit,
-      _from = _ref2._from,
-      _to = _ref2._to;
-
-  if (stateEdit === 'add interval') {
-    btns.style.display = 'flex';
-    intervals.style.display = 'none';
-    mAudio.nextInterval();
-  } else {
-    btns.style.display = 'none';
-    intervals.style.display = 'flex';
-    mAudio.gotoInterval(_from, _to);
-  }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (controlAudio);
+throw new Error("Module build failed: SyntaxError: C:/MyProjects/electron-audio-data/src/js/control_audio.js: Unexpected token (10:21)\n\n\u001b[0m \u001b[90m  8 | \u001b[39mcontrolAudio\u001b[33m.\u001b[39minit \u001b[33m=\u001b[39m \u001b[36mfunction\u001b[39m(_model) {\n \u001b[90m  9 | \u001b[39m  model \u001b[33m=\u001b[39m _model\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 10 | \u001b[39m  {txt\u001b[33m,\u001b[39m audio\u001b[33m,\u001b[39m vent} \u001b[33m=\u001b[39m model\u001b[33m;\u001b[39m\n \u001b[90m    | \u001b[39m                     \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 11 | \u001b[39m\n \u001b[90m 12 | \u001b[39m  btns \u001b[33m=\u001b[39m document\u001b[33m.\u001b[39mgetElementById(\u001b[32m'btns'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 13 | \u001b[39m  intervals \u001b[33m=\u001b[39m document\u001b[33m.\u001b[39mgetElementById(\u001b[32m'edit-intervals'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n");
 
 /***/ }),
 /* 6 */
@@ -709,13 +625,13 @@ var vent = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
   changeStateAudio: []
 });
 
+__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setVent(vent);
+
 var model = {
   vent: vent,
   audio: new __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */](vent),
   txt: __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */]
 };
-
-__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setVent(vent);
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
 
@@ -977,7 +893,7 @@ var modelTxt = {};
 var vent = void 0;
 
 var subfolder = 'target';
-var file = null; // {name, path, size, content}
+var file = {}; // {name, path, size, content}
 // path: fullPath + name
 var nodeTxt = null;
 var nodeCurrent = null;

@@ -3,12 +3,11 @@ import keyboard from './keyboard'
 
 const controlAudio = {};
 
-let mTxt, mAudio, mVent, btns, intervals, btnPlay;
+let model, txt, audio, vent, btns, intervals, btnPlay;
 
-controlAudio.init = function({vent, txt, audio}) {
-  mTxt = txt;
-  mAudio = audio;
-  mVent = vent;
+controlAudio.init = function(_model) {
+  model = _model;
+  {txt, audio, vent} = model;
 
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
@@ -37,18 +36,18 @@ function handlerDecoded() {
       const attr = target.getAttribute('act');
       switch (attr) {
         case 'addInterval':
-          const b = mTxt.addInterval(mAudio.getInterval());
-          if (b) mAudio.nextInterval();
+          const b = txt.addInterval(audio.getInterval());
+          if (b) audio.nextInterval();
           break;
         default:
-          mAudio[attr]();
+          audio[attr]();
       }
     }
   };
 }
 
 function changeBtnPlay() {
-  if (mAudio.playing) {
+  if (audio.playing) {
     btnPlay.innerHTML = 'Stop';
   } else {
     btnPlay.innerHTML = 'Play';
@@ -59,11 +58,11 @@ function changeStateEdit({stateEdit, _from, _to}) {
   if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
-    mAudio.nextInterval();
+    audio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
-    mAudio.gotoInterval(_from, _to);
+    audio.gotoInterval(_from, _to);
   }
 }
 

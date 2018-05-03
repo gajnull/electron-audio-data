@@ -14,12 +14,12 @@ const vent = new Vent({
   changeStateAudio: []
 });
 
+modelTxt.setVent(vent);
+
 const model = {
   vent,
   audio: new ModelAudio(vent),
   txt: modelTxt
 }
-
-modelTxt.setVent(vent);
 
 export default model;

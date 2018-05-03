@@ -6,7 +6,7 @@ const modelTxt = {};
 let vent;
 
 const subfolder = 'target';
-let file = null;       // {name, path, size, content}
+let file = {};       // {name, path, size, content}
                       // path: fullPath + name
 let nodeTxt = null;
 let nodeCurrent = null;
