@@ -1,16 +1,18 @@
 import keyboard from './keyboard';
 
 const areaTxt = {};
-let model, area
+let mTxt, mAudio, mVent, area
 
 
-areaTxt.init = function(_model) {
-  model = _model;
-
+areaTxt.init = function({vent, txt, audio}) {
   area = document.getElementById('txt');
-  model.setArea(area);
 
-  ////model.on('loadedLngt', setPozAudio);
+  mVent = vent;
+  mTxt = txt;
+  mTxt.setRoot(area);
+  mAudio = audio;
+
+  mVent.on('loadedLngt', setPozAudio);
   //mAudio.on('addInterval', addInterval)
 
   keyboard('arrowRight', addSelection);
@@ -20,28 +22,28 @@ areaTxt.init = function(_model) {
 
 areaTxt.close = function() {
   //mAudio.off('addInterval', addInterval)
-  ////model.off('loadedLngt', setPozAudio);
+  mVent.off('loadedLngt', setPozAudio);
 
   keyboard('arrowRight', () => {});
   keyboard('arrowLeft', () => {});
   keyboard('tab', () => {});
 };
 
-// function setPozAudio({poz}) {
-//   mAudio.setStartPoz(poz);
-// }
+function setPozAudio({poz}) {
+  mAudio.setStartPoz(poz);
+}
 
 //////////////////////////
 function addSelection() {
-  model.fnTxt('addSelection');
+  mTxt.addSelection()
 }
 
 function reduceSelection() {
-  model.fnTxt('reduceSelection');
+  mTxt.reduceSelection()
 }
 
 function toogleState() {
-  model.toogleState()
+  mTxt.toogleState()
 }
 
 

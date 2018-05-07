@@ -224,24 +224,16 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])
 
 
 var areaTxt = {};
-var mTxt = void 0,
-    mAudio = void 0,
-    mVent = void 0,
+var model = void 0,
     area = void 0;
 
-areaTxt.init = function (_ref) {
-  var vent = _ref.vent,
-      txt = _ref.txt,
-      audio = _ref.audio;
+areaTxt.init = function (_model) {
+  model = _model;
 
   area = document.getElementById('txt');
+  model.setArea(area);
 
-  mVent = vent;
-  mTxt = txt;
-  mTxt.setRoot(area);
-  mAudio = audio;
-
-  mVent.on('loadedLngt', setPozAudio);
+  ////model.on('loadedLngt', setPozAudio);
   //mAudio.on('addInterval', addInterval)
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', addSelection);
@@ -251,30 +243,28 @@ areaTxt.init = function (_ref) {
 
 areaTxt.close = function () {
   //mAudio.off('addInterval', addInterval)
-  mVent.off('loadedLngt', setPozAudio);
+  ////model.off('loadedLngt', setPozAudio);
 
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowRight', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('arrowLeft', function () {});
   __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__keyboard__["a" /* default */])('tab', function () {});
 };
 
-function setPozAudio(_ref2) {
-  var poz = _ref2.poz;
-
-  mAudio.setStartPoz(poz);
-}
+// function setPozAudio({poz}) {
+//   mAudio.setStartPoz(poz);
+// }
 
 //////////////////////////
 function addSelection() {
-  mTxt.addSelection();
+  model.fnTxt('addSelection');
 }
 
 function reduceSelection() {
-  mTxt.reduceSelection();
+  model.fnTxt('reduceSelection');
 }
 
 function toogleState() {
-  mTxt.toogleState();
+  model.toogleState();
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (areaTxt);
@@ -697,7 +687,7 @@ function showChangedPoz(_ref2) {
 
 
 
-var vent = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
+var model = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
   //lngt events
   loadedLngt: [],
   savedLngt: [],
@@ -708,17 +698,19 @@ var vent = new __WEBPACK_IMPORTED_MODULE_0__Vent__["a" /* default */]({
   changeStateAudio: []
 });
 
-__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setVent(vent);
-var audio = new __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */](vent);
+//modelTxt.setVent(vent);
+//const audio = new ModelAudio(vent);
 
-var model = {
-  vent: vent,
-  audio: audio,
-  txt: __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */]
+model.setArea = function (area) {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
+};
+
+model.fnTxt = function (action) {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action]();
 };
 
 model.toogleState = function () {
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].toogleState();
+  //modelTxt.toogleState();
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
@@ -963,7 +955,7 @@ var ModelAudio = function () {
   return ModelAudio;
 }();
 
-/* harmony default export */ __webpack_exports__["a"] = (ModelAudio);
+/* unused harmony default export */ var _unused_webpack_default_export = (ModelAudio);
 
 /***/ }),
 /* 12 */
@@ -990,9 +982,9 @@ var nodeLast = null;
 var stateEdit = 'add interval'; // 'delete interval'
 
 
-modelTxt.setVent = function (_vent) {
-  vent = _vent;
-};
+// modelTxt.setVent = (_vent) => {
+//   vent = _vent;
+// }
 
 // установка
 modelTxt.setRoot = function (root) {

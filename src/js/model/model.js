@@ -3,7 +3,7 @@ import Vent from './Vent';
 import ModelAudio from './modelAudio';
 import modelTxt from './modelTxt';
 
-const vent = new Vent({
+const model = new Vent({
   //lngt events
   loadedLngt: [],
   savedLngt: [],
@@ -14,17 +14,15 @@ const vent = new Vent({
   changeStateAudio: []
 });
 
-modelTxt.setVent(vent);
-const audio = new ModelAudio(vent);
+//modelTxt.setVent(vent);
+//const audio = new ModelAudio(vent);
 
-const model = {
-  vent,
-  audio,
-  txt: modelTxt
-}
+model.setArea = (area) => { modelTxt.setRoot(area) };
+
+model.fnTxt = (action) => { modelTxt[action]() };
 
 model.toogleState = () => {
-  modelTxt.toogleState();
+  //modelTxt.toogleState();
 }
 
 export default model;

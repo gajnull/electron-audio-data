@@ -15,9 +15,9 @@ let nodeLast = null;
 let stateEdit = 'add interval';  // 'delete interval'
 
 
-modelTxt.setVent = (_vent) => {
-  vent = _vent;
-}
+// modelTxt.setVent = (_vent) => {
+//   vent = _vent;
+// }
 
 // установка
 modelTxt.setRoot = (root) => {
