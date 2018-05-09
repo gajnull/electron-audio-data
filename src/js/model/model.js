@@ -14,6 +14,8 @@ const model = new Vent({
   changeStateAudio: []
 });
 
+let stateEdit = 'add';  // 'delete'
+
 //modelTxt.setVent(vent);
 //const audio = new ModelAudio(vent);
 

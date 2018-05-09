@@ -2,8 +2,8 @@ import Vent from './Vent'
 import webAudioAPI from './webAudioAPI'
 
 export default class ModelAudio {
-  constructor(_vent) {
-    this.vent = _vent;
+  constructor(/*_vent*/) {
+    //this.vent = _vent;
 
     this.file = { // пока не используется
       name: null,
