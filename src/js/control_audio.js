@@ -3,67 +3,68 @@ import keyboard from './keyboard'
 
 const controlAudio = {};
 
-let model, txt, audio, vent, btns, intervals, btnPlay;
+let model, btns, intervals, btnPlay;
 
 controlAudio.init = function(_model) {
   model = _model;
-  let {txt, audio, vent} = model; // let нужен по синтаксу es6
+  //let {txt, audio, vent} = model; // let нужен по синтаксу es6
 
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
-  vent.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
-  vent.on('decodedAudio', handlerDecoded);
-  vent.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+  model.on('changeStateEdit', changeStateEdit);  //меняем набор кнопок
+  model.on('decodedAudio', handlerDecoded);
+  model.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
 controlAudio.close = function() {
-  vent.off('decodedAudio', handlerDecoded);
-  vent.off('changeStateAudio', changeBtnPlay);
-  vent.off('changeStateEdit', changeStateEdit);
+  model.off('decodedAudio', handlerDecoded);
+  model.off('changeStateAudio', changeBtnPlay);
+  model.off('changeStateEdit', changeStateEdit);
   keyboard('space', () => {});
   btns.onclick = '';
   btns = null;
 }
 
 function handlerDecoded() {
-  keyboard('space', () => { mAudio.tooglePlay() });
+  keyboard('space', () => { model.tooglePlay() });
   btns.onclick = function(event) {
     const target = event.target
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      switch (attr) {
-        case 'addInterval':
-          const b = txt.addInterval(audio.getInterval());
-          if (b) audio.nextInterval();
-          break;
-        default:
-          audio[attr]();
-      }
+      model.fnAudio(attr);
+      // switch (attr) {
+      //   case 'addInterval':
+      //     const b = txt.addInterval(audio.getInterval());
+      //     if (b) audio.nextInterval();
+      //     break;
+      //   default:
+      //     audio[attr]();
+      // }
     }
   };
 }
 
-function changeBtnPlay() {
-  if (audio.playing) {
+function changeBtnPlay({ playing }) {
+  if (playing) {
     btnPlay.innerHTML = 'Stop';
   } else {
     btnPlay.innerHTML = 'Play';
   }
 }
 
-function changeStateEdit({stateEdit, _from, _to}) {
+function changeStateEdit({ stateEdit }) {
   if (stateEdit === 'add interval') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
-    audio.nextInterval();
+    //audio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
-    audio.gotoInterval(_from, _to);
+    //audio.gotoInterval(_from, _to);
   }
 }
 
-export default controlAudio
+export default controlAudio;

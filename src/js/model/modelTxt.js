@@ -126,23 +126,41 @@ modelTxt.addInterval = ({ pozFrom, pozTo }) => {
 }
 
 // изменение состояния
-modelTxt.toogleState = () => {
+
+// modelTxt.toogleState = () => {
+//   let _from, _to;   // from - показывает ключевое слово
+//   if (stateEdit === 'delete interval') {
+//     nodeLast.removeAttribute('id');
+//     nodeLast = null;
+//     stateEdit = 'add interval';
+//   } else {
+//     if (!nodeSelection) return;
+//     nodeLast = nodeSelection.previousElementSibling;
+//     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
+//     _from = nodeLast.getAttribute('from');
+//     _to = nodeLast.getAttribute('to');
+//     nodeLast.id = 'last-txt';
+//     cleareSelection();
+//     stateEdit = 'delete interval';
+//   }
+//   vent.publish('changeStateEdit', {stateEdit, _from, _to});
+// }
+
+modelTxt.gotoToAdd = () => {
+  nodeLast.removeAttribute('id');
+  nodeLast = null;
+}
+
+modelTxt.gotoToDelete = () => {
   let _from, _to;   // from - показывает ключевое слово
-  if (stateEdit === 'delete interval') {
-    nodeLast.removeAttribute('id');
-    nodeLast = null;
-    stateEdit = 'add interval';
-  } else {
-    if (!nodeSelection) return;
-    nodeLast = nodeSelection.previousElementSibling;
-    if(!nodeLast || !nodeLast.hasAttribute('from')) return;
-    _from = nodeLast.getAttribute('from');
-    _to = nodeLast.getAttribute('to');
-    nodeLast.id = 'last-txt';
-    cleareSelection();
-    stateEdit = 'delete interval';
-  }
-  vent.publish('changeStateEdit', {stateEdit, _from, _to});
+  if (!nodeSelection) return;
+  nodeLast = nodeSelection.previousElementSibling;
+  if(!nodeLast || !nodeLast.hasAttribute('from')) return;
+  _from = nodeLast.getAttribute('from');
+  _to = nodeLast.getAttribute('to');
+  nodeLast.id = 'last-txt';
+  cleareSelection();
+  return { _from, _to };
 }
 
 function cleareSelection() {
@@ -153,7 +171,6 @@ function cleareSelection() {
     nodeSelection.innerHTML = '';
   }
 }
-
 
 
 export default modelTxt;

@@ -22,10 +22,10 @@ export default class ModelAudio {
   }
 
   decode(rawData) {
-    this.playing = false;
+    // this.playing = false;
 
-    this.timer = null;
-    this.timerStop = null;
+    // this.timer = null;
+    // this.timerStop = null;
 
     this.api.decode(rawData, decodedAudio.bind(this));
 
@@ -37,47 +37,33 @@ export default class ModelAudio {
 
   }
 
-  changePoz() {
-    this.vent.publish('changedPoz', { pozMin: this.pozMin,
-                                  duration: this.duration,
-                                  pozCurrent: this.pozCurrent,
-                                  pozFrom: this.pozFrom,
-                                  pozTo: this.pozTo })
+  endedTrack() {
+    return (this.pozCurrent > this.duration);
+  }
+
+  getPoz(updatePoz = false) {
+    if (updatePoz) this.pozCurrent = this.api.getCurrentPoz();
+    return {
+      pozMin: this.pozMin,
+      duration: this.duration,
+      pozCurrent: this.pozCurrent,
+      pozFrom: this.pozFrom,
+      pozTo: this.pozTo
+    };
   }
 
 ///// проигрывание/остановка
-  tooglePlay() { //проигрываем с момента остановки
-    if (this.playing) {
-      this.stop()
-    } else {
-      this.play()
-    }
-  }
-
   play() {
     this.api.play(this.pozCurrent)
-    this.playing = true
-    this.vent.publish('changeStateAudio')
-    this.timer = setInterval(() => {
-                  this.pozCurrent = this.api.getCurrentPoz()
-                  if(this.pozCurrent > this.duration) this.stop()
-                  this.changePoz()
-                }, 100)
   }
 
   stop() {
-    if(!this.playing) return; //не должно быть
     this.pozCurrent = this.api.stop()
-    this.playing = false
-    this.vent.publish('changeStateAudio')
     if(this.pozCurrent > this.duration) this.pozCurrent = this.duration //не должно быть - может превысить на доли секунды
-    clearInterval(this.timer)
-    if (this.timerStop) { clearTimeout(this.timerStop) }
-    this.changePoz()
   }
 
   repeate() { //проигрываем выбранный отрезок
-    if(this.playing) return;
+    //if(this.playing) return;
     this.pozCurrent = this.pozFrom;
     this.play();
     this.playing = true;
@@ -87,7 +73,7 @@ export default class ModelAudio {
 
 // внесение в текстовой файл выбранный интервал
   getInterval() {
-    if(this.playing) return;
+    //if(this.playing) return;
     return { pozFrom: this.pozFrom, pozTo: this.pozTo };
   }
   nextInterval() {
@@ -96,7 +82,7 @@ export default class ModelAudio {
   }
 
 // установка аудиоинтервала
-  gotoInterval(_from, _to) {
+  gotoInterval({ _from, _to }) {
     this.pozMin = this.pozCurrent = this.pozFrom = +_from;
     this.pozTo = +_to;
     this.changePoz();
