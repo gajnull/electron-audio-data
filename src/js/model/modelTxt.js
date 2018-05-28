@@ -1,9 +1,6 @@
-import Vent from './Vent'
 const {ipcRenderer} = window.require('electron')
 
 const modelTxt = {};
-
-let vent;
 
 const subfolder = 'target';
 let file = {};       // {name, path, size, content}
@@ -15,18 +12,14 @@ let nodeLast = null;
 let stateEdit = 'add interval';  // 'delete interval'
 
 
-// modelTxt.setVent = (_vent) => {
-//   vent = _vent;
-// }
-
 // установка
 modelTxt.setRoot = (root) => {
-  nodeTxt = root
+  nodeTxt = root;
 }
 
 modelTxt.setLoadedFile = ({name, path, size, content}) => {
-  nodeTxt.innerHTML = content
-  nodeSelection = nodeTxt.querySelector('#selection-txt')  // метод getElementById есть только у document
+  nodeTxt.innerHTML = content;
+  nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
   let poz = 0;
   const span = nodeSelection.previousElementSibling;
@@ -34,35 +27,34 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
-  vent.publish('loadedLngt' , file); //почему-то this здесь не работает ??????
-}
+s}
 
 // Сохранение файла
 modelTxt.save = (nameLngt) => {
   if (!nodeTxt || !file) return;
-  let content = nodeTxt.innerHTML
+  let content = nodeTxt.innerHTML;
   if (!content) return;
   if (stateEdit === 'delete interval') modelTxt.toogleState();
 
-  cleareSelection()
-  content = nodeTxt.innerHTML
-  const name = nameLngt + '.lngt'
-  const path = subfolder + '/' + name
-  const lngt = {name,  path, content}
-  file.temp = {name, path}
-  ipcRenderer.send('will-save-file', lngt)
+  cleareSelection();
+  content = nodeTxt.innerHTML;
+  const name = nameLngt + '.lngt';
+  const path = subfolder + '/' + name;
+  const lngt = {name,  path, content};
+  file.temp = {name, path};
+  ipcRenderer.send('will-save-file', lngt);
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    const {name, path} = file.temp
+    const {name, path} = file.temp;
     if (arg) {
-      console.log('error in saving:')  // in arg i send err
-      console.log(arg)
+      console.log('error in saving:');  // in arg i send err
+      console.log(arg);
       return;
     }
-    localStorage.setItem('name-lngt', name) //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path)
-    vent.publish('savedLngt', {name, path})
+    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+    localStorage.setItem('path-lngt', path);
+    //vent.publish('savedLngt', {name, path})
   });
 
 // Восстановление файла
@@ -75,8 +67,8 @@ modelTxt.restore = () => {
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
-    const {name, path} = file.temp
-    modelTxt.setLoadedFile({name, path, content: arg, size: file.size})
+    const {name, path} = file.temp;
+    modelTxt.setLoadedFile({name, path, content: arg, size: file.size});
   })
 
 // Изменение области выделения

@@ -1,5 +1,4 @@
-import Vent from './Vent'
-import webAudioAPI from './webAudioAPI'
+import webAudioAPI from './webAudioAPI';
 
 export default class ModelAudio {
   constructor(/*_vent*/) {
@@ -22,19 +21,14 @@ export default class ModelAudio {
   }
 
   decode(rawData) {
-    // this.playing = false;
-
-    // this.timer = null;
-    // this.timerStop = null;
 
     this.api.decode(rawData, decodedAudio.bind(this));
 
     function decodedAudio(duration) {
       this.duration = duration;
-      this.vent.publish('decodedAudio');
-      this.changePoz();
+      //this.vent.publish('decodedAudio');
+      //this.changePoz();
     }
-
   }
 
   endedTrack() {
@@ -53,9 +47,7 @@ export default class ModelAudio {
   }
 
 ///// проигрывание/остановка
-  play() {
-    this.api.play(this.pozCurrent)
-  }
+  play() { this.api.play(this.pozCurrent) }
 
   stop() {
     this.pozCurrent = this.api.stop()
@@ -63,62 +55,42 @@ export default class ModelAudio {
   }
 
   repeate() { //проигрываем выбранный отрезок
-    //if(this.playing) return;
     this.pozCurrent = this.pozFrom;
     this.play();
-    this.playing = true;
-    const period = (this.pozTo - this.pozFrom) * 1000;
-    this.timerStop = setTimeout(() => { this.stop() }, period);
+    //this.playing = true;
+    //const period = (this.pozTo - this.pozFrom) * 1000;
+    //this.timerStop = setTimeout(() => { this.stop() }, period);
   }
 
 // внесение в текстовой файл выбранный интервал
-  getInterval() {
-    //if(this.playing) return;
-    return { pozFrom: this.pozFrom, pozTo: this.pozTo };
-  }
+  // getInterval() {
+  //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
+  // }
   nextInterval() {
     this.pozMin = this.pozFrom = this.pozCurrent = this.pozTo;
-    this.changePoz();
   }
 
 // установка аудиоинтервала
-  gotoInterval({ _from, _to }) {
+  assignInterval({ _from, _to }) {
     this.pozMin = this.pozCurrent = this.pozFrom = +_from;
     this.pozTo = +_to;
-    this.changePoz();
   }
 
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
-  gotoStart() {
-    if(this.playing) return;
-    this.pozCurrent = this.pozMin;
-    this.changePoz();
-  }
-
-  gotoFrom() {
-    if(this.playing) return;
-    this.pozCurrent = this.pozFrom
-    this.changePoz()
-  }
-
-  gotoTo() {
-    if(this.playing) return;
-    this.pozCurrent = this.pozTo
-    this.changePoz()
-  }
+  gotoStart() { this.pozCurrent = this.pozMin; }
+  gotoFrom() { this.pozCurrent = this.pozFrom; }
+  gotoTo() { this.pozCurrent = this.pozTo; }
 
 //// установка и изменение позицй от и до
   fromMoveBack() {
     let newPoz = Math.round((this.pozFrom - this.delta) * 10) / 10;
     if(newPoz < this.pozMin) { newPoz = this.pozMin; } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
     this.pozFrom = newPoz;
-    this.changePoz();
   }
 
   fromSet() {
     this.pozFrom = + this.pozCurrent.toFixed(1);
     if (this.pozTo < this.pozFrom) this.pozTo = this.pozFrom;
-    this.changePoz();
   }
 
   fromMoveForward() {
@@ -126,38 +98,31 @@ export default class ModelAudio {
     if (newPoz > this.duration) { newPoz = this.duration }
     this.pozFrom = newPoz
     if (this.pozFrom > this.pozTo) this.pozTo = this.pozFrom
-    this.changePoz()
   }
 
 
   toMoveBack() {
-    if(this.playing) return;
-    let newPoz = Math.round((this.pozTo - this.delta) * 10) / 10
+    let newPoz = Math.round((this.pozTo - this.delta) * 10) / 10;
     if(newPoz < this.pozMin) { newPoz = this.pozMin } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
-    this.pozTo = newPoz
-    if (this.pozTo < this.pozFrom) this.pozFrom = this.pozTo
-    this.changePoz()
+    this.pozTo = newPoz;
+    if (this.pozTo < this.pozFrom) this.pozFrom = this.pozTo;
   }
 
   toSet() {
-    //if(this.playing) return;
-    this.stop();  // this working only if this.playing = true
+    this.stop();  // this working only if model.playing = true
     this.pozTo =  + this.pozCurrent.toFixed(1);
     if (this.pozFrom > this.pozTo) this.pozFrom = this.pozTo;
-    this.changePoz();
   }
 
   toMoveForward() {
     if(this.playing) return;
-    let newPoz = Math.round((this.pozTo + this.delta) * 10) / 10
+    let newPoz = Math.round((this.pozTo + this.delta) * 10) / 10;
     if (newPoz > this.duration) { newPoz = this.duration }
-    this.pozTo = newPoz
-    this.changePoz()
+    this.pozTo = newPoz;
   }
 
   setStartPoz(poz) {
     this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = +poz;
-    //this.changePoz(); звуковой файл ещё может быть не загружен
   }
 
 }

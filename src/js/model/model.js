@@ -19,28 +19,35 @@ let playing = false;
 let timer = null;
 let timerStop = null;
 
-
 const audio = new ModelAudio();
 
 model.setArea = (area) => { modelTxt.setRoot(area) }
 
 model.fnTxt = (action) => { modelTxt[action]() }
+
 model.fnAudio = (action) => {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
       break;
     default:
-      audio[action]();
+      if(!playing) audio[action]();
   }
-  model.publish('changedPoz', audio.getPoz());
+  const pozz = audio.getPoz();
+  model.publish('changedPoz', pozz);
 }
 
+model.setLoadedFile(file) {
+  modelTxt.setLoadedFile(file);
+  model.publish('loadedLngt', file);
+}
+
+
 model.toogleState = () => {
-  let interval;   // from - показывает ключевое слово
   if (stateEdit === 'add') {
-    interval = modelTxt.gotoToDelete();
-    audio.gotoInterval(interval);
+    const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
+    if(!interval) return;
+    audio.assignInterval(interval);
     stateEdit = 'delete';
   } else {
     modelTxt.gotoToAdd();

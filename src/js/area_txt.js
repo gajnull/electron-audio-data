@@ -1,7 +1,7 @@
 import keyboard from './keyboard';
 
 const areaTxt = {};
-let model, area
+let model, area;
 
 
 areaTxt.init = function(_model) {
