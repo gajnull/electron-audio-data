@@ -5,7 +5,7 @@ const modelTxt = {};
 const subfolder = 'target';
 let file = {};       // {name, path, size, content}
                       // path: fullPath + name
-let nodeTxt = null;
+let nodeTxt = null;   // весь элемент
 let nodeCurrent = null;
 let nodeSelection = null;
 let nodeLast = null;
@@ -23,18 +23,17 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeCurrent = nodeTxt.querySelector('#current-txt');
   let poz = 0;
   const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
+  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
-s}
+}
 
 // Сохранение файла
 modelTxt.save = (nameLngt) => {
   if (!nodeTxt || !file) return;
   let content = nodeTxt.innerHTML;
   if (!content) return;
-  if (stateEdit === 'delete interval') modelTxt.toogleState();
 
   cleareSelection();
   content = nodeTxt.innerHTML;
@@ -117,26 +116,6 @@ modelTxt.addInterval = ({ pozFrom, pozTo }) => {
   return true;
 }
 
-// изменение состояния
-
-// modelTxt.toogleState = () => {
-//   let _from, _to;   // from - показывает ключевое слово
-//   if (stateEdit === 'delete interval') {
-//     nodeLast.removeAttribute('id');
-//     nodeLast = null;
-//     stateEdit = 'add interval';
-//   } else {
-//     if (!nodeSelection) return;
-//     nodeLast = nodeSelection.previousElementSibling;
-//     if(!nodeLast || !nodeLast.hasAttribute('from')) return;
-//     _from = nodeLast.getAttribute('from');
-//     _to = nodeLast.getAttribute('to');
-//     nodeLast.id = 'last-txt';
-//     cleareSelection();
-//     stateEdit = 'delete interval';
-//   }
-//   vent.publish('changeStateEdit', {stateEdit, _from, _to});
-// }
 
 modelTxt.gotoToAdd = () => {
   nodeLast.removeAttribute('id');

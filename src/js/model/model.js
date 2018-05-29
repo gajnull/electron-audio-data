@@ -19,11 +19,11 @@ let playing = false;
 let timer = null;
 let timerStop = null;
 
-const audio = new ModelAudio();
+/////////const audio = new ModelAudio();
 
-model.setArea = (area) => { modelTxt.setRoot(area) }
+model.setArea = (area) => { modelTxt.setRoot(area); }
 
-model.fnTxt = (action) => { modelTxt[action]() }
+model.fnTxt = (action, args) => { modelTxt[action](args); }
 
 model.fnAudio = (action) => {
   switch (action) {
@@ -37,9 +37,15 @@ model.fnAudio = (action) => {
   model.publish('changedPoz', pozz);
 }
 
-model.setLoadedFile(file) {
+model.setLoadedFile = (file) => {
   modelTxt.setLoadedFile(file);
   model.publish('loadedLngt', file);
+}
+
+model.save = (name) => {
+  if (stateEdit === 'delete') model.toogleState();
+  modelTxt.save(name);
+  model.publish('savedLngt', {stateEdit});
 }
 
 
@@ -70,7 +76,7 @@ function tooglePlay() {
     audio.play();
     playing = true;
     timer = setInterval(() => {
-      model.publish('changedPoz', () => audio.getPoz(true);)
+      model.publish('changedPoz', audio.getPoz(true));
       if (audio.endedTrack()) stopAudio();
     }, 100);
   }
@@ -78,7 +84,7 @@ function tooglePlay() {
   function stopAudio() {
     audio.stop();
     playing = false;
-    model.publish('changedPoz', () => audio.getPoz(true);)  //может это лишнее
+    model.publish('changedPoz', audio.getPoz(true))  //может это лишнее
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
   }

@@ -5,11 +5,11 @@
   генерирует событие получения контента текстового файл
 *****************************************************************/
 
-const fileTxt = {}
+const fileTxt = {};
 
 let model,
     btn,
-    input
+    input;
 
 fileTxt.init = function(_model) {
   model = _model;
@@ -23,14 +23,14 @@ fileTxt.init = function(_model) {
 }
 
 fileTxt.close = function() {
-  btn.removeEventListener('click', clickInput)
-  input.removeEventListener('change', choosedFile)
-  model.off('loadedLngt', setInfoLodedLngt)
-  model.on('savedLngt', setInfoLodedLngt) // 'savedLngt' нельзя объеденить с 'loadedLngt'
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  model.off('loadedLngt', setInfoLodedLngt);
+  model.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
 }                                         // так как на loadedLngt меняется содержимое текста
 
 function clickInput() {
-  input.click()
+  input.click();
 }
 
 function choosedFile() {
