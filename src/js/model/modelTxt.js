@@ -1,3 +1,4 @@
+import vent from './vent';
 const {ipcRenderer} = window.require('electron')
 
 const modelTxt = {};

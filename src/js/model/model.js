@@ -1,18 +1,9 @@
 //export const something = 'test'
-import Vent from './Vent';
+import vent from './vent';
 import ModelAudio from './modelAudio';
 import modelTxt from './modelTxt';
 
-const model = new Vent({
-  //lngt events
-  loadedLngt: [],
-  savedLngt: [],
-  changeStateEdit: [],
-  //audio events
-  decodedAudio: [],
-  changedPoz: [],
-  changeStateAudio: []
-});
+const model = {};
 
 let stateEdit = 'add';  // 'delete'
 let playing = false;
@@ -45,7 +36,7 @@ model.setLoadedFile = (file) => {
 model.save = (name) => {
   if (stateEdit === 'delete') model.toogleState();
   modelTxt.save(name);
-  model.publish('savedLngt', {stateEdit});
+  //vent.publish('savedLngt', {stateEdit});
 }
 
 
@@ -60,7 +51,7 @@ model.toogleState = () => {
     audio.nextInterval();
     stateEdit = 'add';
   }
-  model.publish('changeStateEdit', {stateEdit});
+  vent.publish('changeStateEdit', {stateEdit});
 }
 
 function tooglePlay() {
@@ -69,14 +60,14 @@ function tooglePlay() {
   } else {
     stopAudio();
   }
-  model.publish('changeStateAudio', { playing });
+  vent.publish('changeStateAudio', { playing });
 }
 
   function playAudio() {
     audio.play();
     playing = true;
     timer = setInterval(() => {
-      model.publish('changedPoz', audio.getPoz(true));
+      vent.publish('changedPoz', audio.getPoz(true));
       if (audio.endedTrack()) stopAudio();
     }, 100);
   }
@@ -84,7 +75,7 @@ function tooglePlay() {
   function stopAudio() {
     audio.stop();
     playing = false;
-    model.publish('changedPoz', audio.getPoz(true))  //может это лишнее
+    vent.publish('changedPoz', audio.getPoz(true))  //может это лишнее
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
   }
