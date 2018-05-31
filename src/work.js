@@ -2,8 +2,6 @@ import './scss/style.scss'
 
 import hotKeys from './js/keyboard'
 
-import model from './js/model/model';
-
 //import modelTxt from './js/model/modelTxt'
 import fileTxt from './js/file_txt'
 import areaTxt from './js/area_txt'
@@ -18,12 +16,12 @@ export default function work() {
 
   hotKeys.init();
 
-  fileTxt.init(model);
-  areaTxt.init(model);
-  fileEnd.init(model);
+  fileTxt.init();
+  areaTxt.init();
+  fileEnd.init();
 
-  fileAudio.init(model);
-  controlAudio.init(model);
-  infoTiming.init(model);
+  fileAudio.init();
+  controlAudio.init();
+  infoTiming.init();
 
 }

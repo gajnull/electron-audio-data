@@ -1,14 +1,12 @@
-//export const something = 'test'
-const fileEnd = {}
+//управление сохранением и восстановлением текстового файла .lngt
+import model from './model/model';
 
-let model,
-    nameEnd,
+const fileEnd = {};
+
+let nameEnd,
     btnSave, btnRestore;
-    //progress,
 
-fileEnd.init = function(_model) {
-  model = _model;
-
+fileEnd.init = function() {
   nameEnd = document.getElementById('name-lngt');
   btnSave = document.querySelector('#file-end button[act=save]');
   btnRestore = document.querySelector('#file-end button[act=restore]');

@@ -1,14 +1,11 @@
-
-import keyboard from './keyboard'
+import model from './model/model';
+import keyboard from './keyboard';
 
 const controlAudio = {};
 
-let model, btns, intervals, btnPlay;
+let btns, intervals, btnPlay;
 
-controlAudio.init = function(_model) {
-  model = _model;
-  //let {txt, audio, vent} = model; // let нужен по синтаксу es6
-
+controlAudio.init = function() {
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');

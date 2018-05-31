@@ -1,9 +1,9 @@
+import model from './model/model';
 const infoTiming = {};
 
-let model, info;
+let info;
 
-infoTiming.init = function(_model) {
-  model = _model;
+infoTiming.init = function() {
   model.on('changedPoz', showChangedPoz);
   info = document.getElementById('info');
 }

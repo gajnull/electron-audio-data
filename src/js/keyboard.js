@@ -1,6 +1,6 @@
-export default setHotKey
+export default setHotKey;
 
-let evs //var чтобы не было ошибки при повторной встрече
+let evs; //var чтобы не было ошибки при повторной встрече
 
 const keyCodes = {
   37: 'arrowLeft',    // <- влево
@@ -11,7 +11,7 @@ const keyCodes = {
 
 setHotKey.init = function() {
   if (evs) {
-    console.warn('setHotKey инициализирована')
+    console.warn('setHotKey инициализирована');
     return;
   }
   evs = {
@@ -24,16 +24,16 @@ setHotKey.init = function() {
 
 function setHotKey(hotKey, fn) {
   if (!evs) {
-    console.warn('setHotKey неинициализирована')
+    console.warn('setHotKey неинициализирована');
     return;
   }
-  evs[hotKey] = fn
+  evs[hotKey] = fn;
 }
 
 function keyboardHandler(ev) {
   //console.log(ev.keyCode);
-  const fn = keyCodes[ev.keyCode]
+  const fn = keyCodes[ev.keyCode];
   if (fn) {
-    evs[fn]()
+    evs[fn]();
    }
 }

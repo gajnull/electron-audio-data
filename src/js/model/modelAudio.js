@@ -38,15 +38,15 @@ const modelAudio = {
     return {
       pozMin, pozCurrent, duration, pozFrom, pozTo,
     };
-  }
+  },
 
 ///// проигрывание/остановка
-  play() { api.play(pozCurrent) }
+  play() { api.play(pozCurrent) },
 
   stop() {
     pozCurrent = api.stop()
     if(pozCurrent > duration) pozCurrent = duration //не должно быть - может превысить на доли секунды
-  }
+  },
 
   repeate() { //проигрываем выбранный отрезок
     pozCurrent = pozFrom;
@@ -54,7 +54,7 @@ const modelAudio = {
     //this.playing = true;
     //const period = (this.pozTo - this.pozFrom) * 1000;
     //this.timerStop = setTimeout(() => { this.stop() }, period);
-  }
+  },
 
 // внесение в текстовой файл выбранный интервал
   // getInterval() {

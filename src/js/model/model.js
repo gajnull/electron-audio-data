@@ -3,14 +3,15 @@ import vent from './vent';
 import ModelAudio from './modelAudio';
 import modelTxt from './modelTxt';
 
-const model = {};
+const model = {
+  on: vent.on, // в vent.on this не используется
+  off: vent.off
+};
 
 let stateEdit = 'add';  // 'delete'
 let playing = false;
 let timer = null;
 let timerStop = null;
-
-/////////const audio = new ModelAudio();
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
@@ -25,12 +26,12 @@ model.fnAudio = (action) => {
       if(!playing) audio[action]();
   }
   const pozz = audio.getPoz();
-  model.publish('changedPoz', pozz);
+  vent.publish('changedPoz', pozz);
 }
 
 model.setLoadedFile = (file) => {
   modelTxt.setLoadedFile(file);
-  model.publish('loadedLngt', file);
+  vent.publish('loadedLngt', file);
 }
 
 model.save = (name) => {

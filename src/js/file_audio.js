@@ -1,17 +1,13 @@
 /****************************************************************
   во внешнем модуле используется fileAudio.init(model) и
   fileAudio.close(model)
-
 *****************************************************************/
+import model from './model/model';
+const fileAudio = {};
 
-const fileAudio = {}
+let btn, input;
 
-let model,
-    btn,
-    input
-
-fileAudio.init = function({audio}) {
-  model = audio;
+fileAudio.init = function() {
   btn = document.getElementById('file-audio');
   input = document.getElementById('input-audio');
 
@@ -25,35 +21,29 @@ fileAudio.close = function() {
 }
 
 function clickInput() {
-  input.click()
+  input.click();
 }
 
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
-  const file = input.files[0]
-  const path = file.path
-  const name = file.name
+  const file = input.files[0];
+  const path = file.path;
+  const name = file.name;
 
-  btn.innerHTML = file.name
-  btn.setAttribute('title', path)
+  btn.innerHTML = file.name;
+  btn.setAttribute('title', path);
 
-  const reader = new FileReader()
+  const reader = new FileReader();
   reader.readAsArrayBuffer(file);
 /*
   reader.onloadstart = startProgress
   reader.onprogress = updateProgress
   */
-  reader.onload = loaded
-  reader.onerror = errorHandler
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
 
 /*
-  function startProgress(ev) {
-    progress.style.display = 'block'
-    setWidthProgress(0)
-  }
-
   function updateProgress(ev) {
-    //console.log(ev.loaded)
     if (ev.lengthComputable) {
       var loaded = (ev.loaded / ev.total)
       if (loaded < 1) {
@@ -67,20 +57,19 @@ function choosedFile() {
 
   function loaded(ev) {
     //setWidthProgress(0)
-    model.file = {name, path, size: file.size}
-    model.decode(ev.target.result)
+    model.file = {name, path, size: file.size};
+    model.decode(ev.target.result);
 /*    model.decode(ev.target.result, function(duration) {
       model.file = {name, path, size: file.size}
       model.duration = duration
       model.publish('decodedAudio')
-      //model.changePoz()
     })
 */
   }
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {
-      path.innerHTML = 'Выберите другой звуковой файл'
+      path.innerHTML = 'Выберите другой звуковой файл';
     }
   }
 
@@ -88,11 +77,4 @@ function choosedFile() {
 
 function handleDecodedAudio(data) {}  // пока не используется (ф-ция подписчмк на декодирование)
 
-/*
-function setWidthProgress(value) {
-  const width = 20 + value * 70
-  progress.style.width = width + '%'
-}
-*/
-
-export default fileAudio
+export default fileAudio;

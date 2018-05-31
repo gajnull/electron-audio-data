@@ -1,18 +1,15 @@
 /****************************************************************
   Компонент для загрузки текстового файла.
-  во внешнем модуле используется fileTxt.init(model) и
-   fileTxt.close()
-  генерирует событие получения контента текстового файл
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
 *****************************************************************/
+import model from './model/model';
 
 const fileTxt = {};
 
-let model,
-    btn,
+let btn,
     input;
 
-fileTxt.init = function(_model) {
-  model = _model;
+fileTxt.init = function() {
   btn = document.getElementById('file-txt');
   input = document.getElementById('input-txt');
 
