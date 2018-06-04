@@ -23,7 +23,7 @@ fileTxt.close = function() {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', choosedFile);
   model.off('loadedLngt', setInfoLodedLngt);
-  model.on('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+  model.off('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
 }                                         // так как на loadedLngt меняется содержимое текста
 
 function clickInput() {
@@ -47,7 +47,6 @@ function choosedFile() {
   //reader.onprogress = updateProgress
   reader.onload = loaded;
   reader.onerror = errorHandler;
-
 
   function loaded(ev) {
     let content = ev.target.result;

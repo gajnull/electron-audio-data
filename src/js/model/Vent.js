@@ -1,25 +1,3 @@
-// export default class Vent {
-//   constructor(evs) {
-//     this.evs = evs;
-//   }
-//
-//   on(ev, fn) {
-//     this.evs[ev].push(fn);
-//   }
-//
-//   off(ev, fn) {
-//     this.evs[ev] = this.evs[ev].filter(function(fnEv) {
-//       return fnEv !== fn
-//     })
-//   }
-//
-//   publish(ev, data) {
-//     this.evs[ev].forEach(function(fnEv) {
-//       fnEv(data);
-//     })
-//   }
-// }
-
 
 const evs = {
   //lngt events
@@ -54,9 +32,9 @@ const vent = {
 
   publish(ev, data) {
     //console.log(ev); console.log(evs)
-    // if(ev !=='changedPoz') {console.log(ev); console.log(this.evs[ev]);}
+    // if(ev !=='changedPoz') {console.log(ev); console.log(evs[ev]);}
     if(ev in evs) {
-      this.evs[ev].forEach(function(fnEv) {
+      evs[ev].forEach(function(fnEv) {
         fnEv(data);
       })
     } else {

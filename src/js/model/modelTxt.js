@@ -1,16 +1,16 @@
 import vent from './vent';
-const {ipcRenderer} = window.require('electron')
+const {ipcRenderer} = window.require('electron');
 
 const modelTxt = {};
 
 const subfolder = 'target';
 let file = {};       // {name, path, size, content}
                       // path: fullPath + name
-let nodeTxt = null;   // весь элемент
-let nodeCurrent = null;
-let nodeSelection = null;
-let nodeLast = null;
-let stateEdit = 'add interval';  // 'delete interval'
+let nodeTxt = null,   // весь элемент
+    nodeCurrent = null,
+    nodeSelection = null,
+    nodeLast = null,
+    stateEdit = 'add interval';  // 'delete interval'
 
 
 // установка
@@ -47,6 +47,7 @@ modelTxt.save = (nameLngt) => {
 
   ipcRenderer.on('file-saved', (event, arg) => {
     const {name, path} = file.temp;
+    file.temp = null;
     if (arg) {
       console.log('error in saving:');  // in arg i send err
       console.log(arg);
@@ -54,15 +55,15 @@ modelTxt.save = (nameLngt) => {
     }
     localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
     localStorage.setItem('path-lngt', path);
-    //vent.publish('savedLngt', {name, path})
+    vent.publish('savedLngt', {name, path});
   });
 
 // Восстановление файла
 modelTxt.restore = () => {
-  const name = localStorage.getItem('name-lngt')
-  const path = localStorage.getItem('path-lngt')
+  const name = localStorage.getItem('name-lngt');
+  const path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
-  file.temp = {name, path}
+  file.temp = {name, path};
   ipcRenderer.send('will-restore-file', {path});
 }
 

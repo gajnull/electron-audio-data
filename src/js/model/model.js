@@ -8,10 +8,10 @@ const model = {
   off: vent.off
 };
 
-let stateEdit = 'add';  // 'delete'
-let playing = false;
-let timer = null;
-let timerStop = null;
+let stateEdit = 'add',  // 'delete'
+  playing = false,
+  timer = null,
+  timerStop = null;
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
@@ -40,6 +40,9 @@ model.save = (name) => {
   //vent.publish('savedLngt', {stateEdit});
 }
 
+model.restore = () => {
+  modelTxt.restore();
+}
 
 model.toogleState = () => {
   if (stateEdit === 'add') {

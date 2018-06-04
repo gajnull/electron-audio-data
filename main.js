@@ -1,11 +1,11 @@
-const electron = require('electron')
-const app = electron.app
-const BrowserWindow = electron.BrowserWindow
+const electron = require('electron');
+const app = electron.app;
+const BrowserWindow = electron.BrowserWindow;
 
-const path = require('path')
-const url = require('url')
+const path = require('path');
+const url = require('url');
 
-let win
+let win;
 
 function createWindow () {
   win = new BrowserWindow({width: 800, height: 600})
@@ -16,24 +16,24 @@ function createWindow () {
     slashes: true
   }))
 
-  win.webContents.openDevTools()	// Open the DevTools.
+  win.webContents.openDevTools();	// Open the DevTools.
 
   win.on('closed', function () {
-    win = null
+    win = null;
   })
 }
 
-app.on('ready', createWindow)
+app.on('ready', createWindow;
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
-    app.quit()
+    app.quit();
   }
 })
 
 app.on('activate', function () {
   if (win === null) {
-    createWindow()
+    createWindow();
   }
 })
 
@@ -43,12 +43,12 @@ const {ipcMain} = require('electron');
 //сохранение файла .lngt
 ipcMain.on('will-save-file', (event, arg) => {
   fs.writeFile(arg.path, arg.content, (err)=>{
-    event.sender.send('file-saved', err)
+    event.sender.send('file-saved', err);
   });
 })
 //восстановление файла
 ipcMain.on('will-restore-file', (event, arg) => {
   fs.readFile(arg.path, (err, data)=>{
-    event.sender.send('file-restored', data)
+    event.sender.send('file-restored', data);
   });
 })
