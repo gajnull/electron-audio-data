@@ -49,27 +49,10 @@ function choosedFile() {
   reader.onerror = errorHandler;
 
   function loaded(ev) {
-    let content = ev.target.result;
-    if (/\.txt$/.test(name)) {
-      content = txtToLngt(content);
-    }
+    const content = ev.target.result;
     model.setLoadedFile({name, path, size, content});
   }
 
-  function txtToLngt(str) {
-    let s = str;
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')');
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = `<span id="selection-txt"></span>
-         <span id="current-txt">&nbsp&nbsp${s}</span>`;
-    return s;
-  }
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {

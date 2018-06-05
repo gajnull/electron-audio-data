@@ -13,23 +13,13 @@ let stateEdit = 'add',  // 'delete'
   timer = null,
   timerStop = null;
 
+//////// Txt
+
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
 model.fnTxt = (action, args) => { modelTxt[action](args); }
 
-model.fnAudio = (action) => {
-  switch (action) {
-    case 'tooglePlay':
-      tooglePlay();
-      break;
-    default:
-      if(!playing) audio[action]();
-  }
-  const pozz = audio.getPoz();
-  vent.publish('changedPoz', pozz);
-}
-
-model.setLoadedFile = (file) => {
+model.setLoadedFile = (file) => { // file: {name, path, size, content}
   modelTxt.setLoadedFile(file);
   vent.publish('loadedLngt', file);
 }
@@ -38,10 +28,6 @@ model.save = (name) => {
   if (stateEdit === 'delete') model.toogleState();
   modelTxt.save(name);
   //vent.publish('savedLngt', {stateEdit});
-}
-
-model.restore = () => {
-  modelTxt.restore();
 }
 
 model.toogleState = () => {
@@ -56,6 +42,20 @@ model.toogleState = () => {
     stateEdit = 'add';
   }
   vent.publish('changeStateEdit', {stateEdit});
+}
+
+/////// Audio
+
+model.fnAudio = (action) => {
+  switch (action) {
+    case 'tooglePlay':
+      tooglePlay();
+      break;
+    default:
+      if(!playing) audio[action]();
+  }
+  const pozz = audio.getPoz();
+  vent.publish('changedPoz', pozz);
 }
 
 function tooglePlay() {

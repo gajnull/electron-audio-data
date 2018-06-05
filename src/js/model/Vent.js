@@ -1,13 +1,13 @@
 
 const evs = {
   //lngt events
-  loadedLngt: [],
-  savedLngt: [],
-  changeStateEdit: [],
+  loadedLngt: [], //publish - {name, path, size, content}
+  savedLngt: [], //publish - {name, path}
+  changeStateEdit: [], //publish - {stateEdit}
   //audio events
-  decodedAudio: [],
-  changedPoz: [],
-  changeStateAudio: []
+  decodedAudio: [], //publish - {}
+  changedPoz: [], //publish - {}
+  changeStateAudio: [] //publish - {}
 }
 
 const vent = {

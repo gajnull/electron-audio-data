@@ -19,6 +19,7 @@ modelTxt.setRoot = (root) => {
 }
 
 modelTxt.setLoadedFile = ({name, path, size, content}) => {
+  txtToLngt();
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
@@ -28,6 +29,25 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
+
+  function txtToLngt() {
+    if (!/\.txt$/.test(name)) return;
+
+    let s = content;
+    console.log(s);
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = `<span id="selection-txt"></span>
+         <span id="current-txt">&nbsp&nbsp${s}</span>`;
+    content = s;
+  }
+
 }
 
 // Сохранение файла
@@ -69,7 +89,9 @@ modelTxt.restore = () => {
 
   ipcRenderer.on('file-restored', (event, arg) => {
     const {name, path} = file.temp;
-    modelTxt.setLoadedFile({name, path, content: arg, size: file.size});
+    file = {name, path, content: arg, size: file.size};
+    modelTxt.setLoadedFile(file);
+    vent.publish('loadedLngt', file);
   })
 
 // Изменение области выделения

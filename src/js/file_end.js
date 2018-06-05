@@ -29,7 +29,7 @@ function saveFile() {
 }
 
 function restoreFile() {
-  model.restore();
+  model.fnTxt('restore');
 }
 
 function writeName({name}) {

@@ -90,6 +90,8 @@ playing = false,
     timer = null,
     timerStop = null;
 
+//////// Txt
+
 model.setArea = function (area) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
 };
@@ -98,19 +100,8 @@ model.fnTxt = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
 };
 
-model.fnAudio = function (action) {
-  switch (action) {
-    case 'tooglePlay':
-      tooglePlay();
-      break;
-    default:
-      if (!playing) audio[action]();
-  }
-  var pozz = audio.getPoz();
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', pozz);
-};
-
 model.setLoadedFile = function (file) {
+  // file: {name, path, size, content}
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 };
@@ -119,10 +110,6 @@ model.save = function (name) {
   if (stateEdit === 'delete') model.toogleState();
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save(name);
   //vent.publish('savedLngt', {stateEdit});
-};
-
-model.restore = function () {
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].restore();
 };
 
 model.toogleState = function () {
@@ -137,6 +124,20 @@ model.toogleState = function () {
     stateEdit = 'add';
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateEdit', { stateEdit: stateEdit });
+};
+
+/////// Audio
+
+model.fnAudio = function (action) {
+  switch (action) {
+    case 'tooglePlay':
+      tooglePlay();
+      break;
+    default:
+      if (!playing) audio[action]();
+  }
+  var pozz = audio.getPoz();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', pozz);
 };
 
 function tooglePlay() {
@@ -222,13 +223,13 @@ function keyboardHandler(ev) {
 
 var evs = {
   //lngt events
-  loadedLngt: [],
-  savedLngt: [],
-  changeStateEdit: [],
+  loadedLngt: [], //publish - {name, path, size, content}
+  savedLngt: [], //publish - {name, path}
+  changeStateEdit: [], //publish - {stateEdit}
   //audio events
-  decodedAudio: [],
-  changedPoz: [],
-  changeStateAudio: []
+  decodedAudio: [], //publish - {}
+  changedPoz: [], //publish - {}
+  changeStateAudio: [] //publish - {}
 };
 
 var vent = {
@@ -577,7 +578,7 @@ function saveFile() {
 }
 
 function restoreFile() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].restore();
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('restore');
 }
 
 function writeName(_ref) {
@@ -647,24 +648,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    if (/\.txt$/.test(name)) {
-      content = txtToLngt(content);
-    }
     __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedFile({ name: name, path: path, size: size, content: content });
-  }
-
-  function txtToLngt(str) {
-    var s = str;
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')');
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-    return s;
   }
 
   function errorHandler(ev) {
@@ -1039,6 +1023,7 @@ modelTxt.setLoadedFile = function (_ref) {
       size = _ref.size,
       content = _ref.content;
 
+  txtToLngt();
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
@@ -1048,6 +1033,23 @@ modelTxt.setLoadedFile = function (_ref) {
   file = { name: name, path: path, size: size, poz: poz };
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
+
+  function txtToLngt() {
+    if (!/\.txt$/.test(name)) return;
+
+    var s = content;
+    console.log(s);
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    content = s;
+  }
 };
 
 // Сохранение файла
@@ -1095,7 +1097,9 @@ ipcRenderer.on('file-restored', function (event, arg) {
       name = _file$temp2.name,
       path = _file$temp2.path;
 
-  modelTxt.setLoadedFile({ name: name, path: path, content: arg, size: file.size });
+  file = { name: name, path: path, content: arg, size: file.size };
+  modelTxt.setLoadedFile(file);
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 });
 
 // Изменение области выделения

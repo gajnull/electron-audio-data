@@ -23,7 +23,7 @@ function createWindow () {
   })
 }
 
-app.on('ready', createWindow;
+app.on('ready', createWindow);
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') {
@@ -49,6 +49,7 @@ ipcMain.on('will-save-file', (event, arg) => {
 //восстановление файла
 ipcMain.on('will-restore-file', (event, arg) => {
   fs.readFile(arg.path, (err, data)=>{
+    const txt = '' + data;
     event.sender.send('file-restored', data);
   });
 })
