@@ -121,7 +121,7 @@ const modelAudio = {
 }
 
 
-
+export default modelAudio;
 
 
 

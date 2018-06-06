@@ -1,6 +1,6 @@
 //export const something = 'test'
 import vent from './vent';
-import ModelAudio from './modelAudio';
+import modelAudio from './modelAudio';
 import modelTxt from './modelTxt';
 
 const model = {
@@ -34,11 +34,12 @@ model.toogleState = () => {
   if (stateEdit === 'add') {
     const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
     if(!interval) return;
-    audio.assignInterval(interval);
+    console.log(modelAudio);
+    modelAudio.assignInterval(interval);
     stateEdit = 'delete';
   } else {
     modelTxt.gotoToAdd();
-    audio.nextInterval();
+    modelAudio.nextInterval();
     stateEdit = 'add';
   }
   vent.publish('changeStateEdit', {stateEdit});
@@ -52,9 +53,9 @@ model.fnAudio = (action) => {
       tooglePlay();
       break;
     default:
-      if(!playing) audio[action]();
+      if(!playing) modelAudio[action]();
   }
-  const pozz = audio.getPoz();
+  const pozz = modelAudio.getPoz();
   vent.publish('changedPoz', pozz);
 }
 
@@ -68,18 +69,18 @@ function tooglePlay() {
 }
 
   function playAudio() {
-    audio.play();
+    modelAudio.play();
     playing = true;
     timer = setInterval(() => {
-      vent.publish('changedPoz', audio.getPoz(true));
-      if (audio.endedTrack()) stopAudio();
+      vent.publish('changedPoz', modelAudio.getPoz(true));
+      if (modelAudio.endedTrack()) stopAudio();
     }, 100);
   }
 
   function stopAudio() {
-    audio.stop();
+    modelAudio.stop();
     playing = false;
-    vent.publish('changedPoz', audio.getPoz(true))  //может это лишнее
+    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
   }

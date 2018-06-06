@@ -116,11 +116,12 @@ model.toogleState = function () {
   if (stateEdit === 'add') {
     var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].gotoToDelete(); // from - показывает ключевое слово
     if (!interval) return;
-    audio.assignInterval(interval);
+    console.log(__WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */]);
+    __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
     stateEdit = 'delete';
   } else {
     __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].gotoToAdd();
-    audio.nextInterval();
+    __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextInterval();
     stateEdit = 'add';
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateEdit', { stateEdit: stateEdit });
@@ -134,9 +135,9 @@ model.fnAudio = function (action) {
       tooglePlay();
       break;
     default:
-      if (!playing) audio[action]();
+      if (!playing) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action]();
   }
-  var pozz = audio.getPoz();
+  var pozz = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', pozz);
 };
 
@@ -150,18 +151,18 @@ function tooglePlay() {
 }
 
 function playAudio() {
-  audio.play();
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].play();
   playing = true;
   timer = setInterval(function () {
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', audio.getPoz(true));
-    if (audio.endedTrack()) stopAudio();
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true));
+    if (__WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].endedTrack()) stopAudio();
   }, 100);
 }
 
 function stopAudio() {
-  audio.stop();
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
   playing = false;
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', audio.getPoz(true)); //может это лишнее
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true)); //может это лишнее
   clearInterval(timer);
   if (timerStop) {
     clearTimeout(timerStop);
@@ -857,6 +858,8 @@ var modelAudio = {
   }
 };
 
+/* harmony default export */ __webpack_exports__["a"] = (modelAudio);
+
 /*
 
 export default class ModelAudio {
@@ -1250,7 +1253,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 
