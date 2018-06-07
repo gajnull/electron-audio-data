@@ -1,5 +1,4 @@
 import model from './model/model';
-import keyboard from './keyboard';
 
 const controlAudio = {};
 
@@ -19,13 +18,11 @@ controlAudio.close = function() {
   model.off('decodedAudio', handlerDecoded);
   model.off('changeStateAudio', changeBtnPlay);
   model.off('changeStateEdit', changeStateEdit);
-  keyboard('space', () => {});
   btns.onclick = '';
   btns = null;
 }
 
 function handlerDecoded() {
-  keyboard('space', () => { model.tooglePlay() });
   btns.onclick = function(event) {
     const target = event.target
     if (target.hasAttribute('act')) {

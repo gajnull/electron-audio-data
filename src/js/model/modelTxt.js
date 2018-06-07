@@ -34,7 +34,6 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
     if (!/\.txt$/.test(name)) return;
 
     let s = content;
-    console.log(s);
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы

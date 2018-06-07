@@ -4,7 +4,7 @@ const evs = {
   arrowLeft() {},
   arrowRight() {},
   space() {},
-  tab() {}    
+  tab() {}
 };
 
 const keyCodes = {
@@ -20,7 +20,7 @@ function keyboardHandler(ev) {
   //console.log(ev.keyCode);
   const key = ev.keyCode;
   if(!(key in keyCodes)) return;
-  const fn = keyCodes[key];    
+  const fn = keyCodes[key];
   if (!fn) return;
   evs[fn]();
 }
@@ -34,7 +34,7 @@ function setHotKey(keyName, fn) {
     return;
   }
   if (keyName in evs) {
-    evs[hotKey] = fn;
+    evs[keyName] = fn;
   } else {
     console.warn('Такой клавиши(сочетания клавиш) не предусмотрено');
   }
@@ -45,9 +45,3 @@ function setHotKey(keyName, fn) {
       evs[keyName] = () => {};
     }
   }
-
-
-
-
-
-

@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,9 +71,9 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(13);
 //export const something = 'test'
 
 
@@ -176,51 +176,6 @@ function stopAudio() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony default export */ __webpack_exports__["a"] = (setHotKey);
-
-var evs = void 0; //var чтобы не было ошибки при повторной встрече
-
-var keyCodes = {
-  37: 'arrowLeft', // <- влево
-  39: 'arrowRight', // -> вправо
-  32: 'space', // _ пробел
-  9: 'tab' // tab
-};
-
-setHotKey.init = function () {
-  if (evs) {
-    console.warn('setHotKey инициализирована');
-    return;
-  }
-  evs = {
-    arrowLeft: function arrowLeft() {},
-    arrowRight: function arrowRight() {},
-    space: function space() {}
-  };
-  document.onkeydown = keyboardHandler;
-};
-
-function setHotKey(hotKey, fn) {
-  if (!evs) {
-    console.warn('setHotKey неинициализирована');
-    return;
-  }
-  evs[hotKey] = fn;
-}
-
-function keyboardHandler(ev) {
-  //console.log(ev.keyCode);
-  var fn = keyCodes[ev.keyCode];
-  if (fn) {
-    evs[fn]();
-  }
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 
 var evs = {
   //lngt events
@@ -266,21 +221,20 @@ var vent = {
 /* harmony default export */ __webpack_exports__["a"] = (vent);
 
 /***/ }),
-/* 3 */
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_keyboard__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_file_txt__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_area_txt__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_audio__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_control_audio__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_hotKeys__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_model_model__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_audio__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_control_audio__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_infoTiming__ = __webpack_require__(10);
-
 
 
 
@@ -295,90 +249,38 @@ var vent = {
 
 
 function work() {
-
-  __WEBPACK_IMPORTED_MODULE_1__js_keyboard__["a" /* default */].init();
-
-  __WEBPACK_IMPORTED_MODULE_2__js_file_txt__["a" /* default */].init();
-  __WEBPACK_IMPORTED_MODULE_3__js_area_txt__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_1__js_hotKeys__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init();
+  setAreaTxt();
   __WEBPACK_IMPORTED_MODULE_4__js_file_end__["a" /* default */].init();
-
   __WEBPACK_IMPORTED_MODULE_5__js_file_audio__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_6__js_control_audio__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_7__js_infoTiming__["a" /* default */].init();
 }
 
+function setAreaTxt() {
+  var area = document.getElementById('txt');
+  __WEBPACK_IMPORTED_MODULE_2__js_model_model__["a" /* default */].setArea(area);
+}
+
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
 
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
+/* 4 */,
 /* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__keyboard__ = __webpack_require__(1);
-
-
-
-var areaTxt = {};
-var area = void 0;
-
-areaTxt.init = function () {
-  area = document.getElementById('txt');
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setArea(area);
-
-  ////model.on('loadedLngt', setPozAudio);
-  //mAudio.on('addInterval', addInterval)
-
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('arrowRight', addSelection);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('arrowLeft', reduceSelection);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('tab', toogleState);
-};
-
-areaTxt.close = function () {
-  //mAudio.off('addInterval', addInterval)
-  ////model.off('loadedLngt', setPozAudio);
-
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('arrowRight', function () {});
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('arrowLeft', function () {});
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('tab', function () {});
-};
-
-// function setPozAudio({poz}) {
-//   mAudio.setStartPoz(poz);
-// }
-
-//////////////////////////
-function addSelection() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('addSelection');
-}
-
-function reduceSelection() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('reduceSelection');
-}
-
-function toogleState() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (areaTxt);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__keyboard__ = __webpack_require__(1);
-
 
 
 var controlAudio = {};
@@ -401,15 +303,11 @@ controlAudio.close = function () {
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', handlerDecoded);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeStateAudio', changeBtnPlay);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeStateEdit', changeStateEdit);
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('space', function () {});
   btns.onclick = '';
   btns = null;
 };
 
 function handlerDecoded() {
-  __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__keyboard__["a" /* default */])('space', function () {
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].tooglePlay();
-  });
   btns.onclick = function (event) {
     var target = event.target;
     if (target.hasAttribute('act')) {
@@ -455,7 +353,7 @@ function changeStateEdit(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (controlAudio);
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -542,7 +440,7 @@ function handleDecodedAudio(data) {} // пока не используется (
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -592,7 +490,7 @@ function writeName(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
 
 /***/ }),
-/* 9 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -670,6 +568,40 @@ function setInfoLodedLngt(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(11);
+//управление сохранением и восстановлением текстового файла .lngt
+
+
+
+var hotKeys = {
+  init: function init() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('reduceSelection');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('addSelection');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].tooglePlay();
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
+    });
+  },
+
+  close: function close() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (hotKeys);
+
+/***/ }),
 /* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -719,8 +651,58 @@ function showChangedPoz(_ref) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(13);
+/* harmony default export */ __webpack_exports__["a"] = (setHotKey);
+
+var evs = {
+  arrowLeft: function arrowLeft() {},
+  arrowRight: function arrowRight() {},
+  space: function space() {},
+  tab: function tab() {}
+};
+
+var keyCodes = {
+  37: 'arrowLeft', // <- влево
+  39: 'arrowRight', // -> вправо
+  32: 'space', // _ пробел
+  9: 'tab' // tab
+};
+
+document.onkeydown = keyboardHandler;
+
+function keyboardHandler(ev) {
+  //console.log(ev.keyCode);
+  var key = ev.keyCode;
+  if (!(key in keyCodes)) return;
+  var fn = keyCodes[key];
+  if (!fn) return;
+  evs[fn]();
+}
+
+function setHotKey(keyName, fn) {
+  if (keyName === 'clear') {
+    clearAllEvs();
+    return;
+  }
+  if (keyName in evs) {
+    evs[keyName] = fn;
+  } else {
+    console.warn('Такой клавиши(сочетания клавиш) не предусмотрено');
+  }
+}
+// очищаем все назначения клавиш
+function clearAllEvs() {
+  for (var keyName in evs) {
+    evs[keyName] = function () {};
+  }
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(14);
 
 
 
@@ -743,7 +725,6 @@ var file = { // пока не используется
 var modelAudio = {
   decode: function decode(rawData) {
     api.decode(rawData, decodedAudio.bind(this));
-
     function decodedAudio(_duration) {
       duration = _duration;
       //this.vent.publish('decodedAudio');
@@ -860,143 +841,12 @@ var modelAudio = {
 
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
 
-/*
-
-export default class ModelAudio {
-  constructor(_vent) {
-    //this.vent = _vent;
-
-    this.file = { // пока не используется
-      name: null,
-      path: null,
-      size: null
-    }
-    this.api = webAudioAPI();
-
-    this.pozMin = 0;   // Позиция конца предыдущего отрезка
-    this.pozCurrent = 0; // Текущая позиция
-    this.duration = 0; // Продолжительность всего ауиотрека.
-    // Запомненный отрезок
-    this.pozFrom = 0;
-    this.pozTo = 0;
-    this.delta = 0.1; // Шаг изменения позиции отрезка
-  }
-
-  decode(rawData) {
-
-    this.api.decode(rawData, decodedAudio.bind(this));
-
-    function decodedAudio(duration) {
-      this.duration = duration;
-      //this.vent.publish('decodedAudio');
-      //this.changePoz();
-    }
-  }
-
-  endedTrack() {
-    return (this.pozCurrent > this.duration);
-  }
-
-  getPoz(updatePoz = false) {
-    if (updatePoz) this.pozCurrent = this.api.getCurrentPoz();
-    return {
-      pozMin: this.pozMin,
-      duration: this.duration,
-      pozCurrent: this.pozCurrent,
-      pozFrom: this.pozFrom,
-      pozTo: this.pozTo
-    };
-  }
-
-///// проигрывание/остановка
-  play() { this.api.play(this.pozCurrent) }
-
-  stop() {
-    this.pozCurrent = this.api.stop()
-    if(this.pozCurrent > this.duration) this.pozCurrent = this.duration //не должно быть - может превысить на доли секунды
-  }
-
-  repeate() { //проигрываем выбранный отрезок
-    this.pozCurrent = this.pozFrom;
-    this.play();
-    //this.playing = true;
-    //const period = (this.pozTo - this.pozFrom) * 1000;
-    //this.timerStop = setTimeout(() => { this.stop() }, period);
-  }
-
-// внесение в текстовой файл выбранный интервал
-  // getInterval() {
-  //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
-  // }
-  nextInterval() {
-    this.pozMin = this.pozFrom = this.pozCurrent = this.pozTo;
-  }
-
-// установка аудиоинтервала
-  assignInterval({ _from, _to }) {
-    this.pozMin = this.pozCurrent = this.pozFrom = +_from;
-    this.pozTo = +_to;
-  }
-
-//// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
-  gotoStart() { this.pozCurrent = this.pozMin; }
-  gotoFrom() { this.pozCurrent = this.pozFrom; }
-  gotoTo() { this.pozCurrent = this.pozTo; }
-
-//// установка и изменение позицй от и до
-  fromMoveBack() {
-    let newPoz = Math.round((this.pozFrom - this.delta) * 10) / 10;
-    if(newPoz < this.pozMin) { newPoz = this.pozMin; } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
-    this.pozFrom = newPoz;
-  }
-
-  fromSet() {
-    this.pozFrom = + this.pozCurrent.toFixed(1);
-    if (this.pozTo < this.pozFrom) this.pozTo = this.pozFrom;
-  }
-
-  fromMoveForward() {
-    let newPoz = Math.round((this.pozFrom + this.delta) * 10) / 10
-    if (newPoz > this.duration) { newPoz = this.duration }
-    this.pozFrom = newPoz
-    if (this.pozFrom > this.pozTo) this.pozTo = this.pozFrom
-  }
-
-
-  toMoveBack() {
-    let newPoz = Math.round((this.pozTo - this.delta) * 10) / 10;
-    if(newPoz < this.pozMin) { newPoz = this.pozMin } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
-    this.pozTo = newPoz;
-    if (this.pozTo < this.pozFrom) this.pozFrom = this.pozTo;
-  }
-
-  toSet() {
-    this.stop();  // this working only if model.playing = true
-    this.pozTo =  + this.pozCurrent.toFixed(1);
-    if (this.pozFrom > this.pozTo) this.pozFrom = this.pozTo;
-  }
-
-  toMoveForward() {
-    if(this.playing) return;
-    let newPoz = Math.round((this.pozTo + this.delta) * 10) / 10;
-    if (newPoz > this.duration) { newPoz = this.duration }
-    this.pozTo = newPoz;
-  }
-
-  setStartPoz(poz) {
-    this.pozMin = this.pozCurrent = this.pozFrom = this.pozTo = +poz;
-  }
-
-}
-
-*/
-
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
 
 
 var _window$require = window.require('electron'),
@@ -1041,7 +891,6 @@ modelTxt.setLoadedFile = function (_ref) {
     if (!/\.txt$/.test(name)) return;
 
     var s = content;
-    console.log(s);
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -1185,7 +1034,7 @@ function cleareSelection() {
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1250,10 +1099,10 @@ function webAudioAPI() {
 }
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(16)(false);
 // imports
 
 
@@ -1264,7 +1113,7 @@ exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /*
@@ -1346,13 +1195,13 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(14);
+var content = __webpack_require__(15);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1360,7 +1209,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(17)(content, options);
+var update = __webpack_require__(18)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -1377,7 +1226,7 @@ if(false) {
 }
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1423,7 +1272,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(18);
+var	fixUrls = __webpack_require__(19);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1736,7 +1585,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports) {
 
 

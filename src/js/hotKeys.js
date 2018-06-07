@@ -6,7 +6,7 @@ const hotKeys = {
   init: () => {
     setHotKey('arrowLeft', () => { model.fnTxt('reduceSelection'); });
     setHotKey('arrowRight', () => { model.fnTxt('addSelection'); });
-    setHotKey('space', () => {  });
+    setHotKey('space', () => {  model.tooglePlay() });
     setHotKey('tab', () => { model.toogleState(); });    
   },
 

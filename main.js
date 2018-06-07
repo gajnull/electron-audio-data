@@ -48,8 +48,7 @@ ipcMain.on('will-save-file', (event, arg) => {
 })
 //восстановление файла
 ipcMain.on('will-restore-file', (event, arg) => {
-  fs.readFile(arg.path, (err, data)=>{
-    const txt = '' + data;
+  fs.readFile(arg.path, 'utf8', (err, data) => {
     event.sender.send('file-restored', data);
   });
 })
