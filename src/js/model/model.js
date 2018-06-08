@@ -17,7 +17,14 @@ let stateEdit = 'add',  // 'delete'
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
-model.fnTxt = (action, args) => { modelTxt[action](args); }
+model.fnTxtSelection = (action) => {
+  if(stateEdit === 'delete') return;
+  modelTxt[action](); 
+}
+
+model.fnTxt = (action, args) => {
+  modelTxt[action](args); 
+}
 
 model.setLoadedFile = (file) => { // file: {name, path, size, content}
   modelTxt.setLoadedFile(file);
@@ -34,7 +41,6 @@ model.toogleState = () => {
   if (stateEdit === 'add') {
     const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
     if(!interval) return;
-    console.log(modelAudio);
     modelAudio.assignInterval(interval);
     stateEdit = 'delete';
   } else {
