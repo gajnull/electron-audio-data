@@ -342,14 +342,12 @@ function changeBtnPlay(_ref) {
 function changeStateEdit(_ref2) {
   var stateEdit = _ref2.stateEdit;
 
-  if (stateEdit === 'add interval') {
+  if (stateEdit === 'add') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
-    //audio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
-    //audio.gotoInterval(_from, _to);
   }
 }
 
@@ -1105,7 +1103,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

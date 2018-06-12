@@ -50,14 +50,12 @@ function changeBtnPlay({ playing }) {
 }
 
 function changeStateEdit({ stateEdit }) {
-  if (stateEdit === 'add interval') {
+  if (stateEdit === 'add') {
     btns.style.display = 'flex';
     intervals.style.display = 'none';
-    //audio.nextInterval();
   } else {
     btns.style.display = 'none';
     intervals.style.display = 'flex';
-    //audio.gotoInterval(_from, _to);
   }
 }
 
