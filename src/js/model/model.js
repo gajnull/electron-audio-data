@@ -19,14 +19,14 @@ model.setArea = (area) => { modelTxt.setRoot(area); }
 
 model.fnTxtSelection = (action) => {
   if(stateEdit === 'delete') return;
-  modelTxt[action](); 
+  modelTxt[action]();
 }
 
 model.fnTxt = (action, args) => {
-  modelTxt[action](args); 
+  modelTxt[action](args);
 }
 
-model.setLoadedFile = (file) => { // file: {name, path, size, content}
+model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
   modelTxt.setLoadedFile(file);
   vent.publish('loadedLngt', file);
 }
@@ -52,6 +52,11 @@ model.toogleState = () => {
 }
 
 /////// Audio
+
+// model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
+//   modelAudio.setLoadedFile(file);
+//   vent.publish('loadedLngt', file);
+// }
 
 model.fnAudio = (action) => {
   switch (action) {

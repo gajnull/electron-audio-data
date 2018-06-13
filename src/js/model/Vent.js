@@ -5,7 +5,7 @@ const evs = {
   savedLngt: [], //publish - {name, path}
   changeStateEdit: [], //publish - {stateEdit}
   //audio events
-  decodedAudio: [], //publish - {}
+  decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {}
   changeStateAudio: [] //publish - {}
 }

@@ -105,7 +105,7 @@ model.fnTxt = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
 };
 
-model.setLoadedFile = function (file) {
+model.setLoadedTxtFile = function (file) {
   // file: {name, path, size, content}
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
@@ -132,6 +132,11 @@ model.toogleState = function () {
 };
 
 /////// Audio
+
+// model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
+//   modelAudio.setLoadedFile(file);
+//   vent.publish('loadedLngt', file);
+// }
 
 model.fnAudio = function (action) {
   switch (action) {
@@ -187,7 +192,7 @@ var evs = {
   savedLngt: [], //publish - {name, path}
   changeStateEdit: [], //publish - {stateEdit}
   //audio events
-  decodedAudio: [], //publish - {}
+  decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {}
   changeStateAudio: [] //publish - {}
 };
@@ -360,8 +365,8 @@ function changeStateEdit(_ref2) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
 /****************************************************************
-  во внешнем модуле используется fileAudio.init(model) и
-  fileAudio.close(model)
+  во внешнем модуле используется fileAudio.init() и
+  fileAudio.close()
 *****************************************************************/
 
 var fileAudio = {};
@@ -375,11 +380,13 @@ fileAudio.init = function () {
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', decodedAudio);
 };
 
 fileAudio.close = function () {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', chooseFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', decodedAudio);
 };
 
 function clickInput() {
@@ -389,11 +396,8 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   var file = input.files[0];
-  var path = file.path;
-  var name = file.name;
-
-  btn.innerHTML = file.name;
-  btn.setAttribute('title', path);
+  //const path = file.path;
+  //const name = file.name;
 
   var reader = new FileReader();
   reader.readAsArrayBuffer(file);
@@ -419,14 +423,8 @@ function choosedFile() {
 
   function loaded(ev) {
     //setWidthProgress(0)
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].file = { name: name, path: path, size: file.size };
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].decode(ev.target.result);
-    /*    model.decode(ev.target.result, function(duration) {
-          model.file = {name, path, size: file.size}
-          model.duration = duration
-          model.publish('decodedAudio')
-        })
-    */
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].decode({ name: file.name, path: file.path,
+      size: file.size, content: ev.target.result });
   }
 
   function errorHandler(ev) {
@@ -436,7 +434,10 @@ function choosedFile() {
   }
 }
 
-function handleDecodedAudio(data) {} // пока не используется (ф-ция подписчмк на декодирование)
+function decodedAudio(name, path) {
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
 
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
@@ -548,7 +549,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedFile({ name: name, path: path, size: size, content: content });
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTxtFile({ name: name, path: path, size: size, content: content });
   }
 
   function errorHandler(ev) {

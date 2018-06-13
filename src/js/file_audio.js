@@ -1,6 +1,6 @@
 /****************************************************************
-  во внешнем модуле используется fileAudio.init(model) и
-  fileAudio.close(model)
+  во внешнем модуле используется fileAudio.init() и
+  fileAudio.close()
 *****************************************************************/
 import model from './model/model';
 const fileAudio = {};
@@ -13,11 +13,13 @@ fileAudio.init = function() {
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
+  model.on('decodedAudio', decodedAudio);
 }
 
 fileAudio.close = function() {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', chooseFile);
+  model.off('decodedAudio', decodedAudio);
 }
 
 function clickInput() {
@@ -27,11 +29,8 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   const file = input.files[0];
-  const path = file.path;
-  const name = file.name;
-
-  btn.innerHTML = file.name;
-  btn.setAttribute('title', path);
+  //const path = file.path;
+  //const name = file.name;
 
   const reader = new FileReader();
   reader.readAsArrayBuffer(file);
@@ -57,14 +56,8 @@ function choosedFile() {
 
   function loaded(ev) {
     //setWidthProgress(0)
-    model.file = {name, path, size: file.size};
-    model.decode(ev.target.result);
-/*    model.decode(ev.target.result, function(duration) {
-      model.file = {name, path, size: file.size}
-      model.duration = duration
-      model.publish('decodedAudio')
-    })
-*/
+    model.decode({name: file.name, path: file.path,
+                 size: file.size, content: ev.target.result});
   }
 
   function errorHandler(ev) {
@@ -75,6 +68,9 @@ function choosedFile() {
 
 }
 
-function handleDecodedAudio(data) {}  // пока не используется (ф-ция подписчмк на декодирование)
+function decodedAudio(name, path) {
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
 
 export default fileAudio;

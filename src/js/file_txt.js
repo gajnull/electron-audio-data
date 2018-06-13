@@ -50,7 +50,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedFile({name, path, size, content});
+    model.setLoadedTxtFile({name, path, size, content});
   }
 
 
