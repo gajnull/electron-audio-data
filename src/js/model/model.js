@@ -53,10 +53,10 @@ model.toogleState = () => {
 
 /////// Audio
 
-// model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
-//   modelAudio.setLoadedFile(file);
-//   vent.publish('loadedLngt', file);
-// }
+model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
+  modelAudio.setLoadedFile(file);
+  vent.publish('loadedLngt', file);
+}
 
 model.fnAudio = (action) => {
   switch (action) {

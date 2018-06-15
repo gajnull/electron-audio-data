@@ -19,7 +19,7 @@ const file = { // пока не используется
 
 const modelAudio = {
 
-  decode(rawData) {
+  setLoadedAudioFile({}) {
     api.decode(rawData, decodedAudio.bind(this));
     function decodedAudio(_duration) {
       duration = _duration;

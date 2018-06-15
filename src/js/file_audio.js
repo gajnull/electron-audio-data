@@ -3,6 +3,7 @@
   fileAudio.close()
 *****************************************************************/
 import model from './model/model';
+
 const fileAudio = {};
 
 let btn, input;
@@ -13,13 +14,13 @@ fileAudio.init = function() {
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
-  model.on('decodedAudio', decodedAudio);
+  model.on('decodedAudio', setInfoLodedAudio);
 }
 
 fileAudio.close = function() {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', chooseFile);
-  model.off('decodedAudio', decodedAudio);
+  model.off('decodedAudio', setInfoLodedAudio);
 }
 
 function clickInput() {
@@ -29,46 +30,34 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   const file = input.files[0];
-  //const path = file.path;
-  //const name = file.name;
+  const path = file.path;
+  const name = file.name;
+  const size = file.size; 
+
+  btn.innerHTML = 'loding...';  
 
   const reader = new FileReader();
   reader.readAsArrayBuffer(file);
-/*
-  reader.onloadstart = startProgress
-  reader.onprogress = updateProgress
-  */
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
   reader.onload = loaded;
   reader.onerror = errorHandler;
 
-/*
-  function updateProgress(ev) {
-    if (ev.lengthComputable) {
-      var loaded = (ev.loaded / ev.total)
-      if (loaded < 1) {
-        setWidthProgress(loaded)  //остальную половину будет декодироваться аудио
-      }
-    } else {
-      // тогда будет анимация загрузки средствами css
-    }
-  }
-*/
-
   function loaded(ev) {
-    //setWidthProgress(0)
-    model.decode({name: file.name, path: file.path,
-                 size: file.size, content: ev.target.result});
+    const content = ev.target.result;
+    model.setLoadedAudioFile({name, path, size, content});
   }
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {
-      path.innerHTML = 'Выберите другой звуковой файл';
+      btn.innerHTML = 'Выберите другой звуковой файл';
     }
   }
 
 }
 
-function decodedAudio(name, path) {
+function setInfoLodedAudio(name, path) {
   btn.innerHTML = name;
   btn.setAttribute('title', path);
 }

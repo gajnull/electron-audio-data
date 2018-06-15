@@ -6,8 +6,7 @@ import model from './model/model';
 
 const fileTxt = {};
 
-let btn,
-    input;
+let btn, input;
 
 fileTxt.init = function() {
   btn = document.getElementById('file-txt');
@@ -52,7 +51,6 @@ function choosedFile() {
     const content = ev.target.result;
     model.setLoadedTxtFile({name, path, size, content});
   }
-
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {

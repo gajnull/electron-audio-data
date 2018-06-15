@@ -369,6 +369,7 @@ function changeStateEdit(_ref2) {
   fileAudio.close()
 *****************************************************************/
 
+
 var fileAudio = {};
 
 var btn = void 0,
@@ -380,13 +381,13 @@ fileAudio.init = function () {
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', decodedAudio);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', setInfoLodedAudio);
 };
 
 fileAudio.close = function () {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', chooseFile);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', decodedAudio);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', setInfoLodedAudio);
 };
 
 function clickInput() {
@@ -396,45 +397,33 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   var file = input.files[0];
-  //const path = file.path;
-  //const name = file.name;
+  var path = file.path;
+  var name = file.name;
+  var size = file.size;
+
+  btn.innerHTML = 'loding...';
 
   var reader = new FileReader();
   reader.readAsArrayBuffer(file);
-  /*
-    reader.onloadstart = startProgress
-    reader.onprogress = updateProgress
-    */
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
   reader.onload = loaded;
   reader.onerror = errorHandler;
 
-  /*
-    function updateProgress(ev) {
-      if (ev.lengthComputable) {
-        var loaded = (ev.loaded / ev.total)
-        if (loaded < 1) {
-          setWidthProgress(loaded)  //остальную половину будет декодироваться аудио
-        }
-      } else {
-        // тогда будет анимация загрузки средствами css
-      }
-    }
-  */
-
   function loaded(ev) {
-    //setWidthProgress(0)
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].decode({ name: file.name, path: file.path,
-      size: file.size, content: ev.target.result });
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, size: size, content: content });
   }
 
   function errorHandler(ev) {
     if (ev.target.error.name == "NotReadableError") {
-      path.innerHTML = 'Выберите другой звуковой файл';
+      btn.innerHTML = 'Выберите другой звуковой файл';
     }
   }
 }
 
-function decodedAudio(name, path) {
+function setInfoLodedAudio(name, path) {
   btn.innerHTML = name;
   btn.setAttribute('title', path);
 }
@@ -1104,7 +1093,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 
