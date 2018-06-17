@@ -13,10 +13,10 @@ import infoTiming from './js/infoTiming';
 
 export default function work() {
   hotKeys.init();
-  fileTxt.init();
+  fileTxt.init(); // в fileTxt будет чтение текстового файла
   setAreaTxt();
   fileEnd.init();
-  fileAudio.init();
+  fileAudio.init(); // в fileTxt будет чтение содержимого звукового файла
   controlAudio.init();
   infoTiming.init();
 }

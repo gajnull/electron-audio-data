@@ -14,14 +14,16 @@ export default function webAudioAPI() {
       startTime,
       startPoz
 
-  res.decode = function(rawData, fn) {
-    //if (!(data instanceof ArrayBuffer)) return;
-    context = new contextClass()
-    context.decodeAudioData(rawData, function(audioBuffer) {
-      buffer = audioBuffer
-      initVars()
-      fn(buffer.duration)
-    }, onError)
+  res.decode = function(content) {
+    /////if (!(data instanceof ArrayBuffer)) return;
+    return new Promise((resolve, reject) => {
+      context = new contextClass();
+      context.decodeAudioData(content, function(audioBuffer) {
+        buffer = audioBuffer;
+        initVars();
+        resolve(buffer.duration);
+      }, reject)  // может надо () => {reject();}
+    });
   }
 
   function initVars() {

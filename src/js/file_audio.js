@@ -32,9 +32,9 @@ function choosedFile() {
   const file = input.files[0];
   const path = file.path;
   const name = file.name;
-  const size = file.size; 
+  const size = file.size;
 
-  btn.innerHTML = 'loding...';  
+  btn.innerHTML = 'loding...';
 
   const reader = new FileReader();
   reader.readAsArrayBuffer(file);
@@ -57,7 +57,7 @@ function choosedFile() {
 
 }
 
-function setInfoLodedAudio(name, path) {
+function setInfoLodedAudio({name, path}) {
   btn.innerHTML = name;
   btn.setAttribute('title', path);
 }

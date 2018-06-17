@@ -27,14 +27,14 @@ model.fnTxt = (action, args) => {
 }
 
 model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
-  modelTxt.setLoadedFile(file);
+  const startPoz = modelTxt.setLoadedFile(file);
+  modelAudio.setStartPoz(startPoz);
   vent.publish('loadedLngt', file);
 }
 
 model.save = (name) => {
   if (stateEdit === 'delete') model.toogleState();
   modelTxt.save(name);
-  //vent.publish('savedLngt', {stateEdit});
 }
 
 model.toogleState = () => {
@@ -54,17 +54,16 @@ model.toogleState = () => {
 /////// Audio
 
 model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
-  modelAudio.setLoadedFile(file);
-  vent.publish('loadedLngt', file);
+  modelAudio.decodeFile(file);
 }
 
-model.fnAudio = (action) => {
+model.fnAudio = (action, args) => {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
       break;
     default:
-      if(!playing) modelAudio[action]();
+      if(!playing) modelAudio[action](args);
   }
   const pozz = modelAudio.getPoz();
   vent.publish('changedPoz', pozz);

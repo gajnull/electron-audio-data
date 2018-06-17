@@ -4,7 +4,7 @@ const {ipcRenderer} = window.require('electron');
 const modelTxt = {};
 
 const subfolder = 'target';
-let file = {};       // {name, path, size, content}
+let file = {};       // {name, path, size}
                       // path: fullPath + name
 let nodeTxt = null,   // весь элемент
     nodeCurrent = null,
@@ -29,6 +29,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   file = {name, path, size, poz};
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
+  return poz;
 
   function txtToLngt() {
     if (!/\.txt$/.test(name)) return;

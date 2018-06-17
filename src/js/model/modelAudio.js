@@ -11,7 +11,7 @@ let pozFrom = 0;
 let pozTo = 0;
 let delta = 0.1; // Шаг изменения позиции отрезка
 
-const file = { // пока не используется
+let file = { // пока не используется
   name: null,
   path: null,
   size: null
@@ -19,13 +19,13 @@ const file = { // пока не используется
 
 const modelAudio = {
 
-  setLoadedAudioFile({}) {
-    api.decode(rawData, decodedAudio.bind(this));
-    function decodedAudio(_duration) {
-      duration = _duration;
-      //this.vent.publish('decodedAudio');
-      //this.changePoz();
-    }
+  decodeFile({name, path, size, content}) {
+    api.decode(content).then(res => {
+      duration = res;
+      file.name = {name, path, size};
+      vent.publish('decodedAudio', {name, path});
+      vent.publish('changedPoz', this.getPoz());
+    });
   },
 
   endedTrack() {
@@ -93,7 +93,6 @@ const modelAudio = {
     if (pozFrom > pozTo) pozTo = pozFrom
   },
 
-
   toMoveBack() {
     let newPoz = Math.round((pozTo - delta) * 10) / 10;
     if(newPoz < pozMin) { newPoz = pozMin } // тогда скорее всего будет повторение, но иначе число pozMin может быть слишком дробным
@@ -116,6 +115,7 @@ const modelAudio = {
 
   setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
+    vent.publish('changedPoz', this.getPoz());  // может это надо в другом месте
   }
 }
 

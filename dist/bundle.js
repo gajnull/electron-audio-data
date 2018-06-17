@@ -107,14 +107,14 @@ model.fnTxt = function (action, args) {
 
 model.setLoadedTxtFile = function (file) {
   // file: {name, path, size, content}
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
+  var startPoz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 };
 
 model.save = function (name) {
   if (stateEdit === 'delete') model.toogleState();
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save(name);
-  //vent.publish('savedLngt', {stateEdit});
 };
 
 model.toogleState = function () {
@@ -133,18 +133,18 @@ model.toogleState = function () {
 
 /////// Audio
 
-// model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
-//   modelAudio.setLoadedFile(file);
-//   vent.publish('loadedLngt', file);
-// }
+model.setLoadedAudioFile = function (file) {
+  // file: {name, path, size, content}
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].decodeFile(file);
+};
 
-model.fnAudio = function (action) {
+model.fnAudio = function (action, args) {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
       break;
     default:
-      if (!playing) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action]();
+      if (!playing) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
   }
   var pozz = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', pozz);
@@ -259,10 +259,10 @@ var vent = {
 
 function work() {
   __WEBPACK_IMPORTED_MODULE_1__js_hotKeys__["a" /* default */].init();
-  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(); // в fileTxt будет чтение текстового файла
   setAreaTxt();
   __WEBPACK_IMPORTED_MODULE_4__js_file_end__["a" /* default */].init();
-  __WEBPACK_IMPORTED_MODULE_5__js_file_audio__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_5__js_file_audio__["a" /* default */].init(); // в fileTxt будет чтение содержимого звукового файла
   __WEBPACK_IMPORTED_MODULE_6__js_control_audio__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_7__js_infoTiming__["a" /* default */].init();
 }
@@ -423,7 +423,10 @@ function choosedFile() {
   }
 }
 
-function setInfoLodedAudio(name, path) {
+function setInfoLodedAudio(_ref) {
+  var name = _ref.name,
+      path = _ref.path;
+
   btn.innerHTML = name;
   btn.setAttribute('title', path);
 }
@@ -714,13 +717,20 @@ var file = { // пока не используется
 };
 
 var modelAudio = {
-  decode: function decode(rawData) {
-    api.decode(rawData, decodedAudio.bind(this));
-    function decodedAudio(_duration) {
-      duration = _duration;
-      //this.vent.publish('decodedAudio');
-      //this.changePoz();
-    }
+  decodeFile: function decodeFile(_ref) {
+    var _this = this;
+
+    var name = _ref.name,
+        path = _ref.path,
+        size = _ref.size,
+        content = _ref.content;
+
+    api.decode(content).then(function (res) {
+      duration = res;
+      file.name = { name: name, path: path, size: size };
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', _this.getPoz());
+    });
   },
   endedTrack: function endedTrack() {
     return pozCurrent > duration;
@@ -763,9 +773,9 @@ var modelAudio = {
 
 
   // установка аудиоинтервала
-  assignInterval: function assignInterval(_ref) {
-    var _from = _ref._from,
-        _to = _ref._to;
+  assignInterval: function assignInterval(_ref2) {
+    var _from = _ref2._from,
+        _to = _ref2._to;
 
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
@@ -827,6 +837,7 @@ var modelAudio = {
   },
   setStartPoz: function setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', this.getPoz()); // может это надо в другом месте
   }
 };
 
@@ -846,7 +857,7 @@ var _window$require = window.require('electron'),
 var modelTxt = {};
 
 var subfolder = 'target';
-var file = {}; // {name, path, size, content}
+var file = {}; // {name, path, size}
 // path: fullPath + name
 var nodeTxt = null,
     // весь элемент
@@ -877,6 +888,7 @@ modelTxt.setLoadedFile = function (_ref) {
   file = { name: name, path: path, size: size, poz: poz };
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
+  return poz;
 
   function txtToLngt() {
     if (!/\.txt$/.test(name)) return;
@@ -1046,14 +1058,16 @@ function webAudioAPI() {
       startTime = void 0,
       startPoz = void 0;
 
-  res.decode = function (rawData, fn) {
-    //if (!(data instanceof ArrayBuffer)) return;
-    context = new contextClass();
-    context.decodeAudioData(rawData, function (audioBuffer) {
-      buffer = audioBuffer;
-      initVars();
-      fn(buffer.duration);
-    }, onError);
+  res.decode = function (content) {
+    /////if (!(data instanceof ArrayBuffer)) return;
+    return new Promise(function (resolve, reject) {
+      context = new contextClass();
+      context.decodeAudioData(content, function (audioBuffer) {
+        buffer = audioBuffer;
+        initVars();
+        resolve(buffer.duration);
+      }, reject); // может надо () => {reject();}
+    });
   };
 
   function initVars() {
@@ -1093,7 +1107,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 
