@@ -7,7 +7,7 @@ const evs = {
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {}
-  changeStateAudio: [] //publish - {}
+  changeStateAudio: [] //publish - {playing}
 }
 
 const vent = {

@@ -161,9 +161,9 @@ model.fnAudio = function (action, args) {
 
 function tooglePlay() {
   if (playing) {
-    playAudio();
-  } else {
     stopAudio();
+  } else {
+    playAudio();
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
 }
@@ -180,11 +180,11 @@ function playAudio() {
 function stopAudio() {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
   playing = false;
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true)); //может это лишнее
   clearInterval(timer);
   if (timerStop) {
     clearTimeout(timerStop);
   }
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true)); //может это лишнее
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
@@ -203,7 +203,7 @@ var evs = {
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {}
-  changeStateAudio: [] //publish - {}
+  changeStateAudio: [] //publish - {playing}
 };
 
 var vent = {
@@ -1116,7 +1116,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

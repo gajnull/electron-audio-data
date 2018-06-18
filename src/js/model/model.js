@@ -24,13 +24,13 @@ model.fnTxtSelection = (action) => {
 
 // действия, совершаемые при stateEdit === 'add'
 model.fnTxt = (action, args) => {
-  if (stateEdit === 'delete') model.toogleState();  
+  if (stateEdit === 'delete') model.toogleState();
   modelTxt[action](args);
 }
 
 // действия, совершаемые при stateEdit === 'delete'
 model.fnTxtDelete = (action, args) => {
-  if (stateEdit === 'add') model.toogleState();  
+  if (stateEdit === 'add') model.toogleState();
   modelTxt[action](args);
 }
 
@@ -80,9 +80,9 @@ model.fnAudio = (action, args) => {
 
 function tooglePlay() {
   if (playing) {
-    playAudio();
-  } else {
     stopAudio();
+  } else {
+    playAudio();
   }
   vent.publish('changeStateAudio', { playing });
 }
@@ -99,9 +99,9 @@ function tooglePlay() {
   function stopAudio() {
     modelAudio.stop();
     playing = false;
-    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
+    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
   }
 
 export default model;
