@@ -101,21 +101,30 @@ model.fnTxtSelection = function (action) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action]();
 };
 
+// действия, совершаемые при stateEdit === 'add'
 model.fnTxt = function (action, args) {
+  if (stateEdit === 'delete') model.toogleState();
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
+};
+
+// действия, совершаемые при stateEdit === 'delete'
+model.fnTxtDelete = function (action, args) {
+  if (stateEdit === 'add') model.toogleState();
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
 };
 
 model.setLoadedTxtFile = function (file) {
   // file: {name, path, size, content}
+  if (stateEdit === 'delete') model.toogleState();
   var startPoz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 };
 
-model.save = function (name) {
-  if (stateEdit === 'delete') model.toogleState();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save(name);
-};
+// model.save = (name) => {
+// if (stateEdit === 'delete') model.toogleState();
+// modelTxt.save(name);
+// }
 
 model.toogleState = function () {
   if (stateEdit === 'add') {
@@ -467,7 +476,7 @@ fileEnd.close = function () {
 function saveFile() {
   var name = nameEnd.value;
   if (!name) nameEnd.value = name = 'noName';
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].save(name);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('save', name);
 }
 
 function restoreFile() {
@@ -1107,7 +1116,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

@@ -22,20 +22,29 @@ model.fnTxtSelection = (action) => {
   modelTxt[action]();
 }
 
+// действия, совершаемые при stateEdit === 'add'
 model.fnTxt = (action, args) => {
+  if (stateEdit === 'delete') model.toogleState();  
+  modelTxt[action](args);
+}
+
+// действия, совершаемые при stateEdit === 'delete'
+model.fnTxtDelete = (action, args) => {
+  if (stateEdit === 'add') model.toogleState();  
   modelTxt[action](args);
 }
 
 model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
+  if (stateEdit === 'delete') model.toogleState();
   const startPoz = modelTxt.setLoadedFile(file);
   modelAudio.setStartPoz(startPoz);
   vent.publish('loadedLngt', file);
 }
 
-model.save = (name) => {
-  if (stateEdit === 'delete') model.toogleState();
-  modelTxt.save(name);
-}
+// model.save = (name) => {
+  // if (stateEdit === 'delete') model.toogleState();
+  // modelTxt.save(name);
+// }
 
 model.toogleState = () => {
   if (stateEdit === 'add') {

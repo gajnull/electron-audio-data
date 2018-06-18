@@ -25,7 +25,7 @@ fileEnd.close = function() {
 function saveFile() {
   let name = nameEnd.value;
   if (!name) nameEnd.value = name = 'noName';
-  model.save(name);
+  model.fnTxt('save', name);
 }
 
 function restoreFile() {
