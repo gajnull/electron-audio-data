@@ -31,38 +31,28 @@ const modelAudio = {
       duration = res;
       file.name = {name, path, size};
       vent.publish('decodedAudio', {name, path});
-      vent.publish('changedPoz', this.getPoz());
+      vent.publish('changedPoz', getPoz());
     });
   },
 
-  endedTrack() {  
-    return (pozCurrent > duration);
-  },
-
-  getPoz(updatePoz = false) {
-    if (updatePoz) pozCurrent = api.getCurrentPoz();
-    return {
-      pozMin, pozCurrent, duration, pozFrom, pozTo,
-    };
-  },
 
 ///// проигрывание/остановка
-  tooglePlay() { 
+  tooglePlay() {
     if (!playing) {
       this.play();
     } else {
       this.stop();
     }
     playing = !playing;
-    vent.publish('changeStateAudio', { playing });    
+    vent.publish('changeStateAudio', { playing });
   },
-  
+
   play() {    // перед вызовом проверить playing === false
     api.play(pozCurrent);
     timer = setInterval(() => {
-      vent.publish('changedPoz', this.getPoz(true));
+      vent.publish('changedPoz', getPoz(true));
       if (pozCurrent > duration) this.stop();
-    }, 100);     
+    }, 100);
   },
 
   stop() { // перед вызовом проверить playing === true
@@ -140,9 +130,15 @@ const modelAudio = {
 
   setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
-    vent.publish('changedPoz', this.getPoz());  // может это надо в другом месте
+    vent.publish('changedPoz', getPoz());  // может это надо в другом месте
   }
 }
 
+function getPoz(updatePoz = false) {
+  if (updatePoz) pozCurrent = api.getCurrentPoz();
+  return {
+    pozMin, pozCurrent, duration, pozFrom, pozTo
+  };
+}
 
 export default modelAudio;

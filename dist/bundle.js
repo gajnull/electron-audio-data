@@ -201,7 +201,7 @@ var evs = {
   changeStateEdit: [], //publish - {stateEdit}
   //audio events
   decodedAudio: [], //publish - {name, path}
-  changedPoz: [], //publish - {}
+  changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
   changeStateAudio: [] //publish - {playing}
 };
 
@@ -733,8 +733,6 @@ var file = { // пока не используется
 
 var modelAudio = {
   decodeFile: function decodeFile(_ref) {
-    var _this = this;
-
     var name = _ref.name,
         path = _ref.path,
         size = _ref.size,
@@ -744,19 +742,8 @@ var modelAudio = {
       duration = res;
       file.name = { name: name, path: path, size: size };
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
-      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', _this.getPoz());
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
     });
-  },
-  endedTrack: function endedTrack() {
-    return pozCurrent > duration;
-  },
-  getPoz: function getPoz() {
-    var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-    if (updatePoz) pozCurrent = api.getCurrentPoz();
-    return {
-      pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
-    };
   },
 
 
@@ -771,13 +758,13 @@ var modelAudio = {
     __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
   },
   play: function play() {
-    var _this2 = this;
+    var _this = this;
 
     // перед вызовом проверить playing === false
     api.play(pozCurrent);
     timer = setInterval(function () {
-      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', _this2.getPoz(true));
-      if (pozCurrent > duration) _this2.stop();
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
+      if (pozCurrent > duration) _this.stop();
     }, 100);
   },
   stop: function stop() {
@@ -873,9 +860,18 @@ var modelAudio = {
   },
   setStartPoz: function setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', this.getPoz()); // может это надо в другом месте
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz()); // может это надо в другом месте
   }
 };
+
+function getPoz() {
+  var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+  if (updatePoz) pozCurrent = api.getCurrentPoz();
+  return {
+    pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
+  };
+}
 
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
 
@@ -1111,27 +1107,28 @@ function webAudioAPI() {
     playing = false;
   }
 
-  res.play = function (poz) {
+  res.play = function () {
+    var poz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
     source = context.createBufferSource();
     source.connect(context.destination);
     source.buffer = buffer;
 
     startTime = context.currentTime;
-    startPoz = poz || 0;
+    startPoz = poz;
     source.start(0, startPoz);
     playing = true;
   };
 
   res.getCurrentPoz = function () {
-    if (playing) {
-      return context.currentTime - startTime + startPoz;
-    } else return; // этого нельзя допускать
+    if (!playing) return; // этого нельзя допускать
+    return context.currentTime - startTime + startPoz;
   };
 
   res.stop = function () {
     source.stop();
-    return res.getCurrentPoz();
     playing = false;
+    return res.getCurrentPoz();
   };
 
   function onError() {}
@@ -1143,7 +1140,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

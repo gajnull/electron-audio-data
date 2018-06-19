@@ -6,7 +6,7 @@ const evs = {
   changeStateEdit: [], //publish - {stateEdit}
   //audio events
   decodedAudio: [], //publish - {name, path}
-  changedPoz: [], //publish - {}
+  changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
   changeStateAudio: [] //publish - {playing}
 }
 

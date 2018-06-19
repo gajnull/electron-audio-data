@@ -7,14 +7,10 @@ export default function webAudioAPI() {
   }
 
   const res = {}
-  let context,
-      source,
-      buffer,
-      playing,
-      startTime,
-      startPoz
+  let context, source, buffer,
+      playing, startTime, startPoz;
 
-  res.decode = function(content) {
+  res.decode = (content) => {
     /////if (!(data instanceof ArrayBuffer)) return;
     return new Promise((resolve, reject) => {
       context = new contextClass();
@@ -27,31 +23,30 @@ export default function webAudioAPI() {
   }
 
   function initVars() {
-    startTime = startPoz = 0
-    playing = false
+    startTime = startPoz = 0;
+    playing = false;
   }
 
-  res.play = function(poz) {
-    source = context.createBufferSource()
-    source.connect(context.destination)
-    source.buffer = buffer
+  res.play = (poz = 0) => {
+    source = context.createBufferSource();
+    source.connect(context.destination);
+    source.buffer = buffer;
 
-    startTime = context.currentTime
-    startPoz = poz || 0
-    source.start(0, startPoz)
-    playing = true
+    startTime = context.currentTime;
+    startPoz = poz;
+    source.start(0, startPoz);
+    playing = true;
   }
 
-  res.getCurrentPoz = function() {
-    if(playing) {
-      return (context.currentTime - startTime + startPoz);
-    } else return; // этого нельзя допускать
+  res.getCurrentPoz = () => {
+    if (!playing) return; // этого нельзя допускать
+    return (context.currentTime - startTime + startPoz);
   }
 
-  res.stop = function() {
-    source.stop()
+  res.stop = () => {
+    source.stop();
+    playing = false;
     return res.getCurrentPoz();
-    playing = false
   }
 
 
