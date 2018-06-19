@@ -121,11 +121,6 @@ model.setLoadedTxtFile = function (file) {
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 };
 
-// model.save = (name) => {
-// if (stateEdit === 'delete') model.toogleState();
-// modelTxt.save(name);
-// }
-
 model.toogleState = function () {
   if (stateEdit === 'add') {
     var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].gotoToDelete(); // from - показывает ключевое слово
@@ -148,6 +143,10 @@ model.setLoadedAudioFile = function (file) {
 };
 
 model.fnAudio = function (action, args) {
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
+};
+
+model.fnAudioU = function (action, args) {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
@@ -711,13 +710,20 @@ function clearAllEvs() {
 
 var api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
 
-var pozMin = 0; // Позиция конца предыдущего отрезка
-var pozCurrent = 0; // Текущая позиция
-var duration = 0; // Продолжительность всего ауиотрека.
+var pozMin = 0,
+    // Позиция конца предыдущего отрезка
+pozCurrent = 0,
+    // Текущая позиция
+duration = 0; // Продолжительность всего ауиотрека.
 // Запомненный отрезок
-var pozFrom = 0;
-var pozTo = 0;
-var delta = 0.1; // Шаг изменения позиции отрезка
+var pozFrom = 0,
+    pozTo = 0,
+    delta = 0.1; // Шаг изменения позиции отрезка
+
+var playing = false,
+    // Состояние проигрывателя - играет/пауза
+timer = null,
+    timerStop = null;
 
 var file = { // пока не используется
   name: null,
@@ -755,11 +761,32 @@ var modelAudio = {
 
 
   ///// проигрывание/остановка
+  tooglePlay: function tooglePlay() {
+    if (!playing) {
+      this.play();
+    } else {
+      this.stop();
+    }
+    playing = !playing;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+  },
   play: function play() {
+    var _this2 = this;
+
+    // перед вызовом проверить playing === false
     api.play(pozCurrent);
+    timer = setInterval(function () {
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', _this2.getPoz(true));
+      if (pozCurrent > duration) _this2.stop();
+    }, 100);
   },
   stop: function stop() {
+    // перед вызовом проверить playing === true
     pozCurrent = api.stop();
+    clearInterval(timer);
+    if (timerStop) {
+      clearTimeout(timerStop);
+    }
     if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
   repeate: function repeate() {
@@ -1116,7 +1143,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

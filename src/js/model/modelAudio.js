@@ -3,19 +3,26 @@ import webAudioAPI from './webAudioAPI';
 
 const api = webAudioAPI();
 
-let pozMin = 0;   // Позиция конца предыдущего отрезка
-let pozCurrent = 0; // Текущая позиция
-let duration = 0; // Продолжительность всего ауиотрека.
+let pozMin = 0,     // Позиция конца предыдущего отрезка
+    pozCurrent = 0, // Текущая позиция
+    duration = 0;   // Продолжительность всего ауиотрека.
 // Запомненный отрезок
-let pozFrom = 0;
-let pozTo = 0;
-let delta = 0.1; // Шаг изменения позиции отрезка
+let pozFrom = 0,
+    pozTo = 0,
+    delta = 0.1; // Шаг изменения позиции отрезка
+
+let playing = false,  // Состояние проигрывателя - играет/пауза
+    timer = null,
+    timerStop = null;
+
 
 let file = { // пока не используется
   name: null,
   path: null,
   size: null
 }
+
+
 
 const modelAudio = {
 
@@ -28,7 +35,7 @@ const modelAudio = {
     });
   },
 
-  endedTrack() {
+  endedTrack() {  
     return (pozCurrent > duration);
   },
 
@@ -40,11 +47,29 @@ const modelAudio = {
   },
 
 ///// проигрывание/остановка
-  play() { api.play(pozCurrent) },
+  tooglePlay() { 
+    if (!playing) {
+      this.play();
+    } else {
+      this.stop();
+    }
+    playing = !playing;
+    vent.publish('changeStateAudio', { playing });    
+  },
+  
+  play() {    // перед вызовом проверить playing === false
+    api.play(pozCurrent);
+    timer = setInterval(() => {
+      vent.publish('changedPoz', this.getPoz(true));
+      if (pozCurrent > duration) this.stop();
+    }, 100);     
+  },
 
-  stop() {
-    pozCurrent = api.stop()
-    if(pozCurrent > duration) pozCurrent = duration //не должно быть - может превысить на доли секунды
+  stop() { // перед вызовом проверить playing === true
+    pozCurrent = api.stop();
+    clearInterval(timer);
+    if (timerStop) { clearTimeout(timerStop); }
+    if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
 
   repeate() { //проигрываем выбранный отрезок

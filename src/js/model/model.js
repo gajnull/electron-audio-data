@@ -41,10 +41,6 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
   vent.publish('loadedLngt', file);
 }
 
-// model.save = (name) => {
-  // if (stateEdit === 'delete') model.toogleState();
-  // modelTxt.save(name);
-// }
 
 model.toogleState = () => {
   if (stateEdit === 'add') {
@@ -66,7 +62,13 @@ model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
   modelAudio.decodeFile(file);
 }
 
+
 model.fnAudio = (action, args) => {
+  modelAudio[action](args);
+}
+
+
+model.fnAudioU = (action, args) => {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
