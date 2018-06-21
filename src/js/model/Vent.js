@@ -44,4 +44,6 @@ const vent = {
 
 }
 
+vent.dispatch = vent.publish; // для постепенного перехода
+
 export default vent;

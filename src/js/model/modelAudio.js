@@ -70,11 +70,15 @@ const modelAudio = {
     //this.timerStop = setTimeout(() => { this.stop() }, period);
   },
 
-// внесение в текстовой файл выбранный интервал
+  setUnit() {
+    if (playing) return;
+    if (pozFrom < pozTo) return { pozFrom, pozTo };
+  },  
+  // внесение в текстовой файл выбранный интервал
   // getInterval() {
   //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
   // }
-  nextInterval() {
+  nextUnit() {
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 

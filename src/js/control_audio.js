@@ -28,15 +28,7 @@ function handlerDecoded() {
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      model.fnAudio(attr);
-      // switch (attr) {
-      //   case 'addInterval':
-      //     const b = txt.addInterval(audio.getInterval());
-      //     if (b) audio.nextInterval();
-      //     break;
-      //   default:
-      //     audio[attr]();
-      // }
+      model.fnAudio(attr);      
     }
   };
 }

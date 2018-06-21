@@ -63,12 +63,16 @@ model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
 }
 
 
-model.fnAudio = (action, args) => {
-  modelAudio[action](args);
+model.fnAudio = (action, args) => { // возможно args не понадобится
+  const res = modelAudio[action](args);
+  if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал 
+    const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал  
+    if (isAdd) modelAudio.nextUnit();
+  }  
 }
 
 
-model.fnAudioU = (action, args) => {
+/* model.fnAudioU = (action, args) => {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
@@ -104,6 +108,6 @@ function tooglePlay() {
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
     vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
-  }
+  } */
 
 export default model;

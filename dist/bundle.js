@@ -143,20 +143,26 @@ model.setLoadedAudioFile = function (file) {
 };
 
 model.fnAudio = function (action, args) {
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
+  // возможно args не понадобится
+  var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
+  if (action === "setUnit" && res) {
+    // res = {pozFrom, pozTo} - если выбран звуковой интервал 
+    var isAdd = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setUnit(res); // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал  
+    if (isAdd) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
+  }
 };
 
-model.fnAudioU = function (action, args) {
+/* model.fnAudioU = (action, args) => {
   switch (action) {
     case 'tooglePlay':
       tooglePlay();
       break;
     default:
-      if (!playing) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
+      if(!playing) modelAudio[action](args);
   }
-  var pozz = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz();
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', pozz);
-};
+  const pozz = modelAudio.getPoz();
+  vent.publish('changedPoz', pozz);
+}
 
 function tooglePlay() {
   if (playing) {
@@ -164,27 +170,25 @@ function tooglePlay() {
   } else {
     playAudio();
   }
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+  vent.publish('changeStateAudio', { playing });
 }
 
-function playAudio() {
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].play();
-  playing = true;
-  timer = setInterval(function () {
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true));
-    if (__WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].endedTrack()) stopAudio();
-  }, 100);
-}
-
-function stopAudio() {
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
-  playing = false;
-  clearInterval(timer);
-  if (timerStop) {
-    clearTimeout(timerStop);
+  function playAudio() {
+    modelAudio.play();
+    playing = true;
+    timer = setInterval(() => {
+      vent.publish('changedPoz', modelAudio.getPoz(true));
+      if (modelAudio.endedTrack()) stopAudio();
+    }, 100);
   }
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].getPoz(true)); //может это лишнее
-}
+
+  function stopAudio() {
+    modelAudio.stop();
+    playing = false;
+    clearInterval(timer);
+    if (timerStop) { clearTimeout(timerStop); }
+    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
+  } */
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
 
@@ -234,6 +238,8 @@ var vent = {
     }
   }
 };
+
+vent.dispatch = vent.publish; // для постепенного перехода
 
 /* harmony default export */ __webpack_exports__["a"] = (vent);
 
@@ -330,14 +336,6 @@ function handlerDecoded() {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       var attr = target.getAttribute('act');
       __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio(attr);
-      // switch (attr) {
-      //   case 'addInterval':
-      //     const b = txt.addInterval(audio.getInterval());
-      //     if (b) audio.nextInterval();
-      //     break;
-      //   default:
-      //     audio[attr]();
-      // }
     }
   };
 }
@@ -784,13 +782,16 @@ var modelAudio = {
     //const period = (this.pozTo - this.pozFrom) * 1000;
     //this.timerStop = setTimeout(() => { this.stop() }, period);
   },
-
+  setUnit: function setUnit() {
+    if (playing) return;
+    if (pozFrom < pozTo) return { pozFrom: pozFrom, pozTo: pozTo };
+  },
 
   // внесение в текстовой файл выбранный интервал
   // getInterval() {
   //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
   // }
-  nextInterval: function nextInterval() {
+  nextUnit: function nextUnit() {
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
@@ -1022,11 +1023,10 @@ modelTxt.reduceSelection = function () {
 };
 
 // Установка аудиоинтервала в выделеный участок
-modelTxt.addInterval = function (_ref2) {
+modelTxt.setUnit = function (_ref2) {
   var pozFrom = _ref2.pozFrom,
       pozTo = _ref2.pozTo;
 
-  if (!pozFrom || !pozTo) return false;
   //if (stateEdit === 'delete interval') return; этого не должно быть
   var selection = nodeSelection.innerHTML;
   if (selection.trim() === '') return false;
@@ -1140,7 +1140,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

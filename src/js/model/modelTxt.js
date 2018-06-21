@@ -126,8 +126,7 @@ modelTxt.reduceSelection = () => {
 }
 
 // Установка аудиоинтервала в выделеный участок
-modelTxt.addInterval = ({ pozFrom, pozTo }) => {
-  if (!pozFrom || !pozTo) return false;
+modelTxt.setUnit = ({ pozFrom, pozTo }) => {
   //if (stateEdit === 'delete interval') return; этого не должно быть
   const selection = nodeSelection.innerHTML;
   if (selection.trim() === '') return false;
