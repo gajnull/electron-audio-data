@@ -762,20 +762,21 @@ var modelAudio = {
     api.play(pozCurrent);
     timer = setInterval(function () {
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
-      if (pozCurrent > duration) _this.stop();
+      if (pozCurrent > duration) _this.tooglePlay(); // this.stop() - недостаточно
     }, 100);
   },
   stop: function stop() {
     // перед вызовом проверить playing === true
-    pozCurrent = api.stop();
     clearInterval(timer);
     if (timerStop) {
       clearTimeout(timerStop);
     }
+    pozCurrent = api.stop();
     if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
   repeate: function repeate() {
     //проигрываем выбранный отрезок
+    if (playing) return;
     pozCurrent = pozFrom;
     this.play();
     //this.playing = true;
@@ -1121,7 +1122,6 @@ function webAudioAPI() {
   };
 
   res.getCurrentPoz = function () {
-    if (!playing) return; // этого нельзя допускать
     return context.currentTime - startTime + startPoz;
   };
 

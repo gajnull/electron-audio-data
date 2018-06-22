@@ -51,18 +51,19 @@ const modelAudio = {
     api.play(pozCurrent);
     timer = setInterval(() => {
       vent.publish('changedPoz', getPoz(true));
-      if (pozCurrent > duration) this.stop();
+      if (pozCurrent > duration) this.tooglePlay(); // this.stop() - недостаточно
     }, 100);
   },
 
   stop() { // перед вызовом проверить playing === true
-    pozCurrent = api.stop();
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
+    pozCurrent = api.stop();
     if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
 
   repeate() { //проигрываем выбранный отрезок
+    if (playing) return;
     pozCurrent = pozFrom;
     this.play();
     //this.playing = true;

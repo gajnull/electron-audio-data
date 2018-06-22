@@ -39,7 +39,6 @@ export default function webAudioAPI() {
   }
 
   res.getCurrentPoz = () => {
-    if (!playing) return; // этого нельзя допускать
     return (context.currentTime - startTime + startPoz);
   }
 
