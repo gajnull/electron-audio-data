@@ -129,7 +129,7 @@ model.toogleState = function () {
     stateEdit = 'delete';
   } else {
     __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].gotoToAdd();
-    __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextInterval();
+    __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
     stateEdit = 'add';
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateEdit', { stateEdit: stateEdit });
@@ -146,8 +146,8 @@ model.fnAudio = function (action, args) {
   // возможно args не понадобится
   var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
   if (action === "setUnit" && res) {
-    // res = {pozFrom, pozTo} - если выбран звуковой интервал 
-    var isAdd = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setUnit(res); // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал  
+    // res = {pozFrom, pozTo} - если выбран звуковой интервал
+    var isAdd = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setUnit(res); // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
     if (isAdd) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
   }
 };
@@ -1140,7 +1140,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

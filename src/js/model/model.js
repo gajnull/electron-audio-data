@@ -50,7 +50,7 @@ model.toogleState = () => {
     stateEdit = 'delete';
   } else {
     modelTxt.gotoToAdd();
-    modelAudio.nextInterval();
+    modelAudio.nextUnit();
     stateEdit = 'add';
   }
   vent.publish('changeStateEdit', {stateEdit});
@@ -65,10 +65,10 @@ model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
 
 model.fnAudio = (action, args) => { // возможно args не понадобится
   const res = modelAudio[action](args);
-  if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал 
-    const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал  
+  if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
+    const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
     if (isAdd) modelAudio.nextUnit();
-  }  
+  }
 }
 
 
