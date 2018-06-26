@@ -3,16 +3,16 @@ import model from './model/model';
 import setHotKey from './model/keyboard';
 
 const hotKeys = {
-  init: () => {
-    setHotKey('arrowLeft', () => { model.fnTxtSelection('reduceSelection'); });
-    setHotKey('arrowRight', () => { model.fnTxtSelection('addSelection'); });
-    setHotKey('space', () => {  model.tooglePlay() });
-    setHotKey('tab', () => { model.toogleState(); });    
-  },
+	init: () => {
+		setHotKey('arrowLeft', () => { model.fnTxtSelection('reduceSelection'); });
+		setHotKey('arrowRight', () => { model.fnTxtSelection('addSelection'); });
+		setHotKey('space', () => { model.fnAudio('tooglePlay') });
+		setHotKey('tab', () => { model.toogleState(); });
+	},
 
-  close: () => {
-    setHotKey('clear');
-  }
+	close: () => {
+		setHotKey('clear');
+	}
 };
 
 export default hotKeys;

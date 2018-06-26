@@ -64,6 +64,7 @@ model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
 
 
 model.fnAudio = (action, args) => { // возможно args не понадобится
+  if (stateEdit === 'delete') model.toogleState();  // если используется клавиатура
   const res = modelAudio[action](args);
   if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
     const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал

@@ -32,9 +32,9 @@ function restoreFile() {
   model.fnTxt('restore');
 }
 
-function writeName({name}) {
-  const res = name.match(/^(.+)\.\w{2,6}$/i);  // {2,6} - перестраховались
-  if(res) nameEnd.value = res[1];
+function writeName({ name }) {
+  const res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
+  if (res) nameEnd.value = res[1];
 }
 
 export default fileEnd;

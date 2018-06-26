@@ -144,6 +144,7 @@ model.setLoadedAudioFile = function (file) {
 
 model.fnAudio = function (action, args) {
   // возможно args не понадобится
+  if (stateEdit === 'delete') model.toogleState(); // если используется клавиатура
   var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
   if (action === "setUnit" && res) {
     // res = {pozFrom, pozTo} - если выбран звуковой интервал
@@ -579,24 +580,24 @@ function setInfoLodedLngt(_ref) {
 
 
 var hotKeys = {
-  init: function init() {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('reduceSelection');
-    });
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('addSelection');
-    });
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].tooglePlay();
-    });
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
-    });
-  },
+	init: function init() {
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('reduceSelection');
+		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('addSelection');
+		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
+		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
+		});
+	},
 
-  close: function close() {
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
-  }
+	close: function close() {
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
+	}
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (hotKeys);
@@ -1140,7 +1141,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 
