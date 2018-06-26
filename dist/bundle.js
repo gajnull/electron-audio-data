@@ -151,29 +151,10 @@ model.fnAudio = function (action, args) {
     var isAdd = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setUnit(res); // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
     if (isAdd) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
   }
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
-/* model.fnAudioU = (action, args) => {
-  switch (action) {
-    case 'tooglePlay':
-      tooglePlay();
-      break;
-    default:
-      if(!playing) modelAudio[action](args);
-  }
-  const pozz = modelAudio.getPoz();
-  vent.publish('changedPoz', pozz);
-}
-
-function tooglePlay() {
-  if (playing) {
-    stopAudio();
-  } else {
-    playAudio();
-  }
-  vent.publish('changeStateAudio', { playing });
-}
-
+/*
   function playAudio() {
     modelAudio.play();
     playing = true;
@@ -864,6 +845,9 @@ var modelAudio = {
   setStartPoz: function setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
     __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz()); // может это надо в другом месте
+  },
+  advertPozz: function advertPozz() {
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
   }
 };
 
@@ -1029,9 +1013,8 @@ modelTxt.setUnit = function (_ref2) {
   var pozFrom = _ref2.pozFrom,
       pozTo = _ref2.pozTo;
 
-  //if (stateEdit === 'delete interval') return; этого не должно быть
   var selection = nodeSelection.innerHTML;
-  if (selection.trim() === '') return false;
+  if (selection.trim() === '') return;
   nodeSelection.innerHTML = '';
   var span = document.createElement('span');
   span.innerHTML = selection;
@@ -1141,7 +1124,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

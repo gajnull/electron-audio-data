@@ -74,7 +74,7 @@ const modelAudio = {
   setUnit() {
     if (playing) return;
     if (pozFrom < pozTo) return { pozFrom, pozTo };
-  },  
+  },
   // внесение в текстовой файл выбранный интервал
   // getInterval() {
   //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
@@ -107,10 +107,10 @@ const modelAudio = {
   },
 
   fromMoveForward() {
-    let newPoz = Math.round((pozFrom + delta) * 10) / 10
+    let newPoz = Math.round((pozFrom + delta) * 10) / 10;
     if (newPoz > duration) { newPoz = duration }
-    pozFrom = newPoz
-    if (pozFrom > pozTo) pozTo = pozFrom
+    pozFrom = newPoz;
+    if (pozFrom > pozTo) pozTo = pozFrom;
   },
 
   toMoveBack() {
@@ -136,6 +136,10 @@ const modelAudio = {
   setStartPoz(poz) {
     pozMin = pozCurrent = pozFrom = pozTo = +poz;
     vent.publish('changedPoz', getPoz());  // может это надо в другом месте
+  },
+
+  advertPozz() {
+    vent.publish('changedPoz', getPoz());
   }
 }
 

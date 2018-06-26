@@ -70,30 +70,11 @@ model.fnAudio = (action, args) => { // возможно args не понадоб
     const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
     if (isAdd) modelAudio.nextUnit();
   }
+  modelAudio.advertPozz();
 }
 
 
-/* model.fnAudioU = (action, args) => {
-  switch (action) {
-    case 'tooglePlay':
-      tooglePlay();
-      break;
-    default:
-      if(!playing) modelAudio[action](args);
-  }
-  const pozz = modelAudio.getPoz();
-  vent.publish('changedPoz', pozz);
-}
-
-function tooglePlay() {
-  if (playing) {
-    stopAudio();
-  } else {
-    playAudio();
-  }
-  vent.publish('changeStateAudio', { playing });
-}
-
+/*
   function playAudio() {
     modelAudio.play();
     playing = true;
