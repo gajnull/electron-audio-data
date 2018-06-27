@@ -41,11 +41,11 @@ const modelAudio = {
     if (playing) {
       this.stop();
     } else {
-      this.play();      
+      this.play();
     }
   },
 
-  play() { 
+  play() {
     if (playing) return; // может вызываться не только из tooglePlay()
     api.play(pozCurrent);
     playing = true;
@@ -56,8 +56,8 @@ const modelAudio = {
     }, 100);
   },
 
-  stop() { 
-    if (!playing) return; // может вызываться не только из tooglePlay()    
+  stop() {
+    if (!playing) return; // может вызываться не только из tooglePlay()
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
     pozCurrent = api.stop();
@@ -69,7 +69,7 @@ const modelAudio = {
   repeate() { //проигрываем выбранный отрезок
     if (playing) return;
     const period = (pozTo - pozFrom) * 1000;
-    if (period < 0) return; // не должно быть    
+    if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();
     timerStop = setTimeout(() => { this.stop() }, period);
@@ -84,26 +84,31 @@ const modelAudio = {
     if (pozFrom < pozTo) return { pozFrom, pozTo };
   },
 
-  nextUnit() {  // должно быть playing = false 
+  nextUnit() {  // должно быть playing = false
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
 // установка аудиоинтервала (из файла .lngt)
-  assignInterval({ _from, _to }) {  // должно быть playing = false 
+  assignInterval({ _from, _to }) {  // должно быть playing = false
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
   },
 
+//
+  cleare() {
+    
+  },
+
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
-  gotoStart() { 
+  gotoStart() {
     if (playing) return;
-    pozCurrent = pozMin; 
+    pozCurrent = pozMin;
   },
-  gotoFrom() { 
+  gotoFrom() {
     if (playing) return;
-    pozCurrent = pozFrom; 
+    pozCurrent = pozFrom;
   },
-  gotoTo() { 
+  gotoTo() {
     if (playing) return;
     pozCurrent = pozTo;
    },
@@ -135,7 +140,7 @@ const modelAudio = {
   },
 
   toSet() {
-    if (playing) this.stop(); 
+    if (playing) this.stop();
     pozTo =  + pozCurrent.toFixed(1);
     if (pozFrom > pozTo) pozFrom = pozTo;
   },

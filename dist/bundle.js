@@ -133,6 +133,7 @@ model.toogleState = function () {
     stateEdit = 'add';
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateEdit', { stateEdit: stateEdit });
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
 /////// Audio
@@ -157,9 +158,11 @@ model.fnAudio = function (action, args) {
 model.fnEditAudio = function (action, args) {
   // возможно args не понадобится
   if (stateEdit === 'add') model.toogleState(); // если используется клавиатура
-  var metod = action + 'Edit';
-  var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][metod](args);
-
+  if (action === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
+  if (action === "cleare") {
+    var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); // 
+    if (interval) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
+  }
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
@@ -747,7 +750,7 @@ var modelAudio = {
     }, 100);
   },
   stop: function stop() {
-    if (!playing) return; // может вызываться не только из tooglePlay()    
+    if (!playing) return; // может вызываться не только из tooglePlay()
     clearInterval(timer);
     if (timerStop) {
       clearTimeout(timerStop);
@@ -763,7 +766,7 @@ var modelAudio = {
     //проигрываем выбранный отрезок
     if (playing) return;
     var period = (pozTo - pozFrom) * 1000;
-    if (period < 0) return; // не должно быть    
+    if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();
     timerStop = setTimeout(function () {
@@ -778,7 +781,7 @@ var modelAudio = {
     if (pozFrom < pozTo) return { pozFrom: pozFrom, pozTo: pozTo };
   },
   nextUnit: function nextUnit() {
-    // должно быть playing = false 
+    // должно быть playing = false
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
@@ -787,10 +790,14 @@ var modelAudio = {
   assignInterval: function assignInterval(_ref2) {
     var _from = _ref2._from,
         _to = _ref2._to;
-    // должно быть playing = false 
+    // должно быть playing = false
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
   },
+
+
+  //
+  cleare: function cleare() {},
 
 
   //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
@@ -1032,6 +1039,20 @@ modelTxt.setUnit = function (_ref2) {
   return true;
 };
 
+//
+modelTxt.deleteUnit = function () {
+  var _from = void 0,
+      _to = void 0; // from - показывает ключевое слово
+  var nodeTmp = nodeLast;
+
+  var span = document.createElement('span');
+  span.innerHTML = selection;
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  nodeSelection.before(span);
+  return true;
+};
+
 modelTxt.gotoToAdd = function () {
   nodeLast.removeAttribute('id');
   nodeLast = null;
@@ -1132,7 +1153,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 

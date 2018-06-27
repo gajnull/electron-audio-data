@@ -138,6 +138,18 @@ modelTxt.setUnit = ({ pozFrom, pozTo }) => {
   return true;
 }
 
+//
+modelTxt.deleteUnit = () => {
+  let _from, _to;   // from - показывает ключевое слово
+  const nodeTmp = nodeLast;
+
+  const span = document.createElement('span');
+  span.innerHTML = selection;
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  nodeSelection.before(span);
+  return true;
+}
 
 modelTxt.gotoToAdd = () => {
   nodeLast.removeAttribute('id');

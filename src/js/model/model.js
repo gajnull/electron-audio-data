@@ -54,6 +54,7 @@ model.toogleState = () => {
     stateEdit = 'add';
   }
   vent.publish('changeStateEdit', {stateEdit});
+  modelAudio.advertPozz();
 }
 
 /////// Audio
@@ -75,9 +76,11 @@ model.fnAudio = (action, args) => { // возможно args не понадоб
 
 model.fnEditAudio = (action, args) => { // возможно args не понадобится
   if (stateEdit === 'add') model.toogleState();  // если используется клавиатура
-  const metod = action + 'Edit';
-  const res = modelAudio[metod](args);  
-
+  if (action === "repeate") modelAudio[action](args);
+  if (action === "cleare") {
+    const interval = modelTxt.deleteUnit();  // 
+    if (interval) modelAudio.assignInterval(interval);
+  }
   modelAudio.advertPozz();
 }
 
