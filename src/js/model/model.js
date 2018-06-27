@@ -73,23 +73,15 @@ model.fnAudio = (action, args) => { // возможно args не понадоб
   modelAudio.advertPozz();
 }
 
+model.fnEditAudio = (action, args) => { // возможно args не понадобится
+  if (stateEdit === 'add') model.toogleState();  // если используется клавиатура
+  const metod = action + 'Edit';
+  const res = modelAudio[metod](args);  
 
-/*
-  function playAudio() {
-    modelAudio.play();
-    playing = true;
-    timer = setInterval(() => {
-      vent.publish('changedPoz', modelAudio.getPoz(true));
-      if (modelAudio.endedTrack()) stopAudio();
-    }, 100);
-  }
+  modelAudio.advertPozz();
+}
 
-  function stopAudio() {
-    modelAudio.stop();
-    playing = false;
-    clearInterval(timer);
-    if (timerStop) { clearTimeout(timerStop); }
-    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
-  } */
+
+
 
 export default model;

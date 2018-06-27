@@ -31,6 +31,14 @@ function handlerDecoded() {
       model.fnAudio(attr);      
     }
   };
+  intervals.onclick = function(event) {
+    const target = event.target
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      const attr = target.getAttribute('act');
+      model.fnEditAudio(attr);      
+    }
+  };
 }
 
 function changeBtnPlay({ playing }) {

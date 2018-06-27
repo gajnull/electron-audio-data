@@ -38,61 +38,75 @@ const modelAudio = {
 
 ///// проигрывание/остановка
   tooglePlay() {
-    if (!playing) {
-      this.play();
-    } else {
+    if (playing) {
       this.stop();
+    } else {
+      this.play();      
     }
-    playing = !playing;
-    vent.publish('changeStateAudio', { playing });
   },
 
-  play() {    // перед вызовом проверить playing === false
+  play() { 
+    if (playing) return; // может вызываться не только из tooglePlay()
     api.play(pozCurrent);
+    playing = true;
+    vent.publish('changeStateAudio', { playing });
     timer = setInterval(() => {
       vent.publish('changedPoz', getPoz(true));
       if (pozCurrent > duration) this.tooglePlay(); // this.stop() - недостаточно
     }, 100);
   },
 
-  stop() { // перед вызовом проверить playing === true
+  stop() { 
+    if (!playing) return; // может вызываться не только из tooglePlay()    
     clearInterval(timer);
     if (timerStop) { clearTimeout(timerStop); }
     pozCurrent = api.stop();
+    playing = false;
+    vent.publish('changeStateAudio', { playing });
     if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
 
   repeate() { //проигрываем выбранный отрезок
     if (playing) return;
+    const period = (pozTo - pozFrom) * 1000;
+    if (period < 0) return; // не должно быть    
     pozCurrent = pozFrom;
     this.play();
-    //this.playing = true;
-    //const period = (this.pozTo - this.pozFrom) * 1000;
-    //this.timerStop = setTimeout(() => { this.stop() }, period);
+    timerStop = setTimeout(() => { this.stop() }, period);
+  },
+
+  reset() {
+    pozFrom = pozCurrent = pozTo = pozMin;
   },
 
   setUnit() {
     if (playing) return;
     if (pozFrom < pozTo) return { pozFrom, pozTo };
   },
-  // внесение в текстовой файл выбранный интервал
-  // getInterval() {
-  //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
-  // }
-  nextUnit() {
+
+  nextUnit() {  // должно быть playing = false 
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
-// установка аудиоинтервала
-  assignInterval({ _from, _to }) {
+// установка аудиоинтервала (из файла .lngt)
+  assignInterval({ _from, _to }) {  // должно быть playing = false 
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
   },
 
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
-  gotoStart() { pozCurrent = pozMin; },
-  gotoFrom() { pozCurrent = pozFrom; },
-  gotoTo() { pozCurrent = pozTo; },
+  gotoStart() { 
+    if (playing) return;
+    pozCurrent = pozMin; 
+  },
+  gotoFrom() { 
+    if (playing) return;
+    pozCurrent = pozFrom; 
+  },
+  gotoTo() { 
+    if (playing) return;
+    pozCurrent = pozTo;
+   },
 
 //// установка и изменение позицй от и до
   fromMoveBack() {
@@ -101,7 +115,7 @@ const modelAudio = {
     pozFrom = newPoz;
   },
 
-  fromSet() {
+  fromSet() { // playing может быть любым
     pozFrom = + pozCurrent.toFixed(1);
     if (pozTo < pozFrom) pozTo = pozFrom;
   },
@@ -121,7 +135,7 @@ const modelAudio = {
   },
 
   toSet() {
-    this.stop();  // this working only if model.playing = true
+    if (playing) this.stop(); 
     pozTo =  + pozCurrent.toFixed(1);
     if (pozFrom > pozTo) pozFrom = pozTo;
   },

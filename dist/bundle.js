@@ -154,23 +154,14 @@ model.fnAudio = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
-/*
-  function playAudio() {
-    modelAudio.play();
-    playing = true;
-    timer = setInterval(() => {
-      vent.publish('changedPoz', modelAudio.getPoz(true));
-      if (modelAudio.endedTrack()) stopAudio();
-    }, 100);
-  }
+model.fnEditAudio = function (action, args) {
+  // возможно args не понадобится
+  if (stateEdit === 'add') model.toogleState(); // если используется клавиатура
+  var metod = action + 'Edit';
+  var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][metod](args);
 
-  function stopAudio() {
-    modelAudio.stop();
-    playing = false;
-    clearInterval(timer);
-    if (timerStop) { clearTimeout(timerStop); }
-    vent.publish('changedPoz', modelAudio.getPoz(true))  //может это лишнее
-  } */
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
+};
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
 
@@ -318,6 +309,14 @@ function handlerDecoded() {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       var attr = target.getAttribute('act');
       __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio(attr);
+    }
+  };
+  intervals.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnEditAudio(attr);
     }
   };
 }
@@ -729,61 +728,66 @@ var modelAudio = {
 
   ///// проигрывание/остановка
   tooglePlay: function tooglePlay() {
-    if (!playing) {
-      this.play();
-    } else {
+    if (playing) {
       this.stop();
+    } else {
+      this.play();
     }
-    playing = !playing;
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
   },
   play: function play() {
     var _this = this;
 
-    // перед вызовом проверить playing === false
+    if (playing) return; // может вызываться не только из tooglePlay()
     api.play(pozCurrent);
+    playing = true;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
     timer = setInterval(function () {
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
       if (pozCurrent > duration) _this.tooglePlay(); // this.stop() - недостаточно
     }, 100);
   },
   stop: function stop() {
-    // перед вызовом проверить playing === true
+    if (!playing) return; // может вызываться не только из tooglePlay()    
     clearInterval(timer);
     if (timerStop) {
       clearTimeout(timerStop);
     }
     pozCurrent = api.stop();
+    playing = false;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
     if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
   },
   repeate: function repeate() {
+    var _this2 = this;
+
     //проигрываем выбранный отрезок
     if (playing) return;
+    var period = (pozTo - pozFrom) * 1000;
+    if (period < 0) return; // не должно быть    
     pozCurrent = pozFrom;
     this.play();
-    //this.playing = true;
-    //const period = (this.pozTo - this.pozFrom) * 1000;
-    //this.timerStop = setTimeout(() => { this.stop() }, period);
+    timerStop = setTimeout(function () {
+      _this2.stop();
+    }, period);
+  },
+  reset: function reset() {
+    pozFrom = pozCurrent = pozTo = pozMin;
   },
   setUnit: function setUnit() {
     if (playing) return;
     if (pozFrom < pozTo) return { pozFrom: pozFrom, pozTo: pozTo };
   },
-
-  // внесение в текстовой файл выбранный интервал
-  // getInterval() {
-  //   return { pozFrom: this.pozFrom, pozTo: this.pozTo };
-  // }
   nextUnit: function nextUnit() {
+    // должно быть playing = false 
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
 
-  // установка аудиоинтервала
+  // установка аудиоинтервала (из файла .lngt)
   assignInterval: function assignInterval(_ref2) {
     var _from = _ref2._from,
         _to = _ref2._to;
-
+    // должно быть playing = false 
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
   },
@@ -791,12 +795,15 @@ var modelAudio = {
 
   //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
   gotoStart: function gotoStart() {
+    if (playing) return;
     pozCurrent = pozMin;
   },
   gotoFrom: function gotoFrom() {
+    if (playing) return;
     pozCurrent = pozFrom;
   },
   gotoTo: function gotoTo() {
+    if (playing) return;
     pozCurrent = pozTo;
   },
 
@@ -810,6 +817,7 @@ var modelAudio = {
     pozFrom = newPoz;
   },
   fromSet: function fromSet() {
+    // playing может быть любым
     pozFrom = +pozCurrent.toFixed(1);
     if (pozTo < pozFrom) pozTo = pozFrom;
   },
@@ -830,7 +838,7 @@ var modelAudio = {
     if (pozTo < pozFrom) pozFrom = pozTo;
   },
   toSet: function toSet() {
-    this.stop(); // this working only if model.playing = true
+    if (playing) this.stop();
     pozTo = +pozCurrent.toFixed(1);
     if (pozFrom > pozTo) pozFrom = pozTo;
   },
@@ -1124,7 +1132,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 
