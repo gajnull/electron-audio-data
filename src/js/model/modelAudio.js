@@ -94,11 +94,6 @@ const modelAudio = {
     pozTo = +_to;
   },
 
-//
-  cleare() {
-    
-  },
-
 //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
   gotoStart() {
     if (playing) return;

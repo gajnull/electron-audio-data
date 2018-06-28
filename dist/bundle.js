@@ -161,7 +161,11 @@ model.fnEditAudio = function (action, args) {
   if (action === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
   if (action === "cleare") {
     var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); // 
-    if (interval) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
+    if (interval) {
+      __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
+    } else {
+      model.toogleState();
+    }
   }
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
@@ -796,10 +800,6 @@ var modelAudio = {
   },
 
 
-  //
-  cleare: function cleare() {},
-
-
   //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
   gotoStart: function gotoStart() {
     if (playing) return;
@@ -1039,18 +1039,22 @@ modelTxt.setUnit = function (_ref2) {
   return true;
 };
 
-//
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
 modelTxt.deleteUnit = function () {
   var _from = void 0,
       _to = void 0; // from - показывает ключевое слово
-  var nodeTmp = nodeLast;
-
-  var span = document.createElement('span');
-  span.innerHTML = selection;
-  span.setAttribute('from', pozFrom);
-  span.setAttribute('to', pozTo);
-  nodeSelection.before(span);
-  return true;
+  var span = nodeLast.previousElementSibling; // возможно можно const span
+  nodeLast.removeAttribute('id');
+  var txtTmp = nodeLast.innerHTML;
+  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
+  nodeLast.remove();
+  if (span && span.hasAttribute('from') && span.hasAttribute('to')) {
+    _from = +span.getAttribute('from');
+    _to = +span.getAttribute('to');
+    span.id = 'last-txt';
+    nodeLast = span;
+  }
+  return { _from: _from, _to: _to };
 };
 
 modelTxt.gotoToAdd = function () {
@@ -1153,7 +1157,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

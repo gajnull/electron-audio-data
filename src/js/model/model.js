@@ -79,7 +79,11 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
   if (action === "repeate") modelAudio[action](args);
   if (action === "cleare") {
     const interval = modelTxt.deleteUnit();  // 
-    if (interval) modelAudio.assignInterval(interval);
+    if (interval) {
+      modelAudio.assignInterval(interval);
+    } else {
+      model.toogleState();
+    }  
   }
   modelAudio.advertPozz();
 }

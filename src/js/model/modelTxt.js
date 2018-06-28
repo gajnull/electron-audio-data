@@ -138,17 +138,21 @@ modelTxt.setUnit = ({ pozFrom, pozTo }) => {
   return true;
 }
 
-//
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
 modelTxt.deleteUnit = () => {
   let _from, _to;   // from - показывает ключевое слово
-  const nodeTmp = nodeLast;
-
-  const span = document.createElement('span');
-  span.innerHTML = selection;
-  span.setAttribute('from', pozFrom);
-  span.setAttribute('to', pozTo);
-  nodeSelection.before(span);
-  return true;
+  let span = nodeLast.previousElementSibling;  // возможно можно const span
+  nodeLast.removeAttribute('id');
+  const txtTmp = nodeLast.innerHTML;
+  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
+  nodeLast.remove();
+  if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
+    _from = + span.getAttribute('from'); 
+    _to = + span.getAttribute('to'); 
+    span.id = 'last-txt';
+    nodeLast = span;
+  }
+  return { _from, _to };
 }
 
 modelTxt.gotoToAdd = () => {
