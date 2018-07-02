@@ -3,7 +3,6 @@ import model from './model/model';
 const controlAudio = {};
 
 let btns, intervals, btnPlay;
-
 controlAudio.init = function() {
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');

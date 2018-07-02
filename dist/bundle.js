@@ -290,7 +290,6 @@ var controlAudio = {};
 var btns = void 0,
     intervals = void 0,
     btnPlay = void 0;
-
 controlAudio.init = function () {
   btns = document.getElementById('btns');
   intervals = document.getElementById('edit-intervals');
@@ -577,7 +576,13 @@ var hotKeys = {
 		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
 		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('alt', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('repeate');
+		});
 		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('setUnit');
+		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('f2', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
 		});
 	},
@@ -652,7 +657,11 @@ var keyCodes = {
   37: 'arrowLeft', // <- влево
   39: 'arrowRight', // -> вправо
   32: 'space', // _ пробел
-  9: 'tab' // tab
+  9: 'tab', // tab
+  18: 'alt', // alt
+  17: 'ctrl', // ctrl  
+  113: 'f2' // F2 - пока не используется
+
 };
 
 document.onkeydown = keyboardHandler;

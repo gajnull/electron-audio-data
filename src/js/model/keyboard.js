@@ -11,7 +11,11 @@ const keyCodes = {
   37: 'arrowLeft',    // <- влево
   39: 'arrowRight',   // -> вправо
   32: 'space',        // _ пробел
-   9: 'tab'           // tab
+   9: 'tab',          // tab
+  18: 'alt',          // alt
+  17: 'ctrl',         // ctrl  
+ 113: 'f2'            // F2 - пока не используется
+
 }
 
 document.onkeydown = keyboardHandler;
