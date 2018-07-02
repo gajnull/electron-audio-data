@@ -19,7 +19,7 @@ controlAudio.close = function() {
   model.off('changeStateEdit', changeStateEdit);
   btns.onclick = '';
   btns = null;
-}
+};
 
 function handlerDecoded() {
   btns.onclick = function(event) {
@@ -27,7 +27,7 @@ function handlerDecoded() {
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      model.fnAudio(attr);      
+      model.fnAudio(attr);
     }
   };
   intervals.onclick = function(event) {
@@ -35,7 +35,7 @@ function handlerDecoded() {
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      model.fnEditAudio(attr);      
+      model.fnEditAudio(attr);
     }
   };
 }

@@ -576,9 +576,7 @@ var hotKeys = {
 		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
 		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('alt', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('repeate');
-		});
+		//setHotKey('alt', () => { model.fnAudio('repeate'); });
 		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('setUnit');
 		});
@@ -650,7 +648,10 @@ var evs = {
   arrowLeft: function arrowLeft() {},
   arrowRight: function arrowRight() {},
   space: function space() {},
-  tab: function tab() {}
+  tab: function tab() {},
+  alt_space: function alt_space() {},
+  ctrl_space: function ctrl_space() {},
+  f2: function f2() {}
 };
 
 var keyCodes = {
@@ -658,10 +659,7 @@ var keyCodes = {
   39: 'arrowRight', // -> вправо
   32: 'space', // _ пробел
   9: 'tab', // tab
-  18: 'alt', // alt
-  17: 'ctrl', // ctrl  
   113: 'f2' // F2 - пока не используется
-
 };
 
 document.onkeydown = keyboardHandler;
@@ -669,10 +667,13 @@ document.onkeydown = keyboardHandler;
 function keyboardHandler(ev) {
   //console.log(ev.keyCode);
   var key = ev.keyCode;
-  if (!(key in keyCodes)) return;
-  var fn = keyCodes[key];
-  if (!fn) return;
-  evs[fn]();
+  if (key in keyCodes) {
+    var fn = keyCodes[key];
+    if (!fn) return;
+    if (ev.ctrlKey) fn = 'ctrl_' + fn;
+    if (ev.altKey) fn = 'alt_' + fn;
+    if (fn in evs) evs[fn]();
+  }
 }
 
 function setHotKey(keyName, fn) {
@@ -683,7 +684,7 @@ function setHotKey(keyName, fn) {
   if (keyName in evs) {
     evs[keyName] = fn;
   } else {
-    console.warn('Такой клавиши(сочетания клавиш) не предусмотрено');
+    console.warn('Такой клавиши: ' + keyName + '(сочетания клавиш) не предусмотрено');
   }
 }
 // очищаем все назначения клавиш
@@ -1166,7 +1167,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 
