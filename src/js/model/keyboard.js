@@ -5,8 +5,9 @@ const evs = {
   arrowRight() {},
   space() {},
   tab() {},
-  alt_space() {},
-  ctrl_space() {},
+  //altSpace() {}, // срабатывает событие окна
+  shiftSpace() {},  
+  ctrlSpace() {},
   f2() {}
 };
 
@@ -24,10 +25,13 @@ function keyboardHandler(ev) {
   //console.log(ev.keyCode);
   const key = ev.keyCode;
   if(key in keyCodes) {
+    ev.preventDefault(); 
+    //ev.stopPropagation()    
     let fn = keyCodes[key];
     if (!fn) return;
-    if (ev.ctrlKey) fn = 'ctrl_' + fn;
-    if (ev.altKey) fn = 'alt_' + fn;
+    if (ev.ctrlKey) fn = 'ctrl' + fn[0].toUpperCase() + fn.slice(1);  // i.e. 'space' -> 'ctrlSpace'
+    //if (ev.altKey) fn = 'alt' + fn[0].toUpperCase() + fn.slice(1);
+    if (ev.shiftKey) fn = 'shift' + fn[0].toUpperCase() + fn.slice(1);
     if (fn in evs) evs[fn]();
   }
 }

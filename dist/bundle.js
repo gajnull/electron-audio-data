@@ -576,11 +576,13 @@ var hotKeys = {
 		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
 		});
-		//setHotKey('alt', () => { model.fnAudio('repeate'); });
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', function () {
+			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('repeate');
+		});
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('shiftSpace', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('setUnit');
 		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('f2', function () {
+		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
 			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
 		});
 	},
@@ -649,8 +651,10 @@ var evs = {
   arrowRight: function arrowRight() {},
   space: function space() {},
   tab: function tab() {},
-  alt_space: function alt_space() {},
-  ctrl_space: function ctrl_space() {},
+
+  //altSpace() {}, // срабатывает событие окна
+  shiftSpace: function shiftSpace() {},
+  ctrlSpace: function ctrlSpace() {},
   f2: function f2() {}
 };
 
@@ -668,10 +672,13 @@ function keyboardHandler(ev) {
   //console.log(ev.keyCode);
   var key = ev.keyCode;
   if (key in keyCodes) {
+    ev.preventDefault();
+    //ev.stopPropagation()    
     var fn = keyCodes[key];
     if (!fn) return;
-    if (ev.ctrlKey) fn = 'ctrl_' + fn;
-    if (ev.altKey) fn = 'alt_' + fn;
+    if (ev.ctrlKey) fn = 'ctrl' + fn[0].toUpperCase() + fn.slice(1); // i.e. 'space' -> 'ctrlSpace'
+    //if (ev.altKey) fn = 'alt' + fn[0].toUpperCase() + fn.slice(1);
+    if (ev.shiftKey) fn = 'shift' + fn[0].toUpperCase() + fn.slice(1);
     if (fn in evs) evs[fn]();
   }
 }
@@ -779,6 +786,7 @@ var modelAudio = {
 
     //проигрываем выбранный отрезок
     if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
     var period = (pozTo - pozFrom) * 1000;
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
@@ -792,7 +800,8 @@ var modelAudio = {
   },
   setUnit: function setUnit() {
     if (playing) return;
-    if (pozFrom < pozTo) return { pozFrom: pozFrom, pozTo: pozTo };
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
+    return { pozFrom: pozFrom, pozTo: pozTo };
   },
   nextUnit: function nextUnit() {
     // должно быть playing = false
@@ -883,6 +892,13 @@ function getPoz() {
   return {
     pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
   };
+}
+
+function notFitUnit() {
+  // если отрезок не установлен (pozFrom + x > pozTo) и не может быть установлен (pozCurrent < pozFrom + x)
+  if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
+  if (pozTo > pozFrom + 0.3) return;
+  return true;
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
@@ -1167,7 +1183,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

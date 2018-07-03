@@ -7,9 +7,9 @@ const hotKeys = {
 		setHotKey('arrowLeft', () => { model.fnTxtSelection('reduceSelection'); });
 		setHotKey('arrowRight', () => { model.fnTxtSelection('addSelection'); });
     setHotKey('space', () => { model.fnAudio('tooglePlay'); });
-    //setHotKey('alt', () => { model.fnAudio('repeate'); });
-    setHotKey('tab', () => { model.fnAudio('setUnit'); });
-    setHotKey('f2', () => { model.toogleState(); });
+    setHotKey('ctrlSpace', () => { model.fnAudio('repeate'); });
+    setHotKey('shiftSpace', () => { model.fnAudio('setUnit'); });
+    setHotKey('tab', () => { model.toogleState(); });
  	},
 
 	close: () => {

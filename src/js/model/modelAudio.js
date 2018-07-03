@@ -68,6 +68,7 @@ const modelAudio = {
 
   repeate() { //проигрываем выбранный отрезок
     if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
     const period = (pozTo - pozFrom) * 1000;
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
@@ -81,7 +82,8 @@ const modelAudio = {
 
   setUnit() {
     if (playing) return;
-    if (pozFrom < pozTo) return { pozFrom, pozTo };
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
+    return { pozFrom, pozTo };
   },
 
   nextUnit() {  // должно быть playing = false
@@ -162,6 +164,12 @@ function getPoz(updatePoz = false) {
   return {
     pozMin, pozCurrent, duration, pozFrom, pozTo
   };
+}
+
+function notFitUnit() { // если отрезок не установлен (pozFrom + x > pozTo) и не может быть установлен (pozCurrent < pozFrom + x)
+  if ( pozTo < pozFrom + 0.3  && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
+  if (pozTo > pozFrom + 0.3) return;
+  return true;
 }
 
 export default modelAudio;
