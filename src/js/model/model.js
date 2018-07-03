@@ -78,12 +78,12 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
   if (stateEdit === 'add') model.toogleState();  // если используется клавиатура
   if (action === "repeate") modelAudio[action](args);
   if (action === "cleare") {
-    const interval = modelTxt.deleteUnit();  // 
+    const interval = modelTxt.deleteUnit();  //
     if (interval) {
       modelAudio.assignInterval(interval);
     } else {
       model.toogleState();
-    }  
+    }
   }
   modelAudio.advertPozz();
 }

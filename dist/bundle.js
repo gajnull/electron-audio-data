@@ -160,7 +160,7 @@ model.fnEditAudio = function (action, args) {
   if (stateEdit === 'add') model.toogleState(); // если используется клавиатура
   if (action === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
   if (action === "cleare") {
-    var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); // 
+    var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); //
     if (interval) {
       __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
     } else {
@@ -1183,7 +1183,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(undefined);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 
