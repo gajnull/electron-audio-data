@@ -6,7 +6,7 @@ import model from './model/model';
 
 const fileTxt = {};
 
-let btn, input;
+let btn, input; 
 
 fileTxt.init = function() {
   btn = document.getElementById('file-txt');

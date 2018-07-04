@@ -23,13 +23,11 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
-  let poz = 0;
-  const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
-  file = {name, path, size, poz};
+
+  file = {name, path, size, startPoz: getStartPoz()};
+  vent.publish('loadedLngt', file);
   localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);
-  return poz;
+  localStorage.setItem('name-lngt', name);  
 
   function txtToLngt() {
     if (!/\.txt$/.test(name)) return;
@@ -43,7 +41,8 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = `<span id="selection-txt"></span>
+    s = `<main-info audio-file=""></main-info>
+         <span id="selection-txt"></span>
          <span id="current-txt">&nbsp&nbsp${s}</span>`;
     content = s;
   }
@@ -91,7 +90,6 @@ modelTxt.restore = () => {
     const {name, path} = file.temp;
     file = {name, path, content: arg, size: file.size};
     modelTxt.setLoadedFile(file);
-    vent.publish('loadedLngt', file);
   })
 
 // Изменение области выделения
@@ -181,5 +179,11 @@ function cleareSelection() {
   }
 }
 
+function getStartPoz() {
+  let poz = 0;
+  const span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
+  return poz;  
+}
 
 export default modelTxt;

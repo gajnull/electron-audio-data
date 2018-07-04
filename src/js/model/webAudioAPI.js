@@ -17,7 +17,8 @@ export default function webAudioAPI() {
       context.decodeAudioData(content, function(audioBuffer) {
         buffer = audioBuffer;
         initVars();
-        resolve(buffer.duration);
+        const duration =  Math.round(buffer.duration * 10) / 10;
+        resolve(duration);
       }, reject)  // может надо () => {reject();}
     });
   }
@@ -39,7 +40,7 @@ export default function webAudioAPI() {
   }
 
   res.getCurrentPoz = () => {
-    return (context.currentTime - startTime + startPoz);
+    return Math.round((context.currentTime - startTime + startPoz) * 10) / 10;
   }
 
   res.stop = () => {

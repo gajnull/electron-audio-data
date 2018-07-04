@@ -69,7 +69,7 @@ const modelAudio = {
   repeate() { //проигрываем выбранный отрезок
     if (playing) return;
     if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
-    const period = (pozTo - pozFrom) * 1000;
+    const period = (pozTo - pozFrom) * 1000;  // здесь не обязательно округлять
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();

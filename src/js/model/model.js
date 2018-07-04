@@ -13,6 +13,8 @@ let stateEdit = 'add',  // 'delete'
   timer = null,
   timerStop = null;
 
+vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); // это можно в modelTxt
+
 //////// Txt
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
@@ -34,11 +36,9 @@ model.fnTxtDelete = (action, args) => {
   modelTxt[action](args);
 }
 
-model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
+model.setLoadedTxtFile = (file) => { // file: {name, path, size, content, startPoz}
   if (stateEdit === 'delete') model.toogleState();
-  const startPoz = modelTxt.setLoadedFile(file);
-  modelAudio.setStartPoz(startPoz);
-  vent.publish('loadedLngt', file);
+  modelTxt.setLoadedFile(file);
 }
 
 

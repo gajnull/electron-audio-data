@@ -90,6 +90,11 @@ playing = false,
     timer = null,
     timerStop = null;
 
+__WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function (_ref) {
+  var startPoz = _ref.startPoz;
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
+}); // это можно в modelTxt
+
 //////// Txt
 
 model.setArea = function (area) {
@@ -114,11 +119,9 @@ model.fnTxtDelete = function (action, args) {
 };
 
 model.setLoadedTxtFile = function (file) {
-  // file: {name, path, size, content}
+  // file: {name, path, size, content, startPoz}
   if (stateEdit === 'delete') model.toogleState();
-  var startPoz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
 };
 
 model.toogleState = function () {
@@ -180,7 +183,7 @@ model.fnEditAudio = function (action, args) {
 
 var evs = {
   //lngt events
-  loadedLngt: [], //publish - {name, path, size, content}
+  loadedLngt: [], //publish - {name, path, size, content, startPoz}
   savedLngt: [], //publish - {name, path}
   changeStateEdit: [], //publish - {stateEdit}
   //audio events
@@ -631,8 +634,8 @@ function showChangedPoz(_ref) {
   var localPoz = (pozCurrent - pozMin).toFixed(1);
   var localFrom = (pozFrom - pozMin).toFixed(1);
   var localTo = (pozTo - pozMin).toFixed(1);
-  var totalPoz = (+pozCurrent).toFixed(1);
-  var total = (+duration).toFixed(1);
+  var totalPoz = (+pozCurrent).toFixed(1); // .toFixed(1) наверное здесь не обязательно
+  var total = (+duration).toFixed(1); // .toFixed(1) наверное здесь не обязательно
 
   info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
 }
@@ -787,7 +790,7 @@ var modelAudio = {
     //проигрываем выбранный отрезок
     if (playing) return;
     if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
-    var period = (pozTo - pozFrom) * 1000;
+    var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();
@@ -942,13 +945,11 @@ modelTxt.setLoadedFile = function (_ref) {
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
-  var poz = 0;
-  var span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
-  file = { name: name, path: path, size: size, poz: poz };
+
+  file = { name: name, path: path, size: size, startPoz: getStartPoz() };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
   localStorage.setItem('path-lngt', path);
   localStorage.setItem('name-lngt', name);
-  return poz;
 
   function txtToLngt() {
     if (!/\.txt$/.test(name)) return;
@@ -962,7 +963,7 @@ modelTxt.setLoadedFile = function (_ref) {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
     content = s;
   }
 };
@@ -1014,7 +1015,6 @@ ipcRenderer.on('file-restored', function (event, arg) {
 
   file = { name: name, path: path, content: arg, size: file.size };
   modelTxt.setLoadedFile(file);
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
 });
 
 // Изменение области выделения
@@ -1110,6 +1110,13 @@ function cleareSelection() {
   }
 }
 
+function getStartPoz() {
+  var poz = 0;
+  var span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
+  return poz;
+}
+
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
 /***/ }),
@@ -1141,7 +1148,8 @@ function webAudioAPI() {
       context.decodeAudioData(content, function (audioBuffer) {
         buffer = audioBuffer;
         initVars();
-        resolve(buffer.duration);
+        var duration = Math.round(buffer.duration * 10) / 10;
+        resolve(duration);
       }, reject); // может надо () => {reject();}
     });
   };
@@ -1165,7 +1173,7 @@ function webAudioAPI() {
   };
 
   res.getCurrentPoz = function () {
-    return context.currentTime - startTime + startPoz;
+    return Math.round((context.currentTime - startTime + startPoz) * 10) / 10;
   };
 
   res.stop = function () {
@@ -1183,7 +1191,7 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 

@@ -1,6 +1,6 @@
 import model from './model/model';
 
-const controlAudio = {};
+const controlAudio = {}; 
 
 let btns, intervals, btnPlay;
 controlAudio.init = function() {

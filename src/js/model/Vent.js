@@ -1,7 +1,7 @@
 
 const evs = {
   //lngt events
-  loadedLngt: [], //publish - {name, path, size, content}
+  loadedLngt: [], //publish - {name, path, size, content, startPoz}
   savedLngt: [], //publish - {name, path}
   changeStateEdit: [], //publish - {stateEdit}
   //audio events

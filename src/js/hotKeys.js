@@ -15,6 +15,6 @@ const hotKeys = {
 	close: () => {
 		setHotKey('clear');
 	}
-};
+}; 
 
 export default hotKeys;

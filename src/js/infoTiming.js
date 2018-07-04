@@ -11,8 +11,7 @@ infoTiming.init = function() {
 infoTiming.close = function() {
   model.off('changedPoz', showChangedPoz);
   info = null;
-}
-
+};
 
 function showChangedPoz({ pozCurrent = 0, duration = 0,
                           pozMin = 0, pozFrom = 0, pozTo = 0}) {
@@ -20,8 +19,8 @@ function showChangedPoz({ pozCurrent = 0, duration = 0,
   const localPoz = (pozCurrent - pozMin).toFixed(1);
   const localFrom = (pozFrom - pozMin).toFixed(1);
   const localTo = (pozTo - pozMin).toFixed(1);
-  const totalPoz = (+pozCurrent).toFixed(1);
-  const total = (+duration).toFixed(1);
+  const totalPoz = (+pozCurrent).toFixed(1);  // .toFixed(1) наверное здесь не обязательно
+  const total = (+duration).toFixed(1);  // .toFixed(1) наверное здесь не обязательно
 
   info.innerHTML = `
     <div>
