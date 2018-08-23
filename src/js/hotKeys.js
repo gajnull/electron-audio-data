@@ -9,12 +9,13 @@ const hotKeys = {
     setHotKey('space', () => { model.fnAudio('tooglePlay'); });
     setHotKey('ctrlSpace', () => { model.fnAudio('repeate'); });
     setHotKey('shiftSpace', () => { model.fnAudio('setUnit'); });
-    setHotKey('tab', () => { model.toogleState(); });
+    setHotKey('tab', () => { model.toogleState('edit'); });
+    setHotKey('shiftTab', () => { model.toogleState('transl'); });
  	},
 
 	close: () => {
 		setHotKey('clear');
 	}
-}; 
+};
 
 export default hotKeys;

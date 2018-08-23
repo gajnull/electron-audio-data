@@ -6,7 +6,7 @@ const evs = {
   space() {},
   tab() {},
   //altSpace() {}, // срабатывает событие окна
-  shiftSpace() {},  
+  shiftSpace() {},
   ctrlSpace() {},
   f2() {}
 };
@@ -25,8 +25,8 @@ function keyboardHandler(ev) {
   //console.log(ev.keyCode);
   const key = ev.keyCode;
   if(key in keyCodes) {
-    ev.preventDefault(); 
-    //ev.stopPropagation()    
+    ev.preventDefault();
+    //ev.stopPropagation()
     let fn = keyCodes[key];
     if (!fn) return;
     if (ev.ctrlKey) fn = 'ctrl' + fn[0].toUpperCase() + fn.slice(1);  // i.e. 'space' -> 'ctrlSpace'
@@ -35,7 +35,6 @@ function keyboardHandler(ev) {
     if (fn in evs) evs[fn]();
   }
 }
-
 
 
 

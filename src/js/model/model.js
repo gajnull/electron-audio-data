@@ -8,7 +8,7 @@ const model = {
   off: vent.off
 };
 
-let stateEdit = 'add',  // 'delete'
+let stateEdit = 'add',  // 'delete'/'transl'
   playing = false,
   timer = null,
   timerStop = null;
@@ -42,7 +42,15 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, size, content, startP
 }
 
 
-model.toogleState = () => {
+model.toogleState = (typeState) => {
+  if (typeState === 'edit') {
+    toogleStateEdit();
+    return;
+  }
+  if (typeState === 'transl') toogleStateTransl();
+};
+
+function toogleStateEdit() {
   if (stateEdit === 'add') {
     const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
     if(!interval) return;
@@ -55,6 +63,10 @@ model.toogleState = () => {
   }
   vent.publish('changeStateEdit', {stateEdit});
   modelAudio.advertPozz();
+}
+
+function toogleStateTransl() {
+  
 }
 
 /////// Audio

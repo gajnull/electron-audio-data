@@ -676,7 +676,7 @@ function keyboardHandler(ev) {
   var key = ev.keyCode;
   if (key in keyCodes) {
     ev.preventDefault();
-    //ev.stopPropagation()    
+    //ev.stopPropagation()
     var fn = keyCodes[key];
     if (!fn) return;
     if (ev.ctrlKey) fn = 'ctrl' + fn[0].toUpperCase() + fn.slice(1); // i.e. 'space' -> 'ctrlSpace'
