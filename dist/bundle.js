@@ -85,7 +85,7 @@ var model = {
 };
 
 var stateEdit = 'add',
-    // 'delete'
+    // 'delete'/'transl'
 playing = false,
     timer = null,
     timerStop = null;
@@ -124,7 +124,15 @@ model.setLoadedTxtFile = function (file) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
 };
 
-model.toogleState = function () {
+model.toogleState = function (typeState) {
+  if (typeState === 'edit') {
+    toogleStateEdit();
+    return;
+  }
+  if (typeState === 'transl') toogleStateTransl();
+};
+
+function toogleStateEdit() {
   if (stateEdit === 'add') {
     var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].gotoToDelete(); // from - показывает ключевое слово
     if (!interval) return;
@@ -137,7 +145,9 @@ model.toogleState = function () {
   }
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateEdit', { stateEdit: stateEdit });
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
-};
+}
+
+function toogleStateTransl() {}
 
 /////// Audio
 
@@ -569,30 +579,33 @@ function setInfoLodedLngt(_ref) {
 
 
 var hotKeys = {
-	init: function init() {
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('reduceSelection');
-		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('addSelection');
-		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
-		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('repeate');
-		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('shiftSpace', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('setUnit');
-		});
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
-			__WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState();
-		});
-	},
+  init: function init() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('reduceSelection');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('addSelection');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('repeate');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('shiftSpace', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('setUnit');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState('edit');
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('shiftTab', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].toogleState('transl');
+    });
+  },
 
-	close: function close() {
-		__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
-	}
+  close: function close() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
+  }
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (hotKeys);
@@ -926,8 +939,8 @@ var nodeTxt = null,
     // весь элемент
 nodeCurrent = null,
     nodeSelection = null,
-    nodeLast = null,
-    stateEdit = 'add interval'; // 'delete interval'
+    nodeLast = null;
+//stateEdit = 'add interval';  // 'delete interval'
 
 
 // установка
@@ -1019,7 +1032,7 @@ ipcRenderer.on('file-restored', function (event, arg) {
 
 // Изменение области выделения
 modelTxt.addSelection = function () {
-  if (stateEdit === 'delete interval') return;
+  //if (stateEdit === 'delete interval') return;
   var current = nodeCurrent.innerHTML;
   var selection = nodeSelection.innerHTML;
   if (!current) return;
@@ -1035,7 +1048,7 @@ modelTxt.addSelection = function () {
 };
 
 modelTxt.reduceSelection = function () {
-  if (stateEdit === 'delete interval') return;
+  //if (stateEdit === 'delete interval') return;
   var current = nodeCurrent.innerHTML;
   var selection = nodeSelection.innerHTML;
   if (!selection) return;
@@ -1191,12 +1204,12 @@ function webAudioAPI() {
 /* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(15)(false);
+exports = module.exports = __webpack_require__(15)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px;\n  overflow-y: scroll; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 250px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 150px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 40px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns, #edit-intervals {\n  display: flex;\n  justify-content: space-between; }\n  #btns > div, #edit-intervals > div {\n    display: flex; }\n    #btns > div button, #edit-intervals > div button {\n      background-color: #879c64;\n      color: #e7ece0;\n      border-radius: 5px;\n      margin: 0 1px;\n      padding: 5px 0;\n      cursor: pointer; }\n  #btns .btns-control button, #edit-intervals .btns-control button {\n    width: 60px; }\n  #btns .btns-move button,\n  #btns .btns-from button,\n  #btns .btns-to button, #edit-intervals .btns-move button,\n  #edit-intervals .btns-from button,\n  #edit-intervals .btns-to button {\n    width: 47px; }\n  #btns .btns-from button.z,\n  #btns .btns-to button.z, #edit-intervals .btns-from button.z,\n  #edit-intervals .btns-to button.z {\n    width: 30px; }\n  #btns .toogle, #edit-intervals .toogle {\n    width: 80px;\n    background-color: #586278; }\n\n#edit-intervals {\n  display: none; }\n\n#txt {\n  padding: 5px; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px;\n  overflow-y: scroll; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n  #files #file-transl {\n    display: none; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 250px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 150px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 40px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns, #edit-intervals {\n  display: flex;\n  justify-content: space-between; }\n  #btns > div, #edit-intervals > div {\n    display: flex; }\n    #btns > div button, #edit-intervals > div button {\n      background-color: #879c64;\n      color: #e7ece0;\n      border-radius: 5px;\n      margin: 0 1px;\n      padding: 5px 0;\n      cursor: pointer; }\n  #btns .btns-control button, #edit-intervals .btns-control button {\n    width: 60px; }\n  #btns .btns-move button,\n  #btns .btns-from button,\n  #btns .btns-to button, #edit-intervals .btns-move button,\n  #edit-intervals .btns-from button,\n  #edit-intervals .btns-to button {\n    width: 47px; }\n  #btns .btns-from button.z,\n  #btns .btns-to button.z, #edit-intervals .btns-from button.z,\n  #edit-intervals .btns-to button.z {\n    width: 30px; }\n  #btns .toogle, #edit-intervals .toogle {\n    width: 80px;\n    background-color: #586278; }\n\n#edit-intervals {\n  display: none; }\n\n#txt {\n  padding: 5px; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n", ""]);
 
 // exports
 

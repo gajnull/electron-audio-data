@@ -9,14 +9,14 @@ let file = {};       // {name, path, size}
 let nodeTxt = null,   // весь элемент
     nodeCurrent = null,
     nodeSelection = null,
-    nodeLast = null,
-    stateEdit = 'add interval';  // 'delete interval'
+    nodeLast = null
+    //stateEdit = 'add interval';  // 'delete interval'
 
 
 // установка
 modelTxt.setRoot = (root) => {
   nodeTxt = root;
-}
+};
 
 modelTxt.setLoadedFile = ({name, path, size, content}) => {
   txtToLngt();
@@ -94,7 +94,7 @@ modelTxt.restore = () => {
 
 // Изменение области выделения
 modelTxt.addSelection = () => {
-  if (stateEdit === 'delete interval') return;
+  //if (stateEdit === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if (!current) return;
@@ -109,7 +109,7 @@ modelTxt.addSelection = () => {
 }
 
 modelTxt.reduceSelection = () => {
-  if (stateEdit === 'delete interval') return;
+  //if (stateEdit === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if(!selection) return;
