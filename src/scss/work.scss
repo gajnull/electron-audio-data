@@ -19,11 +19,10 @@ html, body {
   //
 }
 
-#txt {
-  background-color: $a_green_l20;
-  border: 0.5px solid $a_blue;
+#area {
   flex: 1 0 100px;
-  overflow-y: scroll;
+  background-color: $a_green_l20;
+  display: flex;
 }
 
 #info {

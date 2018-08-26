@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,9 +71,9 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(12);
 //export const something = 'test'
 
 
@@ -198,25 +198,76 @@ model.fnEditAudio = function (action, args) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+
+var evs = {
+  //lngt events
+  loadedLngt: [], //publish - {name, path, size, content, startPoz}
+  savedLngt: [], //publish - {name, path}
+  changeState: [], //publish - {state}
+  //audio events
+  decodedAudio: [], //publish - {name, path}
+  changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
+  changeStateAudio: [] //publish - {playing}
+};
+
+var vent = {
+  on: function on(ev, fn) {
+    if (ev in evs) {
+      evs[ev].push(fn);
+    } else {
+      console.log('ошибка в vent.on - события ' + ev + ' нет');
+    }
+  },
+  off: function off(ev, fn) {
+    if (ev in evs) {
+      evs[ev] = evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    } else {
+      console.log('ошибка в vent.off - события ' + ev + ' нет');
+    }
+  },
+  publish: function publish(ev, data) {
+    //console.log(ev); console.log(evs)
+    // if(ev !=='changedPoz') {console.log(ev); console.log(evs[ev]);}
+    if (ev in evs) {
+      evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    } else {
+      console.log('ошибка в vent.publish - события ' + ev + ' нет');
+    }
+  }
+};
+
+vent.dispatch = vent.publish; // для постепенного перехода
+
+/* harmony default export */ __webpack_exports__["a"] = (vent);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_file_audio__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_control_audio__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_infoTiming__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_txt_area__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(9);
 
 
 
 
-//import modelTxt from './js/model/modelTxt'
 
 
 
-//import ModelAudio from './js/model/modelAudio'
+
 
 
 
@@ -224,31 +275,26 @@ model.fnEditAudio = function (action, args) {
 function work() {
   __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(); // в fileTxt будет чтение текстового файла
-  setAreaTxt();
+  __WEBPACK_IMPORTED_MODULE_5__js_txt_area__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_4__js_file_end__["a" /* default */].init();
-  __WEBPACK_IMPORTED_MODULE_5__js_file_audio__["a" /* default */].init(); // в fileTxt будет чтение содержимого звукового файла
-  __WEBPACK_IMPORTED_MODULE_6__js_control_audio__["a" /* default */].init();
-  __WEBPACK_IMPORTED_MODULE_7__js_infoTiming__["a" /* default */].init();
-}
-
-function setAreaTxt() {
-  var area = document.getElementById('txt');
-  __WEBPACK_IMPORTED_MODULE_1__js_model_model__["a" /* default */].setArea(area);
+  __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(); // в fileTxt будет чтение содержимого звукового файла
+  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init();
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
 
 
 __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -320,7 +366,7 @@ function changeState(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (controlAudio);
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -395,7 +441,7 @@ function setInfoLodedAudio(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (fileAudio);
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -471,7 +517,7 @@ function changeState(_ref2) {
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -549,12 +595,12 @@ function setInfoLodedLngt(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(10);
 //управление сохранением и восстановлением текстового файла .lngt
 
 
@@ -592,7 +638,7 @@ var hotKeys = {
 /* harmony default export */ __webpack_exports__["a"] = (hotKeys);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -637,7 +683,7 @@ function showChangedPoz(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (infoTiming);
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -699,21 +745,544 @@ function clearAllEvs() {
 }
 
 /***/ }),
-/* 10 */
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(13);
+
+
+
+var api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
+
+var pozMin = 0,
+    // Позиция конца предыдущего отрезка
+pozCurrent = 0,
+    // Текущая позиция
+duration = 0; // Продолжительность всего ауиотрека.
+// Запомненный отрезок
+var pozFrom = 0,
+    pozTo = 0,
+    delta = 0.1; // Шаг изменения позиции отрезка
+
+var playing = false,
+    // Состояние проигрывателя - играет/пауза
+timer = null,
+    timerStop = null;
+
+var file = { // пока не используется
+  name: null,
+  path: null,
+  size: null
+};
+
+var modelAudio = {
+  decodeFile: function decodeFile(_ref) {
+    var name = _ref.name,
+        path = _ref.path,
+        size = _ref.size,
+        content = _ref.content;
+
+    api.decode(content).then(function (res) {
+      duration = res;
+      file.name = { name: name, path: path, size: size };
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+    });
+  },
+
+
+  ///// проигрывание/остановка
+  tooglePlay: function tooglePlay() {
+    if (playing) {
+      this.stop();
+    } else {
+      this.play();
+    }
+  },
+  play: function play() {
+    var _this = this;
+
+    if (playing) return; // может вызываться не только из tooglePlay()
+    api.play(pozCurrent);
+    playing = true;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+    timer = setInterval(function () {
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
+      if (pozCurrent > duration) _this.tooglePlay(); // this.stop() - недостаточно
+    }, 100);
+  },
+  stop: function stop() {
+    if (!playing) return; // может вызываться не только из tooglePlay()
+    clearInterval(timer);
+    if (timerStop) {
+      clearTimeout(timerStop);
+    }
+    pozCurrent = api.stop();
+    playing = false;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+    if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
+  },
+  repeate: function repeate() {
+    var _this2 = this;
+
+    //проигрываем выбранный отрезок
+    if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
+    var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
+    if (period < 0) return; // не должно быть
+    pozCurrent = pozFrom;
+    this.play();
+    timerStop = setTimeout(function () {
+      _this2.stop();
+    }, period);
+  },
+  reset: function reset() {
+    pozFrom = pozCurrent = pozTo = pozMin;
+  },
+  setUnit: function setUnit() {
+    if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
+    return { pozFrom: pozFrom, pozTo: pozTo };
+  },
+  nextUnit: function nextUnit() {
+    // должно быть playing = false
+    pozMin = pozFrom = pozCurrent = pozTo;
+  },
+
+
+  // установка аудиоинтервала (из файла .lngt)
+  assignInterval: function assignInterval(_ref2) {
+    var _from = _ref2._from,
+        _to = _ref2._to;
+    // должно быть playing = false
+    pozMin = pozCurrent = pozFrom = +_from;
+    pozTo = +_to;
+  },
+
+
+  //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
+  gotoStart: function gotoStart() {
+    if (playing) return;
+    pozCurrent = pozMin;
+  },
+  gotoFrom: function gotoFrom() {
+    if (playing) return;
+    pozCurrent = pozFrom;
+  },
+  gotoTo: function gotoTo() {
+    if (playing) return;
+    pozCurrent = pozTo;
+  },
+
+
+  //// установка и изменение позицй от и до
+  fromMoveBack: function fromMoveBack() {
+    var newPoz = Math.round((pozFrom - delta) * 10) / 10;
+    if (newPoz < pozMin) {
+      newPoz = pozMin;
+    } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
+    pozFrom = newPoz;
+  },
+  fromSet: function fromSet() {
+    // playing может быть любым
+    pozFrom = +pozCurrent.toFixed(1);
+    if (pozTo < pozFrom) pozTo = pozFrom;
+  },
+  fromMoveForward: function fromMoveForward() {
+    var newPoz = Math.round((pozFrom + delta) * 10) / 10;
+    if (newPoz > duration) {
+      newPoz = duration;
+    }
+    pozFrom = newPoz;
+    if (pozFrom > pozTo) pozTo = pozFrom;
+  },
+  toMoveBack: function toMoveBack() {
+    var newPoz = Math.round((pozTo - delta) * 10) / 10;
+    if (newPoz < pozMin) {
+      newPoz = pozMin;
+    } // тогда скорее всего будет повторение, но иначе число pozMin может быть слишком дробным
+    pozTo = newPoz;
+    if (pozTo < pozFrom) pozFrom = pozTo;
+  },
+  toSet: function toSet() {
+    if (playing) this.stop();
+    pozTo = +pozCurrent.toFixed(1);
+    if (pozFrom > pozTo) pozFrom = pozTo;
+  },
+  toMoveForward: function toMoveForward() {
+    if (playing) return;
+    var newPoz = Math.round((pozTo + delta) * 10) / 10;
+    if (newPoz > duration) {
+      newPoz = duration;
+    }
+    pozTo = newPoz;
+  },
+  setStartPoz: function setStartPoz(poz) {
+    pozMin = pozCurrent = pozFrom = pozTo = +poz;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz()); // может это надо в другом месте
+  },
+  advertPozz: function advertPozz() {
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+  }
+};
+
+function getPoz() {
+  var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+  if (updatePoz) pozCurrent = api.getCurrentPoz();
+  return {
+    pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
+  };
+}
+
+function notFitUnit() {
+  // если отрезок не установлен (pozFrom + x > pozTo) и не может быть установлен (pozCurrent < pozFrom + x)
+  if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
+  if (pozTo > pozFrom + 0.3) return;
+  return true;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (modelAudio);
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var modelTxt = {};
+
+var subfolder = 'target';
+var file = {}; // {name, path, size}
+// path: fullPath + name
+var nodeTxt = null,
+    // весь элемент
+nodeCurrent = null,
+    nodeSelection = null,
+    nodeLast = null;
+//stateTxt = 'add interval';  // 'delete interval'
+
+
+// установка
+modelTxt.setRoot = function (root) {
+  nodeTxt = root;
+};
+
+modelTxt.setLoadedFile = function (_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      size = _ref.size,
+      content = _ref.content;
+
+  txtToLngt();
+  nodeTxt.innerHTML = content;
+  nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
+  nodeCurrent = nodeTxt.querySelector('#current-txt');
+
+  file = { name: name, path: path, size: size, startPoz: getStartPoz() };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
+  localStorage.setItem('path-lngt', path);
+  localStorage.setItem('name-lngt', name);
+
+  function txtToLngt() {
+    if (!/\.txt$/.test(name)) return;
+
+    var s = content;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    content = s;
+  }
+};
+
+// Сохранение файла
+modelTxt.save = function (nameLngt) {
+  if (!nodeTxt || !file) return;
+  var content = nodeTxt.innerHTML;
+  if (!content) return;
+
+  cleareSelection();
+  content = nodeTxt.innerHTML;
+  var name = nameLngt + '.lngt';
+  var path = subfolder + '/' + name;
+  var lngt = { name: name, path: path, content: content };
+  file.temp = { name: name, path: path };
+  ipcRenderer.send('will-save-file', lngt);
+};
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  var _file$temp = file.temp,
+      name = _file$temp.name,
+      path = _file$temp.path;
+
+  file.temp = null;
+  if (arg) {
+    console.log('error in saving:'); // in arg i send err
+    console.log(arg);
+    return;
+  }
+  localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+  localStorage.setItem('path-lngt', path);
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', { name: name, path: path });
+});
+
+// Восстановление файла
+modelTxt.restore = function () {
+  var name = localStorage.getItem('name-lngt');
+  var path = localStorage.getItem('path-lngt');
+  if (!name || !path) return;
+  file.temp = { name: name, path: path };
+  ipcRenderer.send('will-restore-file', { path: path });
+};
+
+ipcRenderer.on('file-restored', function (event, arg) {
+  var _file$temp2 = file.temp,
+      name = _file$temp2.name,
+      path = _file$temp2.path;
+
+  file = { name: name, path: path, content: arg, size: file.size };
+  modelTxt.setLoadedFile(file);
+});
+
+// Изменение области выделения
+modelTxt.addSelection = function () {
+  //if (stateTxt === 'delete interval') return;
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (!current) return;
+  var s = current.match(/^.+?(\s|<br>)/);
+  if (s) {
+    nodeSelection.innerHTML = selection + s[0];
+    nodeCurrent.innerHTML = current.slice(s[0].length);
+  } else {
+    //конец текстового файла
+    nodeSelection.innerHTML = selection + current;
+    nodeCurrent.innerHTML = '';
+  }
+};
+
+modelTxt.reduceSelection = function () {
+  //if (stateTxt === 'delete interval') return;
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (!selection) return;
+  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  if (s) {
+    nodeCurrent.innerHTML = s[2] + current;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+};
+
+// Установка аудиоинтервала в выделеный участок
+modelTxt.setUnit = function (_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
+
+  var selection = nodeSelection.innerHTML;
+  if (selection.trim() === '') return;
+  nodeSelection.innerHTML = '';
+  var span = document.createElement('span');
+  span.innerHTML = selection;
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  nodeSelection.before(span);
+  return true;
+};
+
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
+modelTxt.deleteUnit = function () {
+  var _from = void 0,
+      _to = void 0; // from - показывает ключевое слово
+  var span = nodeLast.previousElementSibling; // возможно можно const span
+  nodeLast.removeAttribute('id');
+  var txtTmp = nodeLast.innerHTML;
+  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
+  nodeLast.remove();
+  if (span && span.hasAttribute('from') && span.hasAttribute('to')) {
+    _from = +span.getAttribute('from');
+    _to = +span.getAttribute('to');
+    span.id = 'last-txt';
+    nodeLast = span;
+  }
+  return { _from: _from, _to: _to };
+};
+
+modelTxt.gotoToAdd = function () {
+  if (nodeLast) nodeLast.removeAttribute('id');
+  nodeLast = null;
+};
+
+modelTxt.gotoToDelete = function () {
+  var _from = void 0,
+      _to = void 0; // from - показывает ключевое слово
+  if (!nodeSelection) return;
+  nodeLast = nodeSelection.previousElementSibling;
+  if (!nodeLast || !nodeLast.hasAttribute('from')) return;
+  _from = nodeLast.getAttribute('from');
+  _to = nodeLast.getAttribute('to');
+  nodeLast.id = 'last-txt';
+  cleareSelection();
+  return { _from: _from, _to: _to };
+};
+
+function cleareSelection() {
+  var current = nodeCurrent.innerHTML;
+  var selection = nodeSelection.innerHTML;
+  if (selection) {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+
+function getStartPoz() {
+  var poz = 0;
+  var span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
+  return poz;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = webAudioAPI;
+function webAudioAPI() {
+
+  var contextClass = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext;
+  if (!contextClass) {
+    console.log('Web Audio API недоступно');
+    return;
+  }
+
+  var res = {};
+  var context = void 0,
+      source = void 0,
+      buffer = void 0,
+      playing = void 0,
+      startTime = void 0,
+      startPoz = void 0;
+
+  res.decode = function (content) {
+    /////if (!(data instanceof ArrayBuffer)) return;
+    return new Promise(function (resolve, reject) {
+      context = new contextClass();
+      context.decodeAudioData(content, function (audioBuffer) {
+        buffer = audioBuffer;
+        initVars();
+        var duration = Math.round(buffer.duration * 10) / 10;
+        resolve(duration);
+      }, reject); // может надо () => {reject();}
+    });
+  };
+
+  function initVars() {
+    startTime = startPoz = 0;
+    playing = false;
+  }
+
+  res.play = function () {
+    var poz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+    source = context.createBufferSource();
+    source.connect(context.destination);
+    source.buffer = buffer;
+
+    startTime = context.currentTime;
+    startPoz = poz;
+    source.start(0, startPoz);
+    playing = true;
+  };
+
+  res.getCurrentPoz = function () {
+    return Math.round((context.currentTime - startTime + startPoz) * 10) / 10;
+  };
+
+  res.stop = function () {
+    source.stop();
+    playing = false;
+    return res.getCurrentPoz();
+  };
+
+  function onError() {}
+
+  return res;
+}
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+
+
+var txt = void 0,
+    transl = void 0;
+
+var init = function init() {
+  txt = document.getElementById('txt');
+  transl = document.getElementById('transl');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setArea(txt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
+};
+
+var close = function close() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
+  txt = transl = null;
+};
+
+function changeState(_ref) {
+  var state = _ref.state;
+
+  if (state === 'transl') {
+    transl.style.display = 'block';
+  } else {
+    transl.style.display = 'none';
+  }
+}
+
+var txtArea = {
+  init: init,
+  close: close
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (txtArea);
+
+/***/ }),
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(11)(false);
+exports = module.exports = __webpack_require__(16)(false);
 // imports
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#txt {\n  background-color: #f4f8f7;\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px;\n  overflow-y: scroll; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n  #files #file-transl {\n    display: none; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 200px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #file-end #btns-state {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #8143a6; }\n    #file-end #btns-state button[state=\"add\"] {\n      display: none; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n  #files #file-transl {\n    display: none; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 200px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #file-end #btns-state {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #8143a6; }\n    #file-end #btns-state button[state=\"add\"] {\n      display: none; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll; }\n  #transl span {\n    color: #50a3c3; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 11 */
+/* 16 */
 /***/ (function(module, exports) {
 
 /*
@@ -795,13 +1364,13 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 12 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(10);
+var content = __webpack_require__(15);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -809,7 +1378,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(13)(content, options);
+var update = __webpack_require__(18)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -826,7 +1395,7 @@ if(false) {
 }
 
 /***/ }),
-/* 13 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -872,7 +1441,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(14);
+var	fixUrls = __webpack_require__(19);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1185,7 +1754,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 14 */
+/* 19 */
 /***/ (function(module, exports) {
 
 
@@ -1278,540 +1847,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-
-var evs = {
-  //lngt events
-  loadedLngt: [], //publish - {name, path, size, content, startPoz}
-  savedLngt: [], //publish - {name, path}
-  changeState: [], //publish - {state}
-  //audio events
-  decodedAudio: [], //publish - {name, path}
-  changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
-  changeStateAudio: [] //publish - {playing}
-};
-
-var vent = {
-  on: function on(ev, fn) {
-    if (ev in evs) {
-      evs[ev].push(fn);
-    } else {
-      console.log('ошибка в vent.on - события ' + ev + ' нет');
-    }
-  },
-  off: function off(ev, fn) {
-    if (ev in evs) {
-      evs[ev] = evs[ev].filter(function (fnEv) {
-        return fnEv !== fn;
-      });
-    } else {
-      console.log('ошибка в vent.off - события ' + ev + ' нет');
-    }
-  },
-  publish: function publish(ev, data) {
-    //console.log(ev); console.log(evs)
-    // if(ev !=='changedPoz') {console.log(ev); console.log(evs[ev]);}
-    if (ev in evs) {
-      evs[ev].forEach(function (fnEv) {
-        fnEv(data);
-      });
-    } else {
-      console.log('ошибка в vent.publish - события ' + ev + ' нет');
-    }
-  }
-};
-
-vent.dispatch = vent.publish; // для постепенного перехода
-
-/* harmony default export */ __webpack_exports__["a"] = (vent);
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(18);
-
-
-
-var api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
-
-var pozMin = 0,
-    // Позиция конца предыдущего отрезка
-pozCurrent = 0,
-    // Текущая позиция
-duration = 0; // Продолжительность всего ауиотрека.
-// Запомненный отрезок
-var pozFrom = 0,
-    pozTo = 0,
-    delta = 0.1; // Шаг изменения позиции отрезка
-
-var playing = false,
-    // Состояние проигрывателя - играет/пауза
-timer = null,
-    timerStop = null;
-
-var file = { // пока не используется
-  name: null,
-  path: null,
-  size: null
-};
-
-var modelAudio = {
-  decodeFile: function decodeFile(_ref) {
-    var name = _ref.name,
-        path = _ref.path,
-        size = _ref.size,
-        content = _ref.content;
-
-    api.decode(content).then(function (res) {
-      duration = res;
-      file.name = { name: name, path: path, size: size };
-      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
-      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
-    });
-  },
-
-
-  ///// проигрывание/остановка
-  tooglePlay: function tooglePlay() {
-    if (playing) {
-      this.stop();
-    } else {
-      this.play();
-    }
-  },
-  play: function play() {
-    var _this = this;
-
-    if (playing) return; // может вызываться не только из tooglePlay()
-    api.play(pozCurrent);
-    playing = true;
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
-    timer = setInterval(function () {
-      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
-      if (pozCurrent > duration) _this.tooglePlay(); // this.stop() - недостаточно
-    }, 100);
-  },
-  stop: function stop() {
-    if (!playing) return; // может вызываться не только из tooglePlay()
-    clearInterval(timer);
-    if (timerStop) {
-      clearTimeout(timerStop);
-    }
-    pozCurrent = api.stop();
-    playing = false;
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
-    if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
-  },
-  repeate: function repeate() {
-    var _this2 = this;
-
-    //проигрываем выбранный отрезок
-    if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
-    var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
-    if (period < 0) return; // не должно быть
-    pozCurrent = pozFrom;
-    this.play();
-    timerStop = setTimeout(function () {
-      _this2.stop();
-    }, period);
-  },
-  reset: function reset() {
-    pozFrom = pozCurrent = pozTo = pozMin;
-  },
-  setUnit: function setUnit() {
-    if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
-    return { pozFrom: pozFrom, pozTo: pozTo };
-  },
-  nextUnit: function nextUnit() {
-    // должно быть playing = false
-    pozMin = pozFrom = pozCurrent = pozTo;
-  },
-
-
-  // установка аудиоинтервала (из файла .lngt)
-  assignInterval: function assignInterval(_ref2) {
-    var _from = _ref2._from,
-        _to = _ref2._to;
-    // должно быть playing = false
-    pozMin = pozCurrent = pozFrom = +_from;
-    pozTo = +_to;
-  },
-
-
-  //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
-  gotoStart: function gotoStart() {
-    if (playing) return;
-    pozCurrent = pozMin;
-  },
-  gotoFrom: function gotoFrom() {
-    if (playing) return;
-    pozCurrent = pozFrom;
-  },
-  gotoTo: function gotoTo() {
-    if (playing) return;
-    pozCurrent = pozTo;
-  },
-
-
-  //// установка и изменение позицй от и до
-  fromMoveBack: function fromMoveBack() {
-    var newPoz = Math.round((pozFrom - delta) * 10) / 10;
-    if (newPoz < pozMin) {
-      newPoz = pozMin;
-    } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
-    pozFrom = newPoz;
-  },
-  fromSet: function fromSet() {
-    // playing может быть любым
-    pozFrom = +pozCurrent.toFixed(1);
-    if (pozTo < pozFrom) pozTo = pozFrom;
-  },
-  fromMoveForward: function fromMoveForward() {
-    var newPoz = Math.round((pozFrom + delta) * 10) / 10;
-    if (newPoz > duration) {
-      newPoz = duration;
-    }
-    pozFrom = newPoz;
-    if (pozFrom > pozTo) pozTo = pozFrom;
-  },
-  toMoveBack: function toMoveBack() {
-    var newPoz = Math.round((pozTo - delta) * 10) / 10;
-    if (newPoz < pozMin) {
-      newPoz = pozMin;
-    } // тогда скорее всего будет повторение, но иначе число pozMin может быть слишком дробным
-    pozTo = newPoz;
-    if (pozTo < pozFrom) pozFrom = pozTo;
-  },
-  toSet: function toSet() {
-    if (playing) this.stop();
-    pozTo = +pozCurrent.toFixed(1);
-    if (pozFrom > pozTo) pozFrom = pozTo;
-  },
-  toMoveForward: function toMoveForward() {
-    if (playing) return;
-    var newPoz = Math.round((pozTo + delta) * 10) / 10;
-    if (newPoz > duration) {
-      newPoz = duration;
-    }
-    pozTo = newPoz;
-  },
-  setStartPoz: function setStartPoz(poz) {
-    pozMin = pozCurrent = pozFrom = pozTo = +poz;
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz()); // может это надо в другом месте
-  },
-  advertPozz: function advertPozz() {
-    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
-  }
-};
-
-function getPoz() {
-  var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-  if (updatePoz) pozCurrent = api.getCurrentPoz();
-  return {
-    pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
-  };
-}
-
-function notFitUnit() {
-  // если отрезок не установлен (pozFrom + x > pozTo) и не может быть установлен (pozCurrent < pozFrom + x)
-  if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
-  if (pozTo > pozFrom + 0.3) return;
-  return true;
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (modelAudio);
-
-/***/ }),
-/* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(15);
-
-
-var _window$require = window.require('electron'),
-    ipcRenderer = _window$require.ipcRenderer;
-
-var modelTxt = {};
-
-var subfolder = 'target';
-var file = {}; // {name, path, size}
-// path: fullPath + name
-var nodeTxt = null,
-    // весь элемент
-nodeCurrent = null,
-    nodeSelection = null,
-    nodeLast = null;
-//stateTxt = 'add interval';  // 'delete interval'
-
-
-// установка
-modelTxt.setRoot = function (root) {
-  nodeTxt = root;
-};
-
-modelTxt.setLoadedFile = function (_ref) {
-  var name = _ref.name,
-      path = _ref.path,
-      size = _ref.size,
-      content = _ref.content;
-
-  txtToLngt();
-  nodeTxt.innerHTML = content;
-  nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
-  nodeCurrent = nodeTxt.querySelector('#current-txt');
-
-  file = { name: name, path: path, size: size, startPoz: getStartPoz() };
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
-  localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);
-
-  function txtToLngt() {
-    if (!/\.txt$/.test(name)) return;
-
-    var s = content;
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')');
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-    content = s;
-  }
-};
-
-// Сохранение файла
-modelTxt.save = function (nameLngt) {
-  if (!nodeTxt || !file) return;
-  var content = nodeTxt.innerHTML;
-  if (!content) return;
-
-  cleareSelection();
-  content = nodeTxt.innerHTML;
-  var name = nameLngt + '.lngt';
-  var path = subfolder + '/' + name;
-  var lngt = { name: name, path: path, content: content };
-  file.temp = { name: name, path: path };
-  ipcRenderer.send('will-save-file', lngt);
-};
-
-ipcRenderer.on('file-saved', function (event, arg) {
-  var _file$temp = file.temp,
-      name = _file$temp.name,
-      path = _file$temp.path;
-
-  file.temp = null;
-  if (arg) {
-    console.log('error in saving:'); // in arg i send err
-    console.log(arg);
-    return;
-  }
-  localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-  localStorage.setItem('path-lngt', path);
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', { name: name, path: path });
-});
-
-// Восстановление файла
-modelTxt.restore = function () {
-  var name = localStorage.getItem('name-lngt');
-  var path = localStorage.getItem('path-lngt');
-  if (!name || !path) return;
-  file.temp = { name: name, path: path };
-  ipcRenderer.send('will-restore-file', { path: path });
-};
-
-ipcRenderer.on('file-restored', function (event, arg) {
-  var _file$temp2 = file.temp,
-      name = _file$temp2.name,
-      path = _file$temp2.path;
-
-  file = { name: name, path: path, content: arg, size: file.size };
-  modelTxt.setLoadedFile(file);
-});
-
-// Изменение области выделения
-modelTxt.addSelection = function () {
-  //if (stateTxt === 'delete interval') return;
-  var current = nodeCurrent.innerHTML;
-  var selection = nodeSelection.innerHTML;
-  if (!current) return;
-  var s = current.match(/^.+?(\s|<br>)/);
-  if (s) {
-    nodeSelection.innerHTML = selection + s[0];
-    nodeCurrent.innerHTML = current.slice(s[0].length);
-  } else {
-    //конец текстового файла
-    nodeSelection.innerHTML = selection + current;
-    nodeCurrent.innerHTML = '';
-  }
-};
-
-modelTxt.reduceSelection = function () {
-  //if (stateTxt === 'delete interval') return;
-  var current = nodeCurrent.innerHTML;
-  var selection = nodeSelection.innerHTML;
-  if (!selection) return;
-  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
-  if (s) {
-    nodeCurrent.innerHTML = s[2] + current;
-    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
-  } else {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
-  }
-};
-
-// Установка аудиоинтервала в выделеный участок
-modelTxt.setUnit = function (_ref2) {
-  var pozFrom = _ref2.pozFrom,
-      pozTo = _ref2.pozTo;
-
-  var selection = nodeSelection.innerHTML;
-  if (selection.trim() === '') return;
-  nodeSelection.innerHTML = '';
-  var span = document.createElement('span');
-  span.innerHTML = selection;
-  span.setAttribute('from', pozFrom);
-  span.setAttribute('to', pozTo);
-  nodeSelection.before(span);
-  return true;
-};
-
-// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
-modelTxt.deleteUnit = function () {
-  var _from = void 0,
-      _to = void 0; // from - показывает ключевое слово
-  var span = nodeLast.previousElementSibling; // возможно можно const span
-  nodeLast.removeAttribute('id');
-  var txtTmp = nodeLast.innerHTML;
-  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
-  nodeLast.remove();
-  if (span && span.hasAttribute('from') && span.hasAttribute('to')) {
-    _from = +span.getAttribute('from');
-    _to = +span.getAttribute('to');
-    span.id = 'last-txt';
-    nodeLast = span;
-  }
-  return { _from: _from, _to: _to };
-};
-
-modelTxt.gotoToAdd = function () {
-  if (nodeLast) nodeLast.removeAttribute('id');
-  nodeLast = null;
-};
-
-modelTxt.gotoToDelete = function () {
-  var _from = void 0,
-      _to = void 0; // from - показывает ключевое слово
-  if (!nodeSelection) return;
-  nodeLast = nodeSelection.previousElementSibling;
-  if (!nodeLast || !nodeLast.hasAttribute('from')) return;
-  _from = nodeLast.getAttribute('from');
-  _to = nodeLast.getAttribute('to');
-  nodeLast.id = 'last-txt';
-  cleareSelection();
-  return { _from: _from, _to: _to };
-};
-
-function cleareSelection() {
-  var current = nodeCurrent.innerHTML;
-  var selection = nodeSelection.innerHTML;
-  if (selection) {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
-  }
-}
-
-function getStartPoz() {
-  var poz = 0;
-  var span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
-  return poz;
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
-
-/***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = webAudioAPI;
-function webAudioAPI() {
-
-  var contextClass = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext;
-  if (!contextClass) {
-    console.log('Web Audio API недоступно');
-    return;
-  }
-
-  var res = {};
-  var context = void 0,
-      source = void 0,
-      buffer = void 0,
-      playing = void 0,
-      startTime = void 0,
-      startPoz = void 0;
-
-  res.decode = function (content) {
-    /////if (!(data instanceof ArrayBuffer)) return;
-    return new Promise(function (resolve, reject) {
-      context = new contextClass();
-      context.decodeAudioData(content, function (audioBuffer) {
-        buffer = audioBuffer;
-        initVars();
-        var duration = Math.round(buffer.duration * 10) / 10;
-        resolve(duration);
-      }, reject); // может надо () => {reject();}
-    });
-  };
-
-  function initVars() {
-    startTime = startPoz = 0;
-    playing = false;
-  }
-
-  res.play = function () {
-    var poz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
-    source = context.createBufferSource();
-    source.connect(context.destination);
-    source.buffer = buffer;
-
-    startTime = context.currentTime;
-    startPoz = poz;
-    source.start(0, startPoz);
-    playing = true;
-  };
-
-  res.getCurrentPoz = function () {
-    return Math.round((context.currentTime - startTime + startPoz) * 10) / 10;
-  };
-
-  res.stop = function () {
-    source.stop();
-    playing = false;
-    return res.getCurrentPoz();
-  };
-
-  function onError() {}
-
-  return res;
-}
 
 /***/ })
 /******/ ]);

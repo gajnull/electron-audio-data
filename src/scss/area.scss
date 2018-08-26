@@ -1,5 +1,6 @@
 #txt {
   padding: 5px;
+  overflow-y: scroll;
 
   span {
     color: $a_cyan_d30;
@@ -19,4 +20,19 @@
     color: $a_cyan_l14;
   }
 
+}
+
+#transl {
+  display: none;
+  padding: 5px;
+  overflow-y: scroll;
+
+  span {
+    color: $a_cyan_d30;
+  }
+}
+
+#area .area {
+  border: 0.5px solid $a_blue;
+  flex: 1 0 100px;
 }
