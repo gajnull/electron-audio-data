@@ -8,66 +8,74 @@ const model = {
   off: vent.off
 };
 
-let stateEdit = 'add',  // 'delete'/'transl'
+let state = 'add',  // 'delete'/'transl'
   playing = false,
   timer = null,
   timerStop = null;
 
 vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); // это можно в modelTxt
 
+//model.getState = () => state;
+
 //////// Txt
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
 model.fnTxtSelection = (action) => {
-  if(stateEdit === 'delete') return;
+  if(state === 'delete') return;
   modelTxt[action]();
 }
 
-// действия, совершаемые при stateEdit === 'add'
+// действия, совершаемые при state === 'add'
 model.fnTxt = (action, args) => {
-  if (stateEdit === 'delete') model.toogleState();
+  if (state === 'delete') model.toogleState();
   modelTxt[action](args);
 }
 
-// действия, совершаемые при stateEdit === 'delete'
+// действия, совершаемые при state === 'delete'
 model.fnTxtDelete = (action, args) => {
-  if (stateEdit === 'add') model.toogleState();
+  if (state === 'add') model.toogleState();
   modelTxt[action](args);
 }
 
 model.setLoadedTxtFile = (file) => { // file: {name, path, size, content, startPoz}
-  if (stateEdit === 'delete') model.toogleState();
+  if (state === 'delete') model.setState('add');
   modelTxt.setLoadedFile(file);
 }
 
 
-model.toogleState = (typeState) => {
-  if (typeState === 'edit') {
-    toogleStateEdit();
-    return;
+model.setState = (_state) => {
+  if (_state === state) return; // такого не должно случиться
+  switch (_state) {
+    case 'add':
+      setStateAdd();
+      break;
+    case 'delete':
+      setStateDelete();
+      break;
+    case 'transl':
+      setStateTransl();
+      break;
   }
-  if (typeState === 'transl') toogleStateTransl();
+  state = _state;
+  vent.publish('changeState', {state});
+  modelAudio.advertPozz();
 };
 
-function toogleStateEdit() {
-  if (stateEdit === 'add') {
-    const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
-    if(!interval) return;
-    modelAudio.assignInterval(interval);
-    stateEdit = 'delete';
-  } else {
-    modelTxt.gotoToAdd();
-    modelAudio.nextUnit();
-    stateEdit = 'add';
-  }
-  vent.publish('changeStateEdit', {stateEdit});
-  modelAudio.advertPozz();
+function setStateAdd() {
+  modelTxt.gotoToAdd();
+  modelAudio.nextUnit();
 }
 
-function toogleStateTransl() {
-  
+function setStateDelete() {
+  const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
+  if(!interval) return;
+  modelAudio.assignInterval(interval);
 }
+
+function setStateTransl() {}
+
+
 
 /////// Audio
 
@@ -77,7 +85,7 @@ model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
 
 
 model.fnAudio = (action, args) => { // возможно args не понадобится
-  if (stateEdit === 'delete') model.toogleState();  // если используется клавиатура
+  if (state === 'delete') model.toogleState();  // если используется клавиатура
   const res = modelAudio[action](args);
   if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
     const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
@@ -87,7 +95,7 @@ model.fnAudio = (action, args) => { // возможно args не понадоб
 }
 
 model.fnEditAudio = (action, args) => { // возможно args не понадобится
-  if (stateEdit === 'add') model.toogleState();  // если используется клавиатура
+  //if (state === 'add') model.toogleState();  // если используется клавиатура
   if (action === "repeate") modelAudio[action](args);
   if (action === "cleare") {
     const interval = modelTxt.deleteUnit();  //

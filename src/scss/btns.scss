@@ -1,40 +1,43 @@
-#btns, #edit-intervals {
+#btns {
   display: flex;
-  justify-content: space-between;
-  >div {
-    display: flex;
-    button {
-      background-color: $b_green_d10;
-      color: $b_green_l30;
-      border-radius: 5px;
-      margin: 0 1px;
-      padding: 5px 0;
-      //width: 55px;
-      cursor: pointer;
-    }
-  }
-  .btns-control button {
-    width: 60px;
-  }
+}
 
-  .btns-move button,
-  .btns-from button,
-  .btns-to button {
-    width: 47px;
-  }
+#btns-intervals, #btns-transl {
+  display: none;  // при других состояниях display = 'flex'
+}
 
-  .btns-from button.z,
-  .btns-to button.z {
-    width: 30px;
-  }
 
-  .toogle {
-    width: 80px;
-    background-color: $a_blue_d20;
+
+#btns, #btns-intervals, #btns-transl {
+  button {
+    background-color: $b_green_d10;
+    color: $b_green_l30;
+    border-radius: 5px;
+    margin: 0 1px;
+    padding: 5px 0;
+    cursor: pointer;
   }
 }
 
-// переопределим
-#edit-intervals {
-  display: none;
+#btns {
+  justify-content: space-between;
+  .btns-group {
+    display: flex;
+  }
+
+  .btns-control button {
+    width: 70px;
+  }
+  .btns-from-to button {
+    width: 47px;
+  }
+  .btns-from-to button.z {
+    width: 30px;
+  }
+}
+
+#btns-intervals, #btns-transl {
+  button {
+    width: 100px;
+  }
 }

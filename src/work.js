@@ -1,8 +1,8 @@
 import './scss/style.scss';
 
+import model from './js/model/model';
 import hotKeys from './js/hotKeys';
 //import modelTxt from './js/model/modelTxt'
-import model from './js/model/model';
 import fileTxt from './js/file_txt';
 import fileEnd from './js/file_end';
 

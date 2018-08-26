@@ -23,17 +23,17 @@
 
   #name-lngt {
     padding: 6px;
-    flex: 1 0 250px;
+    flex: 1 0 200px;
     background-color: #f4ecf5;
     border: 0.5px solid $a_blue;
     font-size: 0.9em;
   }
   .btns-file {
-    flex: 1 0 150px;
+    flex: 1 0 100px;
     align-content: stretch;
     display: flex;
     button {
-      flex: 1 0 40px;
+      flex: 1 0 25px;
       margin-left: 5px;
       cursor: pointer;
       color: $b_white_l7;
@@ -43,6 +43,25 @@
       background-color: $b_brown;
     }
   }
+  #btns-state {
+    flex: 1 0 100px;
+    align-content: stretch;
+    display: flex;
+    button {
+      flex: 1 0 25px;
+      margin-left: 5px;
+      cursor: pointer;
+      color: $b_white_l7;
+      border: 0.5px solid $b_brown_d10;
+      border-radius: 4px;
+      padding: 5px;
+      background-color: #8143a6;
+    }
+    button[state="add"] {
+      display: none;
+    }
+  }
+
 }
 
 

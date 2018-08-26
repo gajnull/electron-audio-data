@@ -10,7 +10,7 @@ let nodeTxt = null,   // весь элемент
     nodeCurrent = null,
     nodeSelection = null,
     nodeLast = null
-    //stateEdit = 'add interval';  // 'delete interval'
+    //stateTxt = 'add interval';  // 'delete interval'
 
 
 // установка
@@ -27,7 +27,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   file = {name, path, size, startPoz: getStartPoz()};
   vent.publish('loadedLngt', file);
   localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);  
+  localStorage.setItem('name-lngt', name);
 
   function txtToLngt() {
     if (!/\.txt$/.test(name)) return;
@@ -94,7 +94,7 @@ modelTxt.restore = () => {
 
 // Изменение области выделения
 modelTxt.addSelection = () => {
-  //if (stateEdit === 'delete interval') return;
+  //if (stateTxt === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if (!current) return;
@@ -109,7 +109,7 @@ modelTxt.addSelection = () => {
 }
 
 modelTxt.reduceSelection = () => {
-  //if (stateEdit === 'delete interval') return;
+  //if (stateTxt === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if(!selection) return;
@@ -145,8 +145,8 @@ modelTxt.deleteUnit = () => {
   nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
   nodeLast.remove();
   if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
-    _from = + span.getAttribute('from'); 
-    _to = + span.getAttribute('to'); 
+    _from = + span.getAttribute('from');
+    _to = + span.getAttribute('to');
     span.id = 'last-txt';
     nodeLast = span;
   }
@@ -154,7 +154,7 @@ modelTxt.deleteUnit = () => {
 }
 
 modelTxt.gotoToAdd = () => {
-  nodeLast.removeAttribute('id');
+  if (nodeLast) nodeLast.removeAttribute('id');
   nodeLast = null;
 }
 
@@ -183,7 +183,7 @@ function getStartPoz() {
   let poz = 0;
   const span = nodeSelection.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
-  return poz;  
+  return poz;
 }
 
 export default modelTxt;

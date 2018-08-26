@@ -22,6 +22,11 @@
           <button type="button" act="save"> Save </button>
           <button type="button" act="restore"> Restore </button>
         </div>
+        <div id="btns-state">
+          <button type="button" state="add"> Edit </button>
+          <button type="button" state="delete"> Delete </button>
+          <button type="button" state="transl"> Translate </button>
+        </div>
       </div>
 
       <div id="txt" class="part"></div>
@@ -38,44 +43,37 @@
       </div>
 
       <div id="btns" class="part">
-        <div class = "btns-control">
+        <div class = "btns-control btns-group">
           <button act = "tooglePlay" type="button"> Start </button>
           <button act = "repeate" type="button"> Repeate </button>
           <button act = "reset" type="button"> Reset </button>
           <button act = "setUnit" type="button"> Set </button>
         </div>
-        <div class="btns-move">
+        <div class="btns-from-to btns-group">
           <button act="gotoStart" type="button">->start</button>
           <button act="gotoFrom" type="button">->from</button>
           <button act="gotoTo" type="button">->to</button>
         </div>
-        <div class="btns-from">
+        <div class="btns-from-to btns-group">
           <button act="fromMoveBack" type="button" class="z"> - </button>
           <button act="fromSet" type="button">>from<</button>
           <button act="fromMoveForward" type="button" class="z"> + </button>
         </div>
-        <div class="btns-to">
+        <div class="btns-from-to btns-group">
           <button act="toMoveBack" type="button" class="z"> - </button>
           <button act="toSet" type="button">>to<</button>
           <button act="toMoveForward" type="button" class="z"> + </button>
         </div>
       </div>
 
-      <div id="edit-intervals" class="part">
-        <div class = "btns-control">
+      <div id="btns-intervals" class="part">
           <button act = "repeate" type="button"> Repeate </button>
           <button act = "cleare" type="button"> Cleare </button>
         </div>
-        <div class="btns-change">
-          <button act="change" type="button" class="toogle"> Toogle </button>
-        </div>
-      </div>
 
       <div id="btns-transl" class="part">
-        <div class = "btns-control">
-          <button act = "repeate" type="button"> Repeate </button>
+          <button act = "set" type="button"> Set Translate </button>
           <button act = "cleare" type="button"> Cleare </button>
-        </div>
       </div>
 
     </div>
