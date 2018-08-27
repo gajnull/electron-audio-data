@@ -3,7 +3,7 @@ const {ipcRenderer} = window.require('electron');
 
 const modelTxt = {};
 
-const subfolder = 'target';
+//const subfolder = 'target';
 let file = {};       // {name, path, size}
                       // path: fullPath + name
 let nodeTxt = null,   // весь элемент
@@ -41,7 +41,7 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = `<main-info audio-file=""></main-info>
+    s = `<main-info></main-info>
          <span id="selection-txt"></span>
          <span id="current-txt">&nbsp&nbsp${s}</span>`;
     content = s;

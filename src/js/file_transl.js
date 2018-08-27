@@ -13,9 +13,7 @@ const init = () => {
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
-  //model.on('loadedLngt', setInfoLodedLngt);
   model.on('loadedTransl', setInfoLodedTransl);
-  //model.on('savedLngt', setInfoLodedLngt);
   model.on('savedTransl', setInfoLodedTransl);
 };
 
@@ -24,7 +22,7 @@ const close = () => {
   input.removeEventListener('change', choosedFile);
   model.off('loadedTransl', setInfoLodedTransl);
   model.off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
- };                                             // так как на loadedLngt меняется содержимое текста                                       
+ };                                             // так как на loadedLngt меняется содержимое текста
 
 
 function clickInput() {

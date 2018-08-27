@@ -72,9 +72,9 @@
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modelTransl__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modelTransl__ = __webpack_require__(13);
 //export const something = 'test'
 
 
@@ -278,17 +278,17 @@ vent.dispatch = vent.publish; // для постепенного переход�
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = work;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_txt_area__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_txt_area__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_file_transl__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_file_transl__ = __webpack_require__(7);
 
 
 
@@ -549,6 +549,88 @@ function changeState(_ref) {
 *****************************************************************/
 
 
+var btn = void 0,
+    input = void 0;
+
+var init = function init() {
+  btn = document.getElementById('file-transl');
+  input = document.getElementById('input-transl');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', setInfoLodedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('savedTransl', setInfoLodedTransl);
+};
+
+var close = function close() {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedTransl', setInfoLodedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+}; // так как на loadedLngt меняется содержимое текста
+
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  var size = file.size;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, size: size, content: content }); //!!!
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+function setInfoLodedTransl(_ref) {
+  var path = _ref.path,
+      name = _ref.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+var fileTransl = {
+  init: init,
+  close: close
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTransl);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
+
+
 var fileTxt = {};
 
 var btn = void 0,
@@ -616,12 +698,12 @@ function setInfoLodedLngt(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (fileTxt);
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(11);
 //управление сохранением и восстановлением текстового файла .lngt
 
 
@@ -659,7 +741,7 @@ var hotKeys = {
 /* harmony default export */ __webpack_exports__["a"] = (hotKeys);
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -704,7 +786,7 @@ function showChangedPoz(_ref) {
 /* harmony default export */ __webpack_exports__["a"] = (infoTiming);
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -766,12 +848,12 @@ function clearAllEvs() {
 }
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(15);
 
 
 
@@ -1000,7 +1082,204 @@ function choosedFile() {
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
 
 /***/ }),
-/* 12 */
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var subfolder = 'target';
+var file = {}; // {name, path, size}
+// path: fullPath + name
+var nodeTransl = null,
+    // весь элемент
+nodeCurrent = null,
+    nodeSelection = null; // выделяется из nodeCurrent
+//nodeLast = null
+
+
+// установка
+var setRoot = function setRoot(root) {
+  nodeTransl = root;
+};
+
+var setLoadedFile = function setLoadedFile(_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      size = _ref.size,
+      content = _ref.content;
+
+  txtToTransl();
+  nodeTransl.innerHTML = content;
+  nodeSelection = nodeTransl.querySelector('#selection-txt'); // метод getElementById есть только у document
+  nodeCurrent = nodeTransl.querySelector('#current-txt');
+
+  file = { name: name, path: path, size: size /*, startPoz: getStartPoz()*/ };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
+  localStorage.setItem('path-transl', path);
+  localStorage.setItem('name-transl', name);
+
+  function txtToTransl() {
+    if (!/\.txt$/.test(name)) return;
+
+    var s = content;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    content = s;
+  }
+};
+/*
+// Сохранение файла
+modelTransl.save = (nameLngt) => {
+  if (!nodeTransl || !file) return;
+  let content = nodeTransl.innerHTML;
+  if (!content) return;
+
+  cleareSelection();
+  content = nodeTransl.innerHTML;
+  const name = nameLngt + '.lngt';
+  const path = subfolder + '/' + name;
+  const lngt = {name,  path, content};
+  file.temp = {name, path};
+  ipcRenderer.send('will-save-file', lngt);
+}
+
+  ipcRenderer.on('file-saved', (event, arg) => {
+    const {name, path} = file.temp;
+    file.temp = null;
+    if (arg) {
+      console.log('error in saving:');  // in arg i send err
+      console.log(arg);
+      return;
+    }
+    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+    localStorage.setItem('path-lngt', path);
+    vent.publish('savedLngt', {name, path});
+  });
+
+
+// Восстановление файла
+modelTransl.restore = () => {
+  const name = localStorage.getItem('name-lngt');
+  const path = localStorage.getItem('path-lngt');
+  if (!name || !path) return;
+  file.temp = {name, path};
+  ipcRenderer.send('will-restore-file', {path});
+}
+
+  ipcRenderer.on('file-restored', (event, arg) => {
+    const {name, path} = file.temp;
+    file = {name, path, content: arg, size: file.size};
+    modelTransl.setLoadedFile(file);
+  })
+
+
+// Изменение области выделения
+modelTransl.addSelection = () => {
+  //if (stateTxt === 'delete interval') return;
+  let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML
+  if (!current) return;
+  const s = current.match(/^.+?(\s|<br>)/)
+  if (s) {
+    nodeSelection.innerHTML = selection + s[0]
+    nodeCurrent.innerHTML = current.slice(s[0].length)
+  } else {  //конец текстового файла
+    nodeSelection.innerHTML = selection + current
+    nodeCurrent.innerHTML = ''
+  }
+}
+
+modelTransl.reduceSelection = () => {
+  //if (stateTxt === 'delete interval') return;
+  //let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML
+  if(!selection) return;
+  const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
+  if(s) {
+    nodeCurrent.innerHTML = s[2] + current;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+*/
+
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
+/*
+modelTransl.deleteUnit = () => {
+  let _from, _to;   // from - показывает ключевое слово
+  let span = nodeLast.previousElementSibling;  // возможно можно const span
+  nodeLast.removeAttribute('id');
+  const txtTmp = nodeLast.innerHTML;
+  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
+  nodeLast.remove();
+  if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
+    _from = + span.getAttribute('from');
+    _to = + span.getAttribute('to');
+    span.id = 'last-txt';
+    nodeLast = span;
+  }
+  return { _from, _to };
+}
+
+modelTransl.gotoToAdd = () => {
+  if (nodeLast) nodeLast.removeAttribute('id');
+  nodeLast = null;
+}
+
+modelTransl.gotoToDelete = () => {
+  let _from, _to;   // from - показывает ключевое слово
+  if (!nodeSelection) return;
+  nodeLast = nodeSelection.previousElementSibling;
+  if(!nodeLast || !nodeLast.hasAttribute('from')) return;
+  _from = nodeLast.getAttribute('from');
+  _to = nodeLast.getAttribute('to');
+  nodeLast.id = 'last-txt';
+  cleareSelection();
+  return { _from, _to };
+}
+
+function cleareSelection() {
+  const current = nodeCurrent.innerHTML;
+  const selection = nodeSelection.innerHTML;
+  if(selection) {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+*/
+
+/*
+function getStartPoz() {
+  let poz = 0;
+  const span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
+  return poz;
+}
+*/
+
+var modelTransl = {
+  setRoot: setRoot,
+  setLoadedFile: setLoadedFile
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTransl);
+
+/***/ }),
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1012,7 +1291,7 @@ var _window$require = window.require('electron'),
 
 var modelTxt = {};
 
-var subfolder = 'target';
+//const subfolder = 'target';
 var file = {}; // {name, path, size}
 // path: fullPath + name
 var nodeTxt = null,
@@ -1056,7 +1335,7 @@ modelTxt.setLoadedFile = function (_ref) {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    s = '<main-info></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
     content = s;
   }
 };
@@ -1213,7 +1492,7 @@ function getStartPoz() {
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
 /***/ }),
-/* 13 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1281,7 +1560,7 @@ function webAudioAPI() {
 }
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1322,10 +1601,10 @@ var txtArea = {
 /* harmony default export */ __webpack_exports__["a"] = (txtArea);
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(16)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 
@@ -1336,7 +1615,7 @@ exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1
 
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports) {
 
 /*
@@ -1418,13 +1697,13 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(15);
+var content = __webpack_require__(17);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -1432,7 +1711,7 @@ var transform;
 var options = {}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(18)(content, options);
+var update = __webpack_require__(20)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -1449,7 +1728,7 @@ if(false) {
 }
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -1495,7 +1774,7 @@ var singleton = null;
 var	singletonCounter = 0;
 var	stylesInsertedAtTop = [];
 
-var	fixUrls = __webpack_require__(19);
+var	fixUrls = __webpack_require__(21);
 
 module.exports = function(list, options) {
 	if (typeof DEBUG !== "undefined" && DEBUG) {
@@ -1808,7 +2087,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports) {
 
 
@@ -1901,287 +2180,6 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
-
-/***/ }),
-/* 20 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
-/****************************************************************
-  Компонент для загрузки текстового файла.
-  во внешнем модуле используется fileTxt.init() и fileTxt.close()
-*****************************************************************/
-
-
-var btn = void 0,
-    input = void 0;
-
-var init = function init() {
-  btn = document.getElementById('file-transl');
-  input = document.getElementById('input-transl');
-
-  btn.addEventListener('click', clickInput);
-  input.addEventListener('change', choosedFile);
-  //model.on('loadedLngt', setInfoLodedLngt);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', setInfoLodedTransl);
-  //model.on('savedLngt', setInfoLodedLngt);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('savedTransl', setInfoLodedTransl);
-};
-
-var close = function close() {
-  btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', choosedFile);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedTransl', setInfoLodedTransl);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
-}; // так как на loadedLngt меняется содержимое текста                                       
-
-
-function clickInput() {
-  input.click();
-}
-
-function choosedFile() {
-  if (input.files.length === 0) return; //здесь ";" обязательно
-  var file = input.files[0];
-  input.value = ''; // единственный способ чтобы заново открыть тотже файл
-  var path = file.path;
-  var name = file.name;
-  var size = file.size;
-
-  btn.innerHTML = 'loding...';
-
-  var reader = new FileReader();
-  reader.readAsText(file);
-
-  //reader.onloadstart = startProgress
-  //reader.onprogress = updateProgress
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  function loaded(ev) {
-    var content = ev.target.result;
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, size: size, content: content }); //!!!
-  }
-
-  function errorHandler(ev) {
-    if (ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой текстовой файл';
-    }
-  }
-}
-
-function setInfoLodedTransl(_ref) {
-  var path = _ref.path,
-      name = _ref.name;
-
-  btn.innerHTML = name;
-  btn.setAttribute('title', path);
-}
-
-var fileTransl = {
-  init: init,
-  close: close
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (fileTransl);
-
-/***/ }),
-/* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
-
-
-var _window$require = window.require('electron'),
-    ipcRenderer = _window$require.ipcRenderer;
-
-var subfolder = 'target';
-var file = {}; // {name, path, size}
-// path: fullPath + name
-var nodeTransl = null,
-    // весь элемент
-nodeCurrent = null,
-    nodeSelection = null; // выделяется из nodeCurrent
-//nodeLast = null
-
-
-// установка
-var setRoot = function setRoot(root) {
-  nodeTransl = root;
-};
-
-var setLoadedFile = function setLoadedFile(_ref) {
-  var name = _ref.name,
-      path = _ref.path,
-      size = _ref.size,
-      content = _ref.content;
-
-  txtToTransl();
-  nodeTransl.innerHTML = content;
-  nodeSelection = nodeTransl.querySelector('#selection-txt'); // метод getElementById есть только у document
-  nodeCurrent = nodeTransl.querySelector('#current-txt');
-
-  file = { name: name, path: path, size: size /*, startPoz: getStartPoz()*/ };
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
-  localStorage.setItem('path-transl', path);
-  localStorage.setItem('name-transl', name);
-
-  function txtToTransl() {
-    if (!/\.txt$/.test(name)) return;
-
-    var s = content;
-    //Нормализуем - убираем из текста возможные тэги
-    s = s.replace(/</g, '(').replace(/>/g, ')');
-    //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
-    //Добавляем тэги для начальной работы с текстом
-    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-    content = s;
-  }
-};
-/*
-// Сохранение файла
-modelTransl.save = (nameLngt) => {
-  if (!nodeTransl || !file) return;
-  let content = nodeTransl.innerHTML;
-  if (!content) return;
-
-  cleareSelection();
-  content = nodeTransl.innerHTML;
-  const name = nameLngt + '.lngt';
-  const path = subfolder + '/' + name;
-  const lngt = {name,  path, content};
-  file.temp = {name, path};
-  ipcRenderer.send('will-save-file', lngt);
-}
-
-  ipcRenderer.on('file-saved', (event, arg) => {
-    const {name, path} = file.temp;
-    file.temp = null;
-    if (arg) {
-      console.log('error in saving:');  // in arg i send err
-      console.log(arg);
-      return;
-    }
-    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path);
-    vent.publish('savedLngt', {name, path});
-  });
-
-
-// Восстановление файла
-modelTransl.restore = () => {
-  const name = localStorage.getItem('name-lngt');
-  const path = localStorage.getItem('path-lngt');
-  if (!name || !path) return;
-  file.temp = {name, path};
-  ipcRenderer.send('will-restore-file', {path});
-}
-
-  ipcRenderer.on('file-restored', (event, arg) => {
-    const {name, path} = file.temp;
-    file = {name, path, content: arg, size: file.size};
-    modelTransl.setLoadedFile(file);
-  })
-
-
-// Изменение области выделения
-modelTransl.addSelection = () => {
-  //if (stateTxt === 'delete interval') return;
-  let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML
-  if (!current) return;
-  const s = current.match(/^.+?(\s|<br>)/)
-  if (s) {
-    nodeSelection.innerHTML = selection + s[0]
-    nodeCurrent.innerHTML = current.slice(s[0].length)
-  } else {  //конец текстового файла
-    nodeSelection.innerHTML = selection + current
-    nodeCurrent.innerHTML = ''
-  }
-}
-
-modelTransl.reduceSelection = () => {
-  //if (stateTxt === 'delete interval') return;
-  //let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML
-  if(!selection) return;
-  const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
-  if(s) {
-    nodeCurrent.innerHTML = s[2] + current;
-    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
-  } else {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
-  }
-}
-*/
-
-// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
-/*
-modelTransl.deleteUnit = () => {
-  let _from, _to;   // from - показывает ключевое слово
-  let span = nodeLast.previousElementSibling;  // возможно можно const span
-  nodeLast.removeAttribute('id');
-  const txtTmp = nodeLast.innerHTML;
-  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
-  nodeLast.remove();
-  if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
-    _from = + span.getAttribute('from');
-    _to = + span.getAttribute('to');
-    span.id = 'last-txt';
-    nodeLast = span;
-  }
-  return { _from, _to };
-}
-
-modelTransl.gotoToAdd = () => {
-  if (nodeLast) nodeLast.removeAttribute('id');
-  nodeLast = null;
-}
-
-modelTransl.gotoToDelete = () => {
-  let _from, _to;   // from - показывает ключевое слово
-  if (!nodeSelection) return;
-  nodeLast = nodeSelection.previousElementSibling;
-  if(!nodeLast || !nodeLast.hasAttribute('from')) return;
-  _from = nodeLast.getAttribute('from');
-  _to = nodeLast.getAttribute('to');
-  nodeLast.id = 'last-txt';
-  cleareSelection();
-  return { _from, _to };
-}
-
-function cleareSelection() {
-  const current = nodeCurrent.innerHTML;
-  const selection = nodeSelection.innerHTML;
-  if(selection) {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
-  }
-}
-*/
-
-/*
-function getStartPoz() {
-  let poz = 0;
-  const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
-  return poz;
-}
-*/
-
-var modelTransl = {
-  setRoot: setRoot,
-  setLoadedFile: setLoadedFile
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (modelTransl);
 
 /***/ })
 /******/ ]);
