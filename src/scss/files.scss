@@ -4,37 +4,27 @@
 
   .file-field {
     flex: 1 0 200px;
-    margin-left: 5px;
+    margin: 5px 0 0 5px;
     background-color: $a_cyan;
     border: 0.5px solid $a_blue;
     border-radius: 4px;
     padding: 6px;
     cursor: pointer;
   }
-
-  #file-transl {
-    display: none;
-  }
 }
 
-#file-end {
+#btns-files-state {
   display: flex;
   //flex-wrap: wrap;
 
-  #name-lngt {
-    padding: 6px;
-    flex: 1 0 200px;
-    background-color: #f4ecf5;
-    border: 0.5px solid $a_blue;
-    font-size: 0.9em;
-  }
   .btns-file {
     flex: 1 0 100px;
     align-content: stretch;
     display: flex;
     button {
-      flex: 1 0 25px;
-      margin-left: 5px;
+      //flex: 0 1 40px;
+      width: 100px;
+      margin-right: 5px;
       cursor: pointer;
       color: $b_white_l7;
       border: 0.5px solid $b_brown_d10;
@@ -45,8 +35,9 @@
   }
   #btns-state {
     flex: 1 0 100px;
-    align-content: stretch;
+    align-content: right;
     display: flex;
+    max-width: 400px;
     button {
       flex: 1 0 25px;
       margin-left: 5px;
@@ -55,16 +46,16 @@
       border: 0.5px solid $b_brown_d10;
       border-radius: 4px;
       padding: 5px;
-      background-color: #8143a6;
+      background-color: #255677;
     }
-    button[state="add"] {
-      display: none;
+    button.current {
+      background-color: #6e94b6;
     }
   }
 
 }
 
-
+/*
 .progress {
   background-color: $a_blue;
   position: absolute;
@@ -74,3 +65,4 @@
   top: 0px;
   opacity: 0.3;
 }
+*/

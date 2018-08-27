@@ -32,6 +32,8 @@ const modelAudio = {
       file.name = {name, path, size};
       vent.publish('decodedAudio', {name, path});
       vent.publish('changedPoz', getPoz());
+      localStorage.setItem('path-audio', path);
+      localStorage.setItem('name-audio', name);      
     });
   },
 
@@ -156,6 +158,11 @@ const modelAudio = {
 
   advertPozz() {
     vent.publish('changedPoz', getPoz());
+  },
+
+  restore() {
+    if (file.path) return;
+
   }
 }
 
@@ -171,5 +178,35 @@ function notFitUnit() { // если отрезок не установлен (po
   if (pozTo > pozFrom + 0.3) return;
   return true;
 }
+
+function choosedFile() {
+  const file = input.files[0];
+  const path = file.path;
+  const name = file.name;
+
+
+  btn.innerHTML = 'loding...';
+
+  const reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    const content = ev.target.result;
+    model.setLoadedAudioFile({name, path, size, content});
+  }
+
+  function errorHandler(ev) {
+    if(ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой звуковой файл';
+    }
+  }
+
+}
+
 
 export default modelAudio;

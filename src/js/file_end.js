@@ -3,48 +3,39 @@ import model from './model/model';
 
 const fileEnd = {};
 
-let nameEnd,
-    btnSave, btnRestore,
-    btnsState, btnStateAdd, btnStateDelete, btnStateTransl;
+let btnSave, btnRestore,
+    btnsState, btnCurrent;
 
 fileEnd.init = function() {
-  nameEnd = document.getElementById('name-lngt');
-  btnSave = document.querySelector('#file-end button[act=save]');
-  btnRestore = document.querySelector('#file-end button[act=restore]');
+  btnSave = document.querySelector('#btns-files-state .btns-file button[act="save"]');
+  btnRestore = document.querySelector('#btns-files-state .btns-file button[act="restore"]');
 
   btnsState = document.getElementById('btns-state');
-  btnStateAdd = btnsState.querySelector('[state="add"]');
-  btnStateDelete = btnsState.querySelector('[state="delete"]');
-  btnStateTransl = btnsState.querySelector('[state="transl"]');
+  btnCurrent = btnsState.querySelector('.current');
+  //btnStateAdd = btnsState.querySelector('[state="add"]');
+  //btnStateDelete = btnsState.querySelector('[state="delete"]');
+ // btnStateTransl = btnsState.querySelector('[state="transl"]');
 
-  btnSave.addEventListener('click', saveFile);
-  btnRestore.addEventListener('click', restoreFile);
+  btnSave.addEventListener('click', saveFiles);
+  btnRestore.addEventListener('click', restoreFiles);
   btnsState.addEventListener('click', setState);
-  model.on('loadedLngt', writeName);
   model.on('changeState', changeState);
 }
 
 fileEnd.close = function() {
-  btnSave.removeEventListener('click', saveFile);
-  btnRestore.removeEventListener('click', restoreFile);
+  btnSave.removeEventListener('click', saveFiles);
+  btnRestore.removeEventListener('click', restoreFiles);
   btnsState.removeEventListener('click', setState);
-  model.off('loadedLngt', writeName);
   model.off('changeState', changeState);
+  btnSave = btnRestore = btnsState = btnCurrent = null;
 }
 
-function saveFile() {
-  let name = nameEnd.value;
-  if (!name) nameEnd.value = name = 'noName';
-  model.fnTxt('save', name);
+function saveFiles() {
+  model.save();
 }
 
-function restoreFile() {
-  model.fnTxt('restore');
-}
-
-function writeName({ name }) {
-  const res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
-  if (res) nameEnd.value = res[1];
+function restoreFiles() {
+  model.restore();
 }
 
 function setState(ev) {
@@ -53,9 +44,10 @@ function setState(ev) {
 }
 
 function changeState({ state }) {
-  btnStateAdd.style.display = (state === 'add') ? 'none' : 'inline-block';
-  btnStateDelete.style.display = (state === 'delete') ? 'none' : 'inline-block';
-  btnStateTransl.style.display = (state === 'transl') ? 'none' : 'inline-block';
+  btnCurrent.classList.remove('current');
+
+  btnCurrent = btnsState.querySelector('[state=' + state + ']')
+  btnCurrent.classList.add('current');  
 }
 
 export default fileEnd;

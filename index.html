@@ -9,6 +9,7 @@
 
       <input id = "input-audio" type="file" accept=".mp3,.wav" hidden>
       <input id = "input-txt" type = "file" accept = ".txt,.lngt" hidden>
+      <input id = "input-transl" type = "file" accept = ".txt,.lngt" hidden>
 
       <div id="files" class="part">
         <div id="file-txt" class="file-field">Выберите текстовой файл</div>
@@ -16,14 +17,13 @@
         <div id="file-transl" class="file-field">Выберите файл с переводом</div>
       </div>
 
-      <div id="file-end" class="part">
-        <input type="text" id="name-lngt" placeholder="Название не выбрано" title="Файл ещё не сохранялся">
+      <div id="btns-files-state" class="part">
         <div class="btns-file">
           <button type="button" act="save"> Save </button>
           <button type="button" act="restore"> Restore </button>
         </div>
         <div id="btns-state">
-          <button type="button" state="add"> Edit </button>
+          <button type="button" state="add" class="current"> Edit </button>
           <button type="button" state="delete"> Delete </button>
           <button type="button" state="transl"> Translate </button>
         </div>

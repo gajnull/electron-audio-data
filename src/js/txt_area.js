@@ -6,6 +6,7 @@ const init = () => {
   txt = document.getElementById('txt');
   transl = document.getElementById('transl');
   model.setArea(txt);
+  model.setAreaTransl(transl);
   model.on('changeState', changeState);
 };
 

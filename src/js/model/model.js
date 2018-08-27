@@ -2,6 +2,7 @@
 import vent from './vent';
 import modelAudio from './modelAudio';
 import modelTxt from './modelTxt';
+import modelTransl from './modelTransl';
 
 const model = {
   on: vent.on, // в vent.on this не используется
@@ -14,34 +15,6 @@ let state = 'add',  // 'delete'/'transl'
   timerStop = null;
 
 vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); // это можно в modelTxt
-
-//model.getState = () => state;
-
-//////// Txt
-
-model.setArea = (area) => { modelTxt.setRoot(area); }
-
-model.fnTxtSelection = (action) => {
-  if(state === 'delete') return;
-  modelTxt[action]();
-}
-
-// действия, совершаемые при state === 'add'
-model.fnTxt = (action, args) => {
-  if (state === 'delete') model.toogleState();
-  modelTxt[action](args);
-}
-
-// действия, совершаемые при state === 'delete'
-model.fnTxtDelete = (action, args) => {
-  if (state === 'add') model.toogleState();
-  modelTxt[action](args);
-}
-
-model.setLoadedTxtFile = (file) => { // file: {name, path, size, content, startPoz}
-  if (state === 'delete') model.setState('add');
-  modelTxt.setLoadedFile(file);
-}
 
 
 model.setState = (_state) => {
@@ -73,7 +46,46 @@ function setStateDelete() {
   modelAudio.assignInterval(interval);
 }
 
-function setStateTransl() {}
+function setStateTransl(file) {
+  //
+}
+
+
+
+//////// Txt
+
+model.setArea = (area) => { modelTxt.setRoot(area); }
+
+model.fnTxtSelection = (action) => {
+  if(state === 'delete') return;
+  modelTxt[action]();
+}
+
+// действия, совершаемые при state === 'add'
+model.fnTxt = (action, args) => {
+  if (state === 'delete') model.toogleState();
+  modelTxt[action](args);
+}
+
+// действия, совершаемые при state === 'delete'
+model.fnTxtDelete = (action, args) => {
+  if (state === 'add') model.toogleState();
+  modelTxt[action](args);
+}
+
+model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
+  if (state === 'delete') model.setState('add');
+  modelTxt.setLoadedFile(file);
+}
+
+
+
+//////// Transl
+model.setAreaTransl  = (area) => { modelTransl.setRoot(area); }
+
+model.setLoadedTranslFile = (file) => { // file: {name, path, size, content}
+  modelTransl.setLoadedFile(file);
+}
 
 
 
@@ -109,6 +121,16 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
 }
 
 
+/////// save/restore
+model.save = () => {
+  modelTxt.save();
+  modelTransl.save();
+}
 
+model.restore = () => {
+  modelTxt.restore();
+  //modelTransl.restore();
+  modelAudio.restore(); // если аудио загружено, то оставляем как есть
+}
 
 export default model;

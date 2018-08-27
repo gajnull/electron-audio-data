@@ -4,26 +4,28 @@
 *****************************************************************/
 import model from './model/model';
 
-const fileTxt = {};
 
 let btn, input;
 
-fileTxt.init = function() {
-  btn = document.getElementById('file-txt');
-  input = document.getElementById('input-txt');
+const init = () => {
+  btn = document.getElementById('file-transl');
+  input = document.getElementById('input-transl');
 
   btn.addEventListener('click', clickInput);
   input.addEventListener('change', choosedFile);
-  model.on('loadedLngt', setInfoLodedLngt);
-  model.on('savedLngt', setInfoLodedLngt);
-}
+  //model.on('loadedLngt', setInfoLodedLngt);
+  model.on('loadedTransl', setInfoLodedTransl);
+  //model.on('savedLngt', setInfoLodedLngt);
+  model.on('savedTransl', setInfoLodedTransl);
+};
 
-fileTxt.close = function() {
+const close = () => {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', choosedFile);
-  model.off('loadedLngt', setInfoLodedLngt);
-  model.off('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
-}                                         // так как на loadedLngt меняется содержимое текста
+  model.off('loadedTransl', setInfoLodedTransl);
+  model.off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+ };                                             // так как на loadedLngt меняется содержимое текста                                       
+
 
 function clickInput() {
   input.click();
@@ -49,7 +51,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedTxtFile({name, path, size, content});
+    model.setLoadedTranslFile({name, path, size, content}); //!!!
   }
 
   function errorHandler(ev) {
@@ -60,9 +62,15 @@ function choosedFile() {
 
 }
 
-function setInfoLodedLngt({path, name}) {
+function setInfoLodedTransl({path, name}) {
   btn.innerHTML = name;
   btn.setAttribute('title', path);
 }
 
-export default fileTxt;
+
+const fileTransl = {
+  init,
+  close
+}
+
+export default fileTransl;

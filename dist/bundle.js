@@ -74,7 +74,9 @@
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modelTransl__ = __webpack_require__(21);
 //export const something = 'test'
+
 
 
 
@@ -95,36 +97,6 @@ __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
 }); // это можно в modelTxt
 
-//model.getState = () => state;
-
-//////// Txt
-
-model.setArea = function (area) {
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
-};
-
-model.fnTxtSelection = function (action) {
-  if (state === 'delete') return;
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action]();
-};
-
-// действия, совершаемые при state === 'add'
-model.fnTxt = function (action, args) {
-  if (state === 'delete') model.toogleState();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
-};
-
-// действия, совершаемые при state === 'delete'
-model.fnTxtDelete = function (action, args) {
-  if (state === 'add') model.toogleState();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
-};
-
-model.setLoadedTxtFile = function (file) {
-  // file: {name, path, size, content, startPoz}
-  if (state === 'delete') model.setState('add');
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
-};
 
 model.setState = function (_state) {
   if (_state === state) return; // такого не должно случиться
@@ -155,7 +127,48 @@ function setStateDelete() {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
 }
 
-function setStateTransl() {}
+function setStateTransl(file) {}
+//
+
+
+//////// Txt
+
+model.setArea = function (area) {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
+};
+
+model.fnTxtSelection = function (action) {
+  if (state === 'delete') return;
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action]();
+};
+
+// действия, совершаемые при state === 'add'
+model.fnTxt = function (action, args) {
+  if (state === 'delete') model.toogleState();
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
+};
+
+// действия, совершаемые при state === 'delete'
+model.fnTxtDelete = function (action, args) {
+  if (state === 'add') model.toogleState();
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
+};
+
+model.setLoadedTxtFile = function (file) {
+  // file: {name, path, size, content}
+  if (state === 'delete') model.setState('add');
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
+};
+
+//////// Transl
+model.setAreaTransl = function (area) {
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setRoot(area);
+};
+
+model.setLoadedTranslFile = function (file) {
+  // file: {name, path, size, content}
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
+};
 
 /////// Audio
 
@@ -191,6 +204,18 @@ model.fnEditAudio = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
+/////// save/restore
+model.save = function () {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save();
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].save();
+};
+
+model.restore = function () {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].restore();
+  //modelTransl.restore();
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].restore(); // если аудио загружено, то оставляем как есть
+};
+
 /* harmony default export */ __webpack_exports__["a"] = (model);
 
 /***/ }),
@@ -200,14 +225,17 @@ model.fnEditAudio = function (action, args) {
 "use strict";
 
 var evs = {
+  changeState: [], //publish - {state}
   //lngt events
   loadedLngt: [], //publish - {name, path, size, content, startPoz}
   savedLngt: [], //publish - {name, path}
-  changeState: [], //publish - {state}
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
-  changeStateAudio: [] //publish - {playing}
+  changeStateAudio: [], //publish - {playing}
+  //transl events
+  loadedTransl: [], //publish - {name, path, size, content} 
+  savedTransl: [] //publish - {name, path}   
 };
 
 var vent = {
@@ -260,6 +288,10 @@ vent.dispatch = vent.publish; // для постепенного переход�
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_file_transl__ = __webpack_require__(20);
+
+
+
 
 
 
@@ -278,6 +310,7 @@ function work() {
   __WEBPACK_IMPORTED_MODULE_5__js_txt_area__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_4__js_file_end__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(); // в fileTxt будет чтение содержимого звукового файла
+  __WEBPACK_IMPORTED_MODULE_9__js_file_transl__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init();
   __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init();
 }
@@ -451,54 +484,41 @@ function setInfoLodedAudio(_ref) {
 
 var fileEnd = {};
 
-var nameEnd = void 0,
-    btnSave = void 0,
+var btnSave = void 0,
     btnRestore = void 0,
     btnsState = void 0,
-    btnStateAdd = void 0,
-    btnStateDelete = void 0,
-    btnStateTransl = void 0;
+    btnCurrent = void 0;
 
 fileEnd.init = function () {
-  nameEnd = document.getElementById('name-lngt');
-  btnSave = document.querySelector('#file-end button[act=save]');
-  btnRestore = document.querySelector('#file-end button[act=restore]');
+  btnSave = document.querySelector('#btns-files-state .btns-file button[act="save"]');
+  btnRestore = document.querySelector('#btns-files-state .btns-file button[act="restore"]');
 
   btnsState = document.getElementById('btns-state');
-  btnStateAdd = btnsState.querySelector('[state="add"]');
-  btnStateDelete = btnsState.querySelector('[state="delete"]');
-  btnStateTransl = btnsState.querySelector('[state="transl"]');
+  btnCurrent = btnsState.querySelector('.current');
+  //btnStateAdd = btnsState.querySelector('[state="add"]');
+  //btnStateDelete = btnsState.querySelector('[state="delete"]');
+  // btnStateTransl = btnsState.querySelector('[state="transl"]');
 
-  btnSave.addEventListener('click', saveFile);
-  btnRestore.addEventListener('click', restoreFile);
+  btnSave.addEventListener('click', saveFiles);
+  btnRestore.addEventListener('click', restoreFiles);
   btnsState.addEventListener('click', setState);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedLngt', writeName);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
 };
 
 fileEnd.close = function () {
-  btnSave.removeEventListener('click', saveFile);
-  btnRestore.removeEventListener('click', restoreFile);
+  btnSave.removeEventListener('click', saveFiles);
+  btnRestore.removeEventListener('click', restoreFiles);
   btnsState.removeEventListener('click', setState);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedLngt', writeName);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
+  btnSave = btnRestore = btnsState = btnCurrent = null;
 };
 
-function saveFile() {
-  var name = nameEnd.value;
-  if (!name) nameEnd.value = name = 'noName';
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('save', name);
+function saveFiles() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].save();
 }
 
-function restoreFile() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxt('restore');
-}
-
-function writeName(_ref) {
-  var name = _ref.name;
-
-  var res = name.match(/^(.+)\.\w{2,6}$/i); // {2,6} - перестраховались
-  if (res) nameEnd.value = res[1];
+function restoreFiles() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].restore();
 }
 
 function setState(ev) {
@@ -506,12 +526,13 @@ function setState(ev) {
   if (state) __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setState(state);
 }
 
-function changeState(_ref2) {
-  var state = _ref2.state;
+function changeState(_ref) {
+  var state = _ref.state;
 
-  btnStateAdd.style.display = state === 'add' ? 'none' : 'inline-block';
-  btnStateDelete.style.display = state === 'delete' ? 'none' : 'inline-block';
-  btnStateTransl.style.display = state === 'transl' ? 'none' : 'inline-block';
+  btnCurrent.classList.remove('current');
+
+  btnCurrent = btnsState.querySelector('[state=' + state + ']');
+  btnCurrent.classList.add('current');
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
@@ -789,6 +810,8 @@ var modelAudio = {
       file.name = { name: name, path: path, size: size };
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+      localStorage.setItem('path-audio', path);
+      localStorage.setItem('name-audio', name);
     });
   },
 
@@ -925,6 +948,9 @@ var modelAudio = {
   },
   advertPozz: function advertPozz() {
     __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+  },
+  restore: function restore() {
+    if (file.path) return;
   }
 };
 
@@ -942,6 +968,33 @@ function notFitUnit() {
   if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
   if (pozTo > pozFrom + 0.3) return;
   return true;
+}
+
+function choosedFile() {
+  var file = input.files[0];
+  var path = file.path;
+  var name = file.name;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    model.setLoadedAudioFile({ name: name, path: path, size: size, content: content });
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой звуковой файл';
+    }
+  }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
@@ -1016,10 +1069,10 @@ modelTxt.save = function (nameLngt) {
 
   cleareSelection();
   content = nodeTxt.innerHTML;
-  var name = nameLngt + '.lngt';
-  var path = subfolder + '/' + name;
+  //const name = nameLngt + '.lngt';
+  //const path = subfolder + '/' + name;
   var lngt = { name: name, path: path, content: content };
-  file.temp = { name: name, path: path };
+  //file.temp = {name, path};
   ipcRenderer.send('will-save-file', lngt);
 };
 
@@ -1034,15 +1087,15 @@ ipcRenderer.on('file-saved', function (event, arg) {
     console.log(arg);
     return;
   }
-  localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-  localStorage.setItem('path-lngt', path);
+  //localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+  //localStorage.setItem('path-lngt', path);
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', { name: name, path: path });
 });
 
 // Восстановление файла
 modelTxt.restore = function () {
-  var name = localStorage.getItem('name-lngt');
-  var path = localStorage.getItem('path-lngt');
+  var name = file.name || localStorage.getItem('name-lngt');
+  var path = file.path || localStorage.getItem('path-lngt');
   if (!name || !path) return;
   file.temp = { name: name, path: path };
   ipcRenderer.send('will-restore-file', { path: path });
@@ -1242,6 +1295,7 @@ var init = function init() {
   txt = document.getElementById('txt');
   transl = document.getElementById('transl');
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setArea(txt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setAreaTransl(transl);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
 };
 
@@ -1271,12 +1325,12 @@ var txtArea = {
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(16)(false);
+exports = module.exports = __webpack_require__(16)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin-left: 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n  #files #file-transl {\n    display: none; }\n\n#file-end {\n  display: flex; }\n  #file-end #name-lngt {\n    padding: 6px;\n    flex: 1 0 200px;\n    background-color: #f4ecf5;\n    border: 0.5px solid #8C95AA;\n    font-size: 0.9em; }\n  #file-end .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end .btns-file button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #file-end #btns-state {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #file-end #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #8143a6; }\n    #file-end #btns-state button[state=\"add\"] {\n      display: none; }\n\n.progress {\n  background-color: #8C95AA;\n  position: absolute;\n  width: 30%;\n  height: 100%;\n  left: 0px;\n  top: 0px;\n  opacity: 0.3; }\n\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll; }\n  #transl span {\n    color: #50a3c3; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll; }\n  #transl span {\n    color: #50a3c3; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
 
 // exports
 
@@ -1847,6 +1901,287 @@ module.exports = function (css) {
 	return fixedCss;
 };
 
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
+
+
+var btn = void 0,
+    input = void 0;
+
+var init = function init() {
+  btn = document.getElementById('file-transl');
+  input = document.getElementById('input-transl');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  //model.on('loadedLngt', setInfoLodedLngt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', setInfoLodedTransl);
+  //model.on('savedLngt', setInfoLodedLngt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('savedTransl', setInfoLodedTransl);
+};
+
+var close = function close() {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedTransl', setInfoLodedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+}; // так как на loadedLngt меняется содержимое текста                                       
+
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  var size = file.size;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, size: size, content: content }); //!!!
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+function setInfoLodedTransl(_ref) {
+  var path = _ref.path,
+      name = _ref.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+var fileTransl = {
+  init: init,
+  close: close
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTransl);
+
+/***/ }),
+/* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var subfolder = 'target';
+var file = {}; // {name, path, size}
+// path: fullPath + name
+var nodeTransl = null,
+    // весь элемент
+nodeCurrent = null,
+    nodeSelection = null; // выделяется из nodeCurrent
+//nodeLast = null
+
+
+// установка
+var setRoot = function setRoot(root) {
+  nodeTransl = root;
+};
+
+var setLoadedFile = function setLoadedFile(_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      size = _ref.size,
+      content = _ref.content;
+
+  txtToTransl();
+  nodeTransl.innerHTML = content;
+  nodeSelection = nodeTransl.querySelector('#selection-txt'); // метод getElementById есть только у document
+  nodeCurrent = nodeTransl.querySelector('#current-txt');
+
+  file = { name: name, path: path, size: size /*, startPoz: getStartPoz()*/ };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
+  localStorage.setItem('path-transl', path);
+  localStorage.setItem('name-transl', name);
+
+  function txtToTransl() {
+    if (!/\.txt$/.test(name)) return;
+
+    var s = content;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    content = s;
+  }
+};
+/*
+// Сохранение файла
+modelTransl.save = (nameLngt) => {
+  if (!nodeTransl || !file) return;
+  let content = nodeTransl.innerHTML;
+  if (!content) return;
+
+  cleareSelection();
+  content = nodeTransl.innerHTML;
+  const name = nameLngt + '.lngt';
+  const path = subfolder + '/' + name;
+  const lngt = {name,  path, content};
+  file.temp = {name, path};
+  ipcRenderer.send('will-save-file', lngt);
+}
+
+  ipcRenderer.on('file-saved', (event, arg) => {
+    const {name, path} = file.temp;
+    file.temp = null;
+    if (arg) {
+      console.log('error in saving:');  // in arg i send err
+      console.log(arg);
+      return;
+    }
+    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+    localStorage.setItem('path-lngt', path);
+    vent.publish('savedLngt', {name, path});
+  });
+
+
+// Восстановление файла
+modelTransl.restore = () => {
+  const name = localStorage.getItem('name-lngt');
+  const path = localStorage.getItem('path-lngt');
+  if (!name || !path) return;
+  file.temp = {name, path};
+  ipcRenderer.send('will-restore-file', {path});
+}
+
+  ipcRenderer.on('file-restored', (event, arg) => {
+    const {name, path} = file.temp;
+    file = {name, path, content: arg, size: file.size};
+    modelTransl.setLoadedFile(file);
+  })
+
+
+// Изменение области выделения
+modelTransl.addSelection = () => {
+  //if (stateTxt === 'delete interval') return;
+  let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML
+  if (!current) return;
+  const s = current.match(/^.+?(\s|<br>)/)
+  if (s) {
+    nodeSelection.innerHTML = selection + s[0]
+    nodeCurrent.innerHTML = current.slice(s[0].length)
+  } else {  //конец текстового файла
+    nodeSelection.innerHTML = selection + current
+    nodeCurrent.innerHTML = ''
+  }
+}
+
+modelTransl.reduceSelection = () => {
+  //if (stateTxt === 'delete interval') return;
+  //let current = nodeCurrent.innerHTML
+  let selection = nodeSelection.innerHTML
+  if(!selection) return;
+  const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
+  if(s) {
+    nodeCurrent.innerHTML = s[2] + current;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+*/
+
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
+/*
+modelTransl.deleteUnit = () => {
+  let _from, _to;   // from - показывает ключевое слово
+  let span = nodeLast.previousElementSibling;  // возможно можно const span
+  nodeLast.removeAttribute('id');
+  const txtTmp = nodeLast.innerHTML;
+  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
+  nodeLast.remove();
+  if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
+    _from = + span.getAttribute('from');
+    _to = + span.getAttribute('to');
+    span.id = 'last-txt';
+    nodeLast = span;
+  }
+  return { _from, _to };
+}
+
+modelTransl.gotoToAdd = () => {
+  if (nodeLast) nodeLast.removeAttribute('id');
+  nodeLast = null;
+}
+
+modelTransl.gotoToDelete = () => {
+  let _from, _to;   // from - показывает ключевое слово
+  if (!nodeSelection) return;
+  nodeLast = nodeSelection.previousElementSibling;
+  if(!nodeLast || !nodeLast.hasAttribute('from')) return;
+  _from = nodeLast.getAttribute('from');
+  _to = nodeLast.getAttribute('to');
+  nodeLast.id = 'last-txt';
+  cleareSelection();
+  return { _from, _to };
+}
+
+function cleareSelection() {
+  const current = nodeCurrent.innerHTML;
+  const selection = nodeSelection.innerHTML;
+  if(selection) {
+    nodeCurrent.innerHTML = selection + current;
+    nodeSelection.innerHTML = '';
+  }
+}
+*/
+
+/*
+function getStartPoz() {
+  let poz = 0;
+  const span = nodeSelection.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
+  return poz;
+}
+*/
+
+var modelTransl = {
+  setRoot: setRoot,
+  setLoadedFile: setLoadedFile
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTransl);
 
 /***/ })
 /******/ ]);

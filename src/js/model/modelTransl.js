@@ -1,35 +1,33 @@
 import vent from './vent';
 const {ipcRenderer} = window.require('electron');
 
-const modelTxt = {};
 
 const subfolder = 'target';
 let file = {};       // {name, path, size}
                       // path: fullPath + name
-let nodeTxt = null,   // весь элемент
+let nodeTransl = null,   // весь элемент
     nodeCurrent = null,
-    nodeSelection = null,
-    nodeLast = null
-    //stateTxt = 'add interval';  // 'delete interval'
-
+    nodeSelection = null  // выделяется из nodeCurrent
+    //nodeLast = null
+ 
 
 // установка
-modelTxt.setRoot = (root) => {
-  nodeTxt = root;
+const setRoot = (root) => {
+  nodeTransl = root;
 };
 
-modelTxt.setLoadedFile = ({name, path, size, content}) => {
-  txtToLngt();
-  nodeTxt.innerHTML = content;
-  nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
-  nodeCurrent = nodeTxt.querySelector('#current-txt');
+const setLoadedFile = ({name, path, size, content}) => {
+  txtToTransl();
+  nodeTransl.innerHTML = content;
+  nodeSelection = nodeTransl.querySelector('#selection-txt');  // метод getElementById есть только у document
+  nodeCurrent = nodeTransl.querySelector('#current-txt');
 
-  file = {name, path, size, startPoz: getStartPoz()};
-  vent.publish('loadedLngt', file);
-  localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);
+  file = {name, path, size /*, startPoz: getStartPoz()*/ };
+  vent.publish('loadedTransl', file);
+  localStorage.setItem('path-transl', path);
+  localStorage.setItem('name-transl', name);
 
-  function txtToLngt() {
+  function txtToTransl() {
     if (!/\.txt$/.test(name)) return;
 
     let s = content;
@@ -48,15 +46,15 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
   }
 
 }
-
+/*
 // Сохранение файла
-modelTxt.save = (nameLngt) => {
-  if (!nodeTxt || !file) return;
-  let content = nodeTxt.innerHTML;
+modelTransl.save = (nameLngt) => {
+  if (!nodeTransl || !file) return;
+  let content = nodeTransl.innerHTML;
   if (!content) return;
 
   cleareSelection();
-  content = nodeTxt.innerHTML;
+  content = nodeTransl.innerHTML;
   const name = nameLngt + '.lngt';
   const path = subfolder + '/' + name;
   const lngt = {name,  path, content};
@@ -77,8 +75,9 @@ modelTxt.save = (nameLngt) => {
     vent.publish('savedLngt', {name, path});
   });
 
+
 // Восстановление файла
-modelTxt.restore = () => {
+modelTransl.restore = () => {
   const name = localStorage.getItem('name-lngt');
   const path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
@@ -89,11 +88,12 @@ modelTxt.restore = () => {
   ipcRenderer.on('file-restored', (event, arg) => {
     const {name, path} = file.temp;
     file = {name, path, content: arg, size: file.size};
-    modelTxt.setLoadedFile(file);
+    modelTransl.setLoadedFile(file);
   })
 
+
 // Изменение области выделения
-modelTxt.addSelection = () => {
+modelTransl.addSelection = () => {
   //if (stateTxt === 'delete interval') return;
   let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
@@ -108,9 +108,9 @@ modelTxt.addSelection = () => {
   }
 }
 
-modelTxt.reduceSelection = () => {
+modelTransl.reduceSelection = () => {
   //if (stateTxt === 'delete interval') return;
-  let current = nodeCurrent.innerHTML
+  //let current = nodeCurrent.innerHTML
   let selection = nodeSelection.innerHTML
   if(!selection) return;
   const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
@@ -122,22 +122,12 @@ modelTxt.reduceSelection = () => {
     nodeSelection.innerHTML = '';
   }
 }
+*/
 
-// Установка аудиоинтервала в выделеный участок
-modelTxt.setUnit = ({ pozFrom, pozTo }) => {
-  const selection = nodeSelection.innerHTML;
-  if (selection.trim() === '') return;
-  nodeSelection.innerHTML = '';
-  const span = document.createElement('span');
-  span.innerHTML = selection;
-  span.setAttribute('from', pozFrom);
-  span.setAttribute('to', pozTo);
-  nodeSelection.before(span);
-  return true;
-}
 
 // Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
-modelTxt.deleteUnit = () => {
+/*
+modelTransl.deleteUnit = () => {
   let _from, _to;   // from - показывает ключевое слово
   let span = nodeLast.previousElementSibling;  // возможно можно const span
   nodeLast.removeAttribute('id');
@@ -153,12 +143,12 @@ modelTxt.deleteUnit = () => {
   return { _from, _to };
 }
 
-modelTxt.gotoToAdd = () => {
+modelTransl.gotoToAdd = () => {
   if (nodeLast) nodeLast.removeAttribute('id');
   nodeLast = null;
 }
 
-modelTxt.gotoToDelete = () => {
+modelTransl.gotoToDelete = () => {
   let _from, _to;   // from - показывает ключевое слово
   if (!nodeSelection) return;
   nodeLast = nodeSelection.previousElementSibling;
@@ -178,12 +168,20 @@ function cleareSelection() {
     nodeSelection.innerHTML = '';
   }
 }
+*/
 
+/*
 function getStartPoz() {
   let poz = 0;
   const span = nodeSelection.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
   return poz;
 }
+*/
 
-export default modelTxt;
+const modelTransl = {
+  setRoot,
+  setLoadedFile  
+};
+
+export default modelTransl;

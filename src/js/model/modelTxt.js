@@ -57,10 +57,10 @@ modelTxt.save = (nameLngt) => {
 
   cleareSelection();
   content = nodeTxt.innerHTML;
-  const name = nameLngt + '.lngt';
-  const path = subfolder + '/' + name;
+  //const name = nameLngt + '.lngt';
+  //const path = subfolder + '/' + name;
   const lngt = {name,  path, content};
-  file.temp = {name, path};
+  //file.temp = {name, path};
   ipcRenderer.send('will-save-file', lngt);
 }
 
@@ -72,15 +72,15 @@ modelTxt.save = (nameLngt) => {
       console.log(arg);
       return;
     }
-    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path);
+    //localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
+    //localStorage.setItem('path-lngt', path);
     vent.publish('savedLngt', {name, path});
   });
 
 // Восстановление файла
 modelTxt.restore = () => {
-  const name = localStorage.getItem('name-lngt');
-  const path = localStorage.getItem('path-lngt');
+  const name = file.name || localStorage.getItem('name-lngt');
+  const path = file.path || localStorage.getItem('path-lngt');
   if (!name || !path) return;
   file.temp = {name, path};
   ipcRenderer.send('will-restore-file', {path});

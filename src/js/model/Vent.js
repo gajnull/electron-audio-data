@@ -1,13 +1,16 @@
 
 const evs = {
+  changeState: [], //publish - {state}
   //lngt events
   loadedLngt: [], //publish - {name, path, size, content, startPoz}
   savedLngt: [], //publish - {name, path}
-  changeState: [], //publish - {state}
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
-  changeStateAudio: [] //publish - {playing}
+  changeStateAudio: [], //publish - {playing}
+  //transl events
+  loadedTransl: [], //publish - {name, path, size, content} 
+  savedTransl: [] //publish - {name, path}   
 }
 
 const vent = {
