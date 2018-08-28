@@ -23,12 +23,11 @@ const setLoadedFile = ({name, path, size, content}) => {
   nodeCurrent = nodeTransl.querySelector('#current-txt');
 
   file = {name, path, size /*, startPoz: getStartPoz()*/ };
+  setLocalStorage();
   vent.publish('loadedTransl', file);
-  localStorage.setItem('path-transl', path);
-  localStorage.setItem('name-transl', name);
 
   function txtToTransl() {
-    if (!/\.txt$/.test(name)) return;
+    if (/\.transl$/.test(name)) return;
 
     let s = content;
     //Нормализуем - убираем из текста возможные тэги
@@ -39,59 +38,63 @@ const setLoadedFile = ({name, path, size, content}) => {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = `<main-info audio-file=""></main-info>
+    s = `<main-info></main-info>
          <span id="selection-txt"></span>
          <span id="current-txt">&nbsp&nbsp${s}</span>`;
     content = s;
   }
 
 }
-/*
-// Сохранение файла
-modelTransl.save = (nameLngt) => {
-  if (!nodeTransl || !file) return;
-  let content = nodeTransl.innerHTML;
-  if (!content) return;
 
-  cleareSelection();
-  content = nodeTransl.innerHTML;
-  const name = nameLngt + '.lngt';
-  const path = subfolder + '/' + name;
-  const lngt = {name,  path, content};
-  file.temp = {name, path};
-  ipcRenderer.send('will-save-file', lngt);
+function setLocalStorage() {
+  localStorage.setItem('path-transl', file.path);
+  localStorage.setItem('name-transl', file.name);
+}
+
+// Сохранение файла
+const save = () => {
+  if (!file.name) return;
+  //cleareSelection();
+  const content = nodeTransl.innerHTML;
+  if (!content) return;
+  const path =  /\.transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.transl');
+  const name =  /\.transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.transl');
+
+  ipcRenderer.send('will-save-file', {path, name, content, kind: 'transl'});
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    const {name, path} = file.temp;
-    file.temp = null;
-    if (arg) {
-      console.log('error in saving:');  // in arg i send err
-      console.log(arg);
+    if (arg.kind !== 'transl') return;   // {err, path, name, kind}
+    if (arg.err) {
+      console.log('error in saving *.transl:');  console.log(arg.err);
       return;
     }
-    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path);
-    vent.publish('savedLngt', {name, path});
+    file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+    file.name = arg.name;
+    setLocalStorage();
+    vent.publish('savedTransl', file);
   });
 
-
 // Восстановление файла
-modelTransl.restore = () => {
-  const name = localStorage.getItem('name-lngt');
-  const path = localStorage.getItem('path-lngt');
+const restore = () => {
+  const name = file.name || localStorage.getItem('name-transl');
+  const path = file.path || localStorage.getItem('path-transl');
   if (!name || !path) return;
-  file.temp = {name, path};
-  ipcRenderer.send('will-restore-file', {path});
+  ipcRenderer.send('will-restore-file', {name, path, kind: 'transl'});
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
-    const {name, path} = file.temp;
-    file = {name, path, content: arg, size: file.size};
-    modelTransl.setLoadedFile(file);
+    //arg = {name, path, content, kind, err}; 
+    if (arg.kind !== 'transl') return;
+    if (arg.err) {
+      console.log('error in restoring *.transl:');  console.log(arg.err);
+      return;
+    }    
+    const {name, path, content} = arg;
+    modelTransl.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage  
   })
 
-
+/*
 // Изменение области выделения
 modelTransl.addSelection = () => {
   //if (stateTxt === 'delete interval') return;
@@ -181,7 +184,9 @@ function getStartPoz() {
 
 const modelTransl = {
   setRoot,
-  setLoadedFile  
+  setLoadedFile,
+  save, 
+  restore  
 };
 
 export default modelTransl;

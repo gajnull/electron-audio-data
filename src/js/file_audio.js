@@ -32,7 +32,7 @@ function choosedFile() {
   const file = input.files[0];
   const path = file.path;
   const name = file.name;
-  const size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -46,7 +46,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedAudioFile({name, path, size, content});
+    model.setLoadedAudioFile({name, path, content});
   }
 
   function errorHandler(ev) {

@@ -35,7 +35,7 @@ function choosedFile() {
   input.value = '';  // единственный способ чтобы заново открыть тотже файл
   const path = file.path;
   const name = file.name;
-  const size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -49,7 +49,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedTranslFile({name, path, size, content}); //!!!
+    model.setLoadedTranslFile({name, path, content}); //!!!
   }
 
   function errorHandler(ev) {

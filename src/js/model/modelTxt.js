@@ -4,7 +4,7 @@ const {ipcRenderer} = window.require('electron');
 const modelTxt = {};
 
 //const subfolder = 'target';
-let file = {};       // {name, path, size}
+let file = {};       // {name, path}
                       // path: fullPath + name
 let nodeTxt = null,   // весь элемент
     nodeCurrent = null,
@@ -18,19 +18,18 @@ modelTxt.setRoot = (root) => {
   nodeTxt = root;
 };
 
-modelTxt.setLoadedFile = ({name, path, size, content}) => {
+modelTxt.setLoadedFile = ({name, path, content}) => { 
   txtToLngt();
   nodeTxt.innerHTML = content;
   nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
 
-  file = {name, path, size, startPoz: getStartPoz()};
-  vent.publish('loadedLngt', file);
-  localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);
+  file = {name, path};
+  setLocalStorage();
+  vent.publish('loadedLngt', {name, path, startPoz: getStartPoz()});
 
   function txtToLngt() {
-    if (!/\.txt$/.test(name)) return;
+    if (/\.lngt$/.test(name)) return;
 
     let s = content;
     //Нормализуем - убираем из текста возможные тэги
@@ -49,32 +48,33 @@ modelTxt.setLoadedFile = ({name, path, size, content}) => {
 
 }
 
-// Сохранение файла
-modelTxt.save = (nameLngt) => {
-  if (!nodeTxt || !file) return;
-  let content = nodeTxt.innerHTML;
-  if (!content) return;
+function setLocalStorage() {
+  localStorage.setItem('path-lngt', file.path);
+  localStorage.setItem('name-lngt', file.name);
+}
 
+// Сохранение файла
+modelTxt.save = () => {
+  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true 
   cleareSelection();
-  content = nodeTxt.innerHTML;
-  //const name = nameLngt + '.lngt';
-  //const path = subfolder + '/' + name;
-  const lngt = {name,  path, content};
-  //file.temp = {name, path};
-  ipcRenderer.send('will-save-file', lngt);
+  const content = nodeTxt.innerHTML;
+  if (!content) return;
+  const path =  /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.lngt');
+  const name =  /\.lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.lngt');
+
+  ipcRenderer.send('will-save-file', {path, name, content, kind: 'lngt'});
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    const {name, path} = file.temp;
-    file.temp = null;
-    if (arg) {
-      console.log('error in saving:');  // in arg i send err
-      console.log(arg);
+    if (arg.kind !== 'lngt') return;  // {err, path, name, kind}
+    if (arg.err) {
+      console.log('error in saving *.lngt:');  console.log(arg.err);
       return;
     }
-    //localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    //localStorage.setItem('path-lngt', path);
-    vent.publish('savedLngt', {name, path});
+    file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+    file.name = arg.name;
+    setLocalStorage();
+    vent.publish('savedLngt', file);
   });
 
 // Восстановление файла
@@ -82,14 +82,18 @@ modelTxt.restore = () => {
   const name = file.name || localStorage.getItem('name-lngt');
   const path = file.path || localStorage.getItem('path-lngt');
   if (!name || !path) return;
-  file.temp = {name, path};
-  ipcRenderer.send('will-restore-file', {path});
+  ipcRenderer.send('will-restore-file', {name, path, kind: 'lngt'});
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
-    const {name, path} = file.temp;
-    file = {name, path, content: arg, size: file.size};
-    modelTxt.setLoadedFile(file);
+    //arg = {name, path, content, kind, err};
+    if (arg.kind !== 'lngt') return;
+    if (arg.err) {
+      console.log('error in restoring *.lngt:');  console.log(arg.err);
+      return;
+    }    
+    const {name, path, content} = arg;
+    modelTxt.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
 
 // Изменение области выделения

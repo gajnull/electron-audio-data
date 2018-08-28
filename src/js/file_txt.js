@@ -22,8 +22,8 @@ fileTxt.close = function() {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', choosedFile);
   model.off('loadedLngt', setInfoLodedLngt);
-  model.off('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
-}                                         // так как на loadedLngt меняется содержимое текста
+  model.off('savedLngt', setInfoLodedLngt);
+}                                         
 
 function clickInput() {
   input.click();
@@ -35,7 +35,7 @@ function choosedFile() {
   input.value = '';  // единственный способ чтобы заново открыть тотже файл
   const path = file.path;
   const name = file.name;
-  const size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -49,7 +49,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedTxtFile({name, path, size, content});
+    model.setLoadedTxtFile({name, path, content});
   }
 
   function errorHandler(ev) {

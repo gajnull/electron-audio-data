@@ -1,5 +1,6 @@
 import vent from './vent';
 import webAudioAPI from './webAudioAPI';
+const {ipcRenderer} = window.require('electron');
 
 const api = webAudioAPI();
 
@@ -18,18 +19,17 @@ let playing = false,  // Состояние проигрывателя - игр�
 
 let file = { // пока не используется
   name: null,
-  path: null,
-  size: null
+  path: null
+  //size: null
 }
-
 
 
 const modelAudio = {
 
-  decodeFile({name, path, size, content}) {
+  decodeFile({name, path, content}) {
     api.decode(content).then(res => {
       duration = res;
-      file.name = {name, path, size};
+      file.name = {name, path};
       vent.publish('decodedAudio', {name, path});
       vent.publish('changedPoz', getPoz());
       localStorage.setItem('path-audio', path);
@@ -161,10 +161,23 @@ const modelAudio = {
   },
 
   restore() {
-    if (file.path) return;
-
+    const name = file.name || localStorage.getItem('name-audio');
+    const path = file.path || localStorage.getItem('path-audio');
+    if (!name || !path) return;
+    ipcRenderer.send('will-restore-audio', {name, path});
   }
 }
+
+ipcRenderer.on('audio-restored', (event, arg) => {
+  //arg = {name, path, content, err}; 
+  if (arg.err) {
+    console.log('error in restoring audio:');  console.log(arg.err);
+    return;
+  }    
+  const {name, path, content} = arg;
+  modelAudio.decodeFile({name, path, content}); // здесь установятся file и localStorage  
+})
+
 
 function getPoz(updatePoz = false) {
   if (updatePoz) pozCurrent = api.getCurrentPoz();
@@ -197,7 +210,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
-    model.setLoadedAudioFile({name, path, size, content});
+    model.setLoadedAudioFile({name, path, content});
   }
 
   function errorHandler(ev) {

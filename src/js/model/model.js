@@ -73,7 +73,7 @@ model.fnTxtDelete = (action, args) => {
   modelTxt[action](args);
 }
 
-model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
+model.setLoadedTxtFile = (file) => { // file: {name, path, content}
   if (state === 'delete') model.setState('add');
   modelTxt.setLoadedFile(file);
 }
@@ -83,7 +83,7 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, size, content}
 //////// Transl
 model.setAreaTransl  = (area) => { modelTransl.setRoot(area); }
 
-model.setLoadedTranslFile = (file) => { // file: {name, path, size, content}
+model.setLoadedTranslFile = (file) => { // file: {name, path, content}
   modelTransl.setLoadedFile(file);
 }
 
@@ -91,7 +91,7 @@ model.setLoadedTranslFile = (file) => { // file: {name, path, size, content}
 
 /////// Audio
 
-model.setLoadedAudioFile = (file) => { // file: {name, path, size, content}
+model.setLoadedAudioFile = (file) => { // file: {name, path, content}
   modelAudio.decodeFile(file);
 }
 
@@ -122,6 +122,7 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
 
 
 /////// save/restore
+
 model.save = () => {
   modelTxt.save();
   modelTransl.save();
@@ -129,8 +130,8 @@ model.save = () => {
 
 model.restore = () => {
   modelTxt.restore();
-  //modelTransl.restore();
-  modelAudio.restore(); // если аудио загружено, то оставляем как есть
+  modelTransl.restore();
+  //modelAudio.restore(); // если аудио загружено, то оставляем как есть
 }
 
 export default model;

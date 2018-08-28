@@ -2,14 +2,14 @@
 const evs = {
   changeState: [], //publish - {state}
   //lngt events
-  loadedLngt: [], //publish - {name, path, size, content, startPoz}
+  loadedLngt: [], //publish - {name, path, content, startPoz}
   savedLngt: [], //publish - {name, path}
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
   changeStateAudio: [], //publish - {playing}
   //transl events
-  loadedTransl: [], //publish - {name, path, size, content} 
+  loadedTransl: [], //publish - {name, path, content} 
   savedTransl: [] //publish - {name, path}   
 }
 

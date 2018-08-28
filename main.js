@@ -40,15 +40,32 @@ app.on('activate', function () {
 
 const fs = require('fs');
 const {ipcMain} = require('electron');
-//сохранение файла .lngt
+//сохранение файла .lngt и .transl
 ipcMain.on('will-save-file', (event, arg) => {
-  fs.writeFile(arg.path, arg.content, (err)=>{
-    event.sender.send('file-saved', err);
+  const {name, path, content, kind} = arg;  
+  fs.writeFile(path, content, (err)=>{
+    event.sender.send('file-saved', {err, path, name, kind});
   });
-})
-//восстановление файла
+});
+//восстановление файла .lngt и .transl
 ipcMain.on('will-restore-file', (event, arg) => {
-  fs.readFile(arg.path, 'utf8', (err, data) => {
-    event.sender.send('file-restored', data);
+  const {name, path, kind} = arg;
+  fs.readFile(path, 'utf8', (err, content) => {
+    event.sender.send('file-restored', {name, path, content, kind, err});
   });
-})
+});
+
+//восстановление audio
+ipcMain.on('will-restore-audio', (event, arg) => {
+  const {name, path} = arg;
+  fs.readFile(path, (err, data) => {
+    const buffer = data.buffer;
+    let content = new ArrayBuffer(buffer.length);
+    let view = new Uint16Array(content);
+    for (let i = 0; i < buffer.length; ++i) {
+        view[i] = buffer[i];
+    }
+
+    event.sender.send('audio-restored', {name, path, content, err});
+  });
+});

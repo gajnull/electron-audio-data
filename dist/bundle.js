@@ -155,7 +155,7 @@ model.fnTxtDelete = function (action, args) {
 };
 
 model.setLoadedTxtFile = function (file) {
-  // file: {name, path, size, content}
+  // file: {name, path, content}
   if (state === 'delete') model.setState('add');
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
 };
@@ -166,14 +166,14 @@ model.setAreaTransl = function (area) {
 };
 
 model.setLoadedTranslFile = function (file) {
-  // file: {name, path, size, content}
+  // file: {name, path, content}
   __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
 };
 
 /////// Audio
 
 model.setLoadedAudioFile = function (file) {
-  // file: {name, path, size, content}
+  // file: {name, path, content}
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].decodeFile(file);
 };
 
@@ -205,6 +205,7 @@ model.fnEditAudio = function (action, args) {
 };
 
 /////// save/restore
+
 model.save = function () {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save();
   __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].save();
@@ -212,8 +213,8 @@ model.save = function () {
 
 model.restore = function () {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].restore();
-  //modelTransl.restore();
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].restore(); // если аудио загружено, то оставляем как есть
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].restore();
+  //modelAudio.restore(); // если аудио загружено, то оставляем как есть
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
@@ -227,14 +228,14 @@ model.restore = function () {
 var evs = {
   changeState: [], //publish - {state}
   //lngt events
-  loadedLngt: [], //publish - {name, path, size, content, startPoz}
+  loadedLngt: [], //publish - {name, path, content, startPoz}
   savedLngt: [], //publish - {name, path}
   //audio events
   decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
   changeStateAudio: [], //publish - {playing}
   //transl events
-  loadedTransl: [], //publish - {name, path, size, content} 
+  loadedTransl: [], //publish - {name, path, content} 
   savedTransl: [] //publish - {name, path}   
 };
 
@@ -439,7 +440,7 @@ function choosedFile() {
   var file = input.files[0];
   var path = file.path;
   var name = file.name;
-  var size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -453,7 +454,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, size: size, content: content });
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, content: content });
   }
 
   function errorHandler(ev) {
@@ -487,39 +488,30 @@ var fileEnd = {};
 var btnSave = void 0,
     btnRestore = void 0,
     btnsState = void 0,
-    btnCurrent = void 0;
+    btnCurrentState = void 0;
 
 fileEnd.init = function () {
   btnSave = document.querySelector('#btns-files-state .btns-file button[act="save"]');
   btnRestore = document.querySelector('#btns-files-state .btns-file button[act="restore"]');
 
   btnsState = document.getElementById('btns-state');
-  btnCurrent = btnsState.querySelector('.current');
-  //btnStateAdd = btnsState.querySelector('[state="add"]');
-  //btnStateDelete = btnsState.querySelector('[state="delete"]');
-  // btnStateTransl = btnsState.querySelector('[state="transl"]');
+  btnCurrentState = btnsState.querySelector('.current');
 
-  btnSave.addEventListener('click', saveFiles);
-  btnRestore.addEventListener('click', restoreFiles);
+  btnSave.addEventListener('click', __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].save);
+  btnRestore.addEventListener('click', __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].restore);
   btnsState.addEventListener('click', setState);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
 };
 
 fileEnd.close = function () {
-  btnSave.removeEventListener('click', saveFiles);
-  btnRestore.removeEventListener('click', restoreFiles);
+  btnSave.removeEventListener('click', __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].save);
+  btnRestore.removeEventListener('click', __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].restore);
   btnsState.removeEventListener('click', setState);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
   btnSave = btnRestore = btnsState = btnCurrent = null;
 };
 
-function saveFiles() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].save();
-}
-
-function restoreFiles() {
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].restore();
-}
+//function saveFiles() {model.save();}function restoreFiles() {model.restore();}
 
 function setState(ev) {
   var state = ev.target.getAttribute('state');
@@ -529,10 +521,10 @@ function setState(ev) {
 function changeState(_ref) {
   var state = _ref.state;
 
-  btnCurrent.classList.remove('current');
+  btnCurrentState.classList.remove('current');
 
-  btnCurrent = btnsState.querySelector('[state=' + state + ']');
-  btnCurrent.classList.add('current');
+  btnCurrentState = btnsState.querySelector('[state=' + state + ']');
+  btnCurrentState.classList.add('current');
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (fileEnd);
@@ -580,7 +572,7 @@ function choosedFile() {
   input.value = ''; // единственный способ чтобы заново открыть тотже файл
   var path = file.path;
   var name = file.name;
-  var size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -594,7 +586,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, size: size, content: content }); //!!!
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, content: content }); //!!!
   }
 
   function errorHandler(ev) {
@@ -650,8 +642,8 @@ fileTxt.close = function () {
   btn.removeEventListener('click', clickInput);
   input.removeEventListener('change', choosedFile);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedLngt', setInfoLodedLngt);
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedLngt', setInfoLodedLngt); // 'savedLngt' нельзя объеденить с 'loadedLngt'
-}; // так как на loadedLngt меняется содержимое текста
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedLngt', setInfoLodedLngt);
+};
 
 function clickInput() {
   input.click();
@@ -663,7 +655,7 @@ function choosedFile() {
   input.value = ''; // единственный способ чтобы заново открыть тотже файл
   var path = file.path;
   var name = file.name;
-  var size = file.size;
+  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -677,7 +669,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTxtFile({ name: name, path: path, size: size, content: content });
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTxtFile({ name: name, path: path, content: content });
   }
 
   function errorHandler(ev) {
@@ -857,6 +849,9 @@ function clearAllEvs() {
 
 
 
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
 var api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
 
 var pozMin = 0,
@@ -876,20 +871,19 @@ timer = null,
 
 var file = { // пока не используется
   name: null,
-  path: null,
-  size: null
+  path: null
+  //size: null
 };
 
 var modelAudio = {
   decodeFile: function decodeFile(_ref) {
     var name = _ref.name,
         path = _ref.path,
-        size = _ref.size,
         content = _ref.content;
 
     api.decode(content).then(function (res) {
       duration = res;
-      file.name = { name: name, path: path, size: size };
+      file.name = { name: name, path: path };
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
       __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
       localStorage.setItem('path-audio', path);
@@ -1032,9 +1026,25 @@ var modelAudio = {
     __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
   },
   restore: function restore() {
-    if (file.path) return;
+    var name = file.name || localStorage.getItem('name-audio');
+    var path = file.path || localStorage.getItem('path-audio');
+    if (!name || !path) return;
+    ipcRenderer.send('will-restore-audio', { name: name, path: path });
   }
 };
+
+ipcRenderer.on('audio-restored', function (event, arg) {
+  //arg = {name, path, content, err}; 
+  if (arg.err) {
+    console.log('error in restoring audio:');console.log(arg.err);
+    return;
+  }
+  var name = arg.name,
+      path = arg.path,
+      content = arg.content;
+
+  modelAudio.decodeFile({ name: name, path: path, content: content }); // здесь установятся file и localStorage  
+});
 
 function getPoz() {
   var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
@@ -1069,7 +1079,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    model.setLoadedAudioFile({ name: name, path: path, size: size, content: content });
+    model.setLoadedAudioFile({ name: name, path: path, content: content });
   }
 
   function errorHandler(ev) {
@@ -1119,12 +1129,11 @@ var setLoadedFile = function setLoadedFile(_ref) {
   nodeCurrent = nodeTransl.querySelector('#current-txt');
 
   file = { name: name, path: path, size: size /*, startPoz: getStartPoz()*/ };
+  setLocalStorage();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
-  localStorage.setItem('path-transl', path);
-  localStorage.setItem('name-transl', name);
 
   function txtToTransl() {
-    if (!/\.txt$/.test(name)) return;
+    if (/\.transl$/.test(name)) return;
 
     var s = content;
     //Нормализуем - убираем из текста возможные тэги
@@ -1135,56 +1144,63 @@ var setLoadedFile = function setLoadedFile(_ref) {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<main-info audio-file=""></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
+    s = '<main-info></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
     content = s;
   }
 };
-/*
-// Сохранение файла
-modelTransl.save = (nameLngt) => {
-  if (!nodeTransl || !file) return;
-  let content = nodeTransl.innerHTML;
-  if (!content) return;
 
-  cleareSelection();
-  content = nodeTransl.innerHTML;
-  const name = nameLngt + '.lngt';
-  const path = subfolder + '/' + name;
-  const lngt = {name,  path, content};
-  file.temp = {name, path};
-  ipcRenderer.send('will-save-file', lngt);
+function setLocalStorage() {
+  localStorage.setItem('path-transl', file.path);
+  localStorage.setItem('name-transl', file.name);
 }
 
-  ipcRenderer.on('file-saved', (event, arg) => {
-    const {name, path} = file.temp;
-    file.temp = null;
-    if (arg) {
-      console.log('error in saving:');  // in arg i send err
-      console.log(arg);
-      return;
-    }
-    localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-    localStorage.setItem('path-lngt', path);
-    vent.publish('savedLngt', {name, path});
-  });
+// Сохранение файла
+var save = function save() {
+  if (!file.name) return;
+  //cleareSelection();
+  var content = nodeTransl.innerHTML;
+  if (!content) return;
+  var path = /\.transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '.transl');
+  var name = /\.transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '.transl');
 
+  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: 'transl' });
+};
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  if (arg.kind !== 'transl') return; // {err, path, name, kind}
+  if (arg.err) {
+    console.log('error in saving *.transl:');console.log(arg.err);
+    return;
+  }
+  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+  file.name = arg.name;
+  setLocalStorage();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedTransl', file);
+});
 
 // Восстановление файла
-modelTransl.restore = () => {
-  const name = localStorage.getItem('name-lngt');
-  const path = localStorage.getItem('path-lngt');
+var restore = function restore() {
+  var name = file.name || localStorage.getItem('name-transl');
+  var path = file.path || localStorage.getItem('path-transl');
   if (!name || !path) return;
-  file.temp = {name, path};
-  ipcRenderer.send('will-restore-file', {path});
-}
+  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: 'transl' });
+};
 
-  ipcRenderer.on('file-restored', (event, arg) => {
-    const {name, path} = file.temp;
-    file = {name, path, content: arg, size: file.size};
-    modelTransl.setLoadedFile(file);
-  })
+ipcRenderer.on('file-restored', function (event, arg) {
+  //arg = {name, path, content, kind, err}; 
+  if (arg.kind !== 'transl') return;
+  if (arg.err) {
+    console.log('error in restoring *.transl:');console.log(arg.err);
+    return;
+  }
+  var name = arg.name,
+      path = arg.path,
+      content = arg.content;
 
+  modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage  
+});
 
+/*
 // Изменение области выделения
 modelTransl.addSelection = () => {
   //if (stateTxt === 'delete interval') return;
@@ -1273,7 +1289,9 @@ function getStartPoz() {
 
 var modelTransl = {
   setRoot: setRoot,
-  setLoadedFile: setLoadedFile
+  setLoadedFile: setLoadedFile,
+  save: save,
+  restore: restore
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (modelTransl);
@@ -1292,7 +1310,7 @@ var _window$require = window.require('electron'),
 var modelTxt = {};
 
 //const subfolder = 'target';
-var file = {}; // {name, path, size}
+var file = {}; // {name, path}
 // path: fullPath + name
 var nodeTxt = null,
     // весь элемент
@@ -1310,7 +1328,6 @@ modelTxt.setRoot = function (root) {
 modelTxt.setLoadedFile = function (_ref) {
   var name = _ref.name,
       path = _ref.path,
-      size = _ref.size,
       content = _ref.content;
 
   txtToLngt();
@@ -1318,13 +1335,12 @@ modelTxt.setLoadedFile = function (_ref) {
   nodeSelection = nodeTxt.querySelector('#selection-txt'); // метод getElementById есть только у document
   nodeCurrent = nodeTxt.querySelector('#current-txt');
 
-  file = { name: name, path: path, size: size, startPoz: getStartPoz() };
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', file);
-  localStorage.setItem('path-lngt', path);
-  localStorage.setItem('name-lngt', name);
+  file = { name: name, path: path };
+  setLocalStorage();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', { name: name, path: path, startPoz: getStartPoz() });
 
   function txtToLngt() {
-    if (!/\.txt$/.test(name)) return;
+    if (/\.lngt$/.test(name)) return;
 
     var s = content;
     //Нормализуем - убираем из текста возможные тэги
@@ -1340,35 +1356,33 @@ modelTxt.setLoadedFile = function (_ref) {
   }
 };
 
+function setLocalStorage() {
+  localStorage.setItem('path-lngt', file.path);
+  localStorage.setItem('name-lngt', file.name);
+}
+
 // Сохранение файла
-modelTxt.save = function (nameLngt) {
-  if (!nodeTxt || !file) return;
+modelTxt.save = function () {
+  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true 
+  cleareSelection();
   var content = nodeTxt.innerHTML;
   if (!content) return;
+  var path = /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '.lngt');
+  var name = /\.lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '.lngt');
 
-  cleareSelection();
-  content = nodeTxt.innerHTML;
-  //const name = nameLngt + '.lngt';
-  //const path = subfolder + '/' + name;
-  var lngt = { name: name, path: path, content: content };
-  //file.temp = {name, path};
-  ipcRenderer.send('will-save-file', lngt);
+  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: 'lngt' });
 };
 
 ipcRenderer.on('file-saved', function (event, arg) {
-  var _file$temp = file.temp,
-      name = _file$temp.name,
-      path = _file$temp.path;
-
-  file.temp = null;
-  if (arg) {
-    console.log('error in saving:'); // in arg i send err
-    console.log(arg);
+  if (arg.kind !== 'lngt') return; // {err, path, name, kind}
+  if (arg.err) {
+    console.log('error in saving *.lngt:');console.log(arg.err);
     return;
   }
-  //localStorage.setItem('name-lngt', name); //если сохранили, запоминаем имя
-  //localStorage.setItem('path-lngt', path);
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', { name: name, path: path });
+  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+  file.name = arg.name;
+  setLocalStorage();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', file);
 });
 
 // Восстановление файла
@@ -1376,17 +1390,21 @@ modelTxt.restore = function () {
   var name = file.name || localStorage.getItem('name-lngt');
   var path = file.path || localStorage.getItem('path-lngt');
   if (!name || !path) return;
-  file.temp = { name: name, path: path };
-  ipcRenderer.send('will-restore-file', { path: path });
+  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: 'lngt' });
 };
 
 ipcRenderer.on('file-restored', function (event, arg) {
-  var _file$temp2 = file.temp,
-      name = _file$temp2.name,
-      path = _file$temp2.path;
+  //arg = {name, path, content, kind, err};
+  if (arg.kind !== 'lngt') return;
+  if (arg.err) {
+    console.log('error in restoring *.lngt:');console.log(arg.err);
+    return;
+  }
+  var name = arg.name,
+      path = arg.path,
+      content = arg.content;
 
-  file = { name: name, path: path, content: arg, size: file.size };
-  modelTxt.setLoadedFile(file);
+  modelTxt.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
 });
 
 // Изменение области выделения
@@ -1604,7 +1622,7 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(false);
+exports = module.exports = __webpack_require__(18)(undefined);
 // imports
 
 

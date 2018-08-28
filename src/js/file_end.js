@@ -4,39 +4,30 @@ import model from './model/model';
 const fileEnd = {};
 
 let btnSave, btnRestore,
-    btnsState, btnCurrent;
+    btnsState, btnCurrentState;
 
 fileEnd.init = function() {
   btnSave = document.querySelector('#btns-files-state .btns-file button[act="save"]');
   btnRestore = document.querySelector('#btns-files-state .btns-file button[act="restore"]');
 
   btnsState = document.getElementById('btns-state');
-  btnCurrent = btnsState.querySelector('.current');
-  //btnStateAdd = btnsState.querySelector('[state="add"]');
-  //btnStateDelete = btnsState.querySelector('[state="delete"]');
- // btnStateTransl = btnsState.querySelector('[state="transl"]');
+  btnCurrentState = btnsState.querySelector('.current');
 
-  btnSave.addEventListener('click', saveFiles);
-  btnRestore.addEventListener('click', restoreFiles);
+  btnSave.addEventListener('click', model.save);
+  btnRestore.addEventListener('click',  model.restore);
   btnsState.addEventListener('click', setState);
   model.on('changeState', changeState);
 }
 
 fileEnd.close = function() {
-  btnSave.removeEventListener('click', saveFiles);
-  btnRestore.removeEventListener('click', restoreFiles);
+  btnSave.removeEventListener('click', model.save);
+  btnRestore.removeEventListener('click', model.restore);
   btnsState.removeEventListener('click', setState);
   model.off('changeState', changeState);
   btnSave = btnRestore = btnsState = btnCurrent = null;
 }
 
-function saveFiles() {
-  model.save();
-}
-
-function restoreFiles() {
-  model.restore();
-}
+//function saveFiles() {model.save();}function restoreFiles() {model.restore();}
 
 function setState(ev) {
   const state = ev.target.getAttribute('state');
@@ -44,10 +35,10 @@ function setState(ev) {
 }
 
 function changeState({ state }) {
-  btnCurrent.classList.remove('current');
+  btnCurrentState.classList.remove('current');
 
-  btnCurrent = btnsState.querySelector('[state=' + state + ']')
-  btnCurrent.classList.add('current');  
+  btnCurrentState = btnsState.querySelector('[state=' + state + ']')
+  btnCurrentState.classList.add('current');  
 }
 
 export default fileEnd;
