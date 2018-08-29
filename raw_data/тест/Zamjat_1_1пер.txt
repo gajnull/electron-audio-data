@@ -1,0 +1,12 @@
+- Куда вы сегодня летите?y?
+- Нью-Йорк.
+- Могу я увидеть ваш билет, паспорт и визу, пожалуйста?
+- Вот они. Моя виза на странице 6 паспорта.
+- Вы хотите место у окна или в центре?
+- В центре пожалуйста.
+- Вы предпочитаете места для курящих или для некурящих?
+- Nonsmoking.
+- I have 13E available. How many pieces of luggage do you have?
+- Two.
+- Here's your boarding pass. The plane will board half an hour prior to departure. You'll be leaving from gate 3 on your left.
+- Thank you.

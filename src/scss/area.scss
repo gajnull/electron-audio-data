@@ -27,9 +27,18 @@
   padding: 5px;
   overflow-y: scroll;
 
-  span {
-    color: $a_cyan_d30;
+  span[from] {
+    color: black;
   }
+  #selection-transl {
+    color: rgb(37, 77, 92);
+    background-color: rgb(37, 77, 92);
+  }
+  #current-transl {
+    color: black;
+  }
+
+
 }
 
 #area .area {

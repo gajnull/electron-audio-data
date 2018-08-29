@@ -9,27 +9,27 @@ let nodeTransl = null,   // весь элемент
     nodeCurrent = null,
     nodeSelection = null  // выделяется из nodeCurrent
     //nodeLast = null
- 
+
 
 // установка
 const setRoot = (root) => {
   nodeTransl = root;
 };
 
-const setLoadedFile = ({name, path, size, content}) => {
-  txtToTransl();
-  nodeTransl.innerHTML = content;
-  nodeSelection = nodeTransl.querySelector('#selection-txt');  // метод getElementById есть только у document
-  nodeCurrent = nodeTransl.querySelector('#current-txt');
+const setLoadedFile = ({name, path, content}) => {
+  let s = content;
+  s = txtToTransl(s);
+  nodeTransl.innerHTML = s;
+  nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
+  nodeCurrent = nodeTransl.querySelector('#current-transl');
 
-  file = {name, path, size /*, startPoz: getStartPoz()*/ };
+  file = {name, path /*, startPoz: getStartPoz()*/ };
   setLocalStorage();
   vent.publish('loadedTransl', file);
 
-  function txtToTransl() {
-    if (/\.transl$/.test(name)) return;
-
-    let s = content;
+  function txtToTransl(_s) {
+    if (/\.transl$/.test(name)) return _s;
+    let s = _s;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -38,10 +38,10 @@ const setLoadedFile = ({name, path, size, content}) => {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = `<main-info></main-info>
-         <span id="selection-txt"></span>
-         <span id="current-txt">&nbsp&nbsp${s}</span>`;
-    content = s;
+    s = `<main-info ru></main-info>
+         <span id="selection-transl"></span>
+         <span id="current-transl">&nbsp&nbsp${s}</span>`;
+    return s;
   }
 
 }
@@ -84,14 +84,14 @@ const restore = () => {
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
-    //arg = {name, path, content, kind, err}; 
+    //arg = {name, path, content, kind, err};
     if (arg.kind !== 'transl') return;
     if (arg.err) {
       console.log('error in restoring *.transl:');  console.log(arg.err);
       return;
-    }    
+    }
     const {name, path, content} = arg;
-    modelTransl.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage  
+    modelTransl.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
 
 /*
@@ -185,8 +185,8 @@ function getStartPoz() {
 const modelTransl = {
   setRoot,
   setLoadedFile,
-  save, 
-  restore  
+  save,
+  restore
 };
 
 export default modelTransl;

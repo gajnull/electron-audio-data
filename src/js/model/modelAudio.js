@@ -33,7 +33,7 @@ const modelAudio = {
       vent.publish('decodedAudio', {name, path});
       vent.publish('changedPoz', getPoz());
       localStorage.setItem('path-audio', path);
-      localStorage.setItem('name-audio', name);      
+      localStorage.setItem('name-audio', name);
     });
   },
 
@@ -70,7 +70,7 @@ const modelAudio = {
 
   repeate() { //проигрываем выбранный отрезок
     if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     const period = (pozTo - pozFrom) * 1000;  // здесь не обязательно округлять
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
@@ -84,7 +84,7 @@ const modelAudio = {
 
   setUnit() {
     if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     return { pozFrom, pozTo };
   },
 
@@ -172,10 +172,10 @@ ipcRenderer.on('audio-restored', (event, arg) => {
   if (arg.err) {
     console.log('error in restoring audio:');  console.log(arg.err);
     return;
-  }   
-  const content = arg.content.buffer; 
+  }
+  const content = arg.content.buffer;
   const {name, path} = arg;
-  modelAudio.decodeFile({name, path, content}); // здесь установятся file и localStorage  
+  modelAudio.decodeFile({name, path, content}); // здесь установятся file и localStorage
 })
 
 
@@ -192,34 +192,6 @@ function notFitUnit() { // если отрезок не установлен (po
   return true;
 }
 
-function choosedFile() {
-  const file = input.files[0];
-  const path = file.path;
-  const name = file.name;
-
-
-  btn.innerHTML = 'loding...';
-
-  const reader = new FileReader();
-  reader.readAsArrayBuffer(file);
-
-  //reader.onloadstart = startProgress
-  //reader.onprogress = updateProgress
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  function loaded(ev) {
-    const content = ev.target.result;
-    model.setLoadedAudioFile({name, path, content});
-  }
-
-  function errorHandler(ev) {
-    if(ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой звуковой файл';
-    }
-  }
-
-}
 
 
 export default modelAudio;

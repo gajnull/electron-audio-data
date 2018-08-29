@@ -450,7 +450,6 @@ function choosedFile() {
   var file = input.files[0];
   var path = file.path;
   var name = file.name;
-  //const size = file.size;
 
   btn.innerHTML = 'loding...';
 
@@ -464,7 +463,6 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
-    console.log(content);
     __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, content: content });
   }
 
@@ -939,7 +937,7 @@ var modelAudio = {
 
     //проигрываем выбранный отрезок
     if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен 
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
@@ -953,7 +951,7 @@ var modelAudio = {
   },
   setUnit: function setUnit() {
     if (playing) return;
-    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен   
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     return { pozFrom: pozFrom, pozTo: pozTo };
   },
   nextUnit: function nextUnit() {
@@ -1053,7 +1051,7 @@ ipcRenderer.on('audio-restored', function (event, arg) {
   var name = arg.name,
       path = arg.path;
 
-  modelAudio.decodeFile({ name: name, path: path, content: content }); // здесь установятся file и localStorage  
+  modelAudio.decodeFile({ name: name, path: path, content: content }); // здесь установятся file и localStorage
 });
 
 function getPoz() {
@@ -1070,33 +1068,6 @@ function notFitUnit() {
   if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
   if (pozTo > pozFrom + 0.3) return;
   return true;
-}
-
-function choosedFile() {
-  var file = input.files[0];
-  var path = file.path;
-  var name = file.name;
-
-  btn.innerHTML = 'loding...';
-
-  var reader = new FileReader();
-  reader.readAsArrayBuffer(file);
-
-  //reader.onloadstart = startProgress
-  //reader.onprogress = updateProgress
-  reader.onload = loaded;
-  reader.onerror = errorHandler;
-
-  function loaded(ev) {
-    var content = ev.target.result;
-    model.setLoadedAudioFile({ name: name, path: path, content: content });
-  }
-
-  function errorHandler(ev) {
-    if (ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой звуковой файл';
-    }
-  }
 }
 
 /* harmony default export */ __webpack_exports__["a"] = (modelAudio);
@@ -1130,22 +1101,21 @@ var setRoot = function setRoot(root) {
 var setLoadedFile = function setLoadedFile(_ref) {
   var name = _ref.name,
       path = _ref.path,
-      size = _ref.size,
       content = _ref.content;
 
-  txtToTransl();
-  nodeTransl.innerHTML = content;
-  nodeSelection = nodeTransl.querySelector('#selection-txt'); // метод getElementById есть только у document
-  nodeCurrent = nodeTransl.querySelector('#current-txt');
+  var s = content;
+  s = txtToTransl(s);
+  nodeTransl.innerHTML = s;
+  nodeSelection = nodeTransl.querySelector('#selection-transl'); // метод getElementById есть только у document
+  nodeCurrent = nodeTransl.querySelector('#current-transl');
 
-  file = { name: name, path: path, size: size /*, startPoz: getStartPoz()*/ };
+  file = { name: name, path: path /*, startPoz: getStartPoz()*/ };
   setLocalStorage();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
 
-  function txtToTransl() {
-    if (/\.transl$/.test(name)) return;
-
-    var s = content;
+  function txtToTransl(_s) {
+    if (/\.transl$/.test(name)) return _s;
+    var s = _s;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -1154,8 +1124,8 @@ var setLoadedFile = function setLoadedFile(_ref) {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<main-info></main-info>\n         <span id="selection-txt"></span>\n         <span id="current-txt">&nbsp&nbsp' + s + '</span>';
-    content = s;
+    s = '<main-info ru></main-info>\n         <span id="selection-transl"></span>\n         <span id="current-transl">&nbsp&nbsp' + s + '</span>';
+    return s;
   }
 };
 
@@ -1197,7 +1167,7 @@ var restore = function restore() {
 };
 
 ipcRenderer.on('file-restored', function (event, arg) {
-  //arg = {name, path, content, kind, err}; 
+  //arg = {name, path, content, kind, err};
   if (arg.kind !== 'transl') return;
   if (arg.err) {
     console.log('error in restoring *.transl:');console.log(arg.err);
@@ -1207,7 +1177,7 @@ ipcRenderer.on('file-restored', function (event, arg) {
       path = arg.path,
       content = arg.content;
 
-  modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage  
+  modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
 });
 
 /*
@@ -1632,12 +1602,12 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll; }\n  #transl span {\n    color: #50a3c3; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll; }\n  #txt span {\n    color: #50a3c3; }\n  #txt #selection-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #current-txt {\n    color: black; }\n  #txt #last-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll; }\n  #transl span[from] {\n    color: black; }\n  #transl #selection-transl {\n    color: #254d5c;\n    background-color: #254d5c; }\n  #transl #current-transl {\n    color: black; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
 
 // exports
 
