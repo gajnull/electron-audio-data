@@ -169,12 +169,12 @@ const modelAudio = {
 }
 
 ipcRenderer.on('audio-restored', (event, arg) => {
-  //arg = {name, path, content, err}; 
   if (arg.err) {
     console.log('error in restoring audio:');  console.log(arg.err);
     return;
-  }    
-  const {name, path, content} = arg;
+  }   
+  const content = arg.content.buffer; 
+  const {name, path} = arg;
   modelAudio.decodeFile({name, path, content}); // здесь установятся file и localStorage  
 })
 

@@ -9,6 +9,14 @@ controlAudio.init = function() {
   transl = document.getElementById('btns-transl');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
+  transl.onclick = (event) => {
+    const target = event.target;
+    if (!target.hasAttribute('act')) return;
+    target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+    const attr = target.getAttribute('act');
+    model.fnTransl(attr);
+  }
+
   model.on('changeState', changeState);  //меняем набор кнопок
   model.on('decodedAudio', handlerDecoded);
   model.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play

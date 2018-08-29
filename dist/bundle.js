@@ -170,6 +170,8 @@ model.setLoadedTranslFile = function (file) {
   __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
 };
 
+model.fnTransl = function (act) {};
+
 /////// Audio
 
 model.setLoadedAudioFile = function (file) {
@@ -214,7 +216,7 @@ model.save = function () {
 model.restore = function () {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].restore();
   __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].restore();
-  //modelAudio.restore(); // если аудио загружено, то оставляем как есть
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].restore(); // если аудио загружено, то оставляем как есть
 };
 
 /* harmony default export */ __webpack_exports__["a"] = (model);
@@ -347,6 +349,14 @@ controlAudio.init = function () {
   transl = document.getElementById('btns-transl');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
+  transl.onclick = function (event) {
+    var target = event.target;
+    if (!target.hasAttribute('act')) return;
+    target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+    var attr = target.getAttribute('act');
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl(attr);
+  };
+
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState); //меняем набор кнопок
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', handlerDecoded);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
@@ -454,6 +464,7 @@ function choosedFile() {
 
   function loaded(ev) {
     var content = ev.target.result;
+    console.log(content);
     __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, content: content });
   }
 
@@ -1034,14 +1045,13 @@ var modelAudio = {
 };
 
 ipcRenderer.on('audio-restored', function (event, arg) {
-  //arg = {name, path, content, err}; 
   if (arg.err) {
     console.log('error in restoring audio:');console.log(arg.err);
     return;
   }
+  var content = arg.content.buffer;
   var name = arg.name,
-      path = arg.path,
-      content = arg.content;
+      path = arg.path;
 
   modelAudio.decodeFile({ name: name, path: path, content: content }); // здесь установятся file и localStorage  
 });

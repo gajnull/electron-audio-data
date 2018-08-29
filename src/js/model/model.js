@@ -87,6 +87,7 @@ model.setLoadedTranslFile = (file) => { // file: {name, path, content}
   modelTransl.setLoadedFile(file);
 }
 
+model.fnTransl = (act) => {}
 
 
 /////// Audio
@@ -131,7 +132,7 @@ model.save = () => {
 model.restore = () => {
   modelTxt.restore();
   modelTransl.restore();
-  //modelAudio.restore(); // если аудио загружено, то оставляем как есть
+  modelAudio.restore(); // если аудио загружено, то оставляем как есть
 }
 
 export default model;

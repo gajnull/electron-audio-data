@@ -46,6 +46,7 @@ function choosedFile() {
 
   function loaded(ev) {
     const content = ev.target.result;
+    console.log(content);
     model.setLoadedAudioFile({name, path, content});
   }
 

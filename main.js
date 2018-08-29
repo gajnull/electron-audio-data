@@ -59,13 +59,8 @@ ipcMain.on('will-restore-file', (event, arg) => {
 ipcMain.on('will-restore-audio', (event, arg) => {
   const {name, path} = arg;
   fs.readFile(path, (err, data) => {
-    const buffer = data.buffer;
-    let content = new ArrayBuffer(buffer.length);
-    let view = new Uint16Array(content);
-    for (let i = 0; i < buffer.length; ++i) {
-        view[i] = buffer[i];
-    }
-
+    const content = new Uint8Array(data.buffer);
     event.sender.send('audio-restored', {name, path, content, err});
   });
 });
+
