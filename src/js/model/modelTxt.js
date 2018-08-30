@@ -12,13 +12,13 @@ let nodeTxt = null,   // весь элемент
 
 
 
-////////////************ установка  ************ 
+////////////************ установка  ************
 
 modelTxt.setRoot = (root) => {
   nodeTxt = root;
 };
 
-modelTxt.setLoadedFile = ({name, path, content}) => { 
+modelTxt.setLoadedFile = ({name, path, content}) => {
   txtToLngt();
   nodeTxt.innerHTML = content;
   nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
@@ -53,12 +53,58 @@ function setLocalStorage() {
   localStorage.setItem('name-lngt', file.name);
 }
 
+modelTxt.setState = (state) => {
+  let res = false;
+  if (state !== 'add') clearNodeAdd();
+  if (state !== 'delete') clearNodeDelete();
+  if (state !== 'transl') clearNodeTranl();
+  if (state === 'add') res = getLastPoz();
+  if (state === 'delete') res = getRangeLastNode();
+  return res;
+}
+
+function clearNodeAdd() {
+  const selection = nodeAdd.innerHTML;
+  if(selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeAdd.innerHTML = '';
+  }
+  return false;
+}
+
+function clearNodeDelete() {
+  if (nodeDelete) nodeDelete.removeAttribute('id');
+  if (nodeTransl) nodeDelete.removeAttribute('id');
+  nodeDelete = nodeTransl = null;
+}
+
+function clearNodeTranl() {
+
+}
+
+function getLastPoz() {
+  let _from = '0', _to = '0';
+  const lastNode = nodeAdd.previousElementSibling;
+  if(!lastNode || !lastNode.hasAttribute('to')) return;
+  _from = _to = lastNode.getAttribute('to');
+  return {_from, _to};
+}
+
+function getRangeLastNode() {
+  let _from = '0', _to = '0';
+  const lastNode = nodeAdd.previousElementSibling;
+  if(!lastNode || !lastNode.hasAttribute('from')) return;
+  _from = lastNode.getAttribute('from');
+   _to = lastNode.getAttribute('to');
+  return {_from, _to};
+}
+
 
 
 ////////////************ Сохранение/восстановление файла *************
 
 modelTxt.save = () => {
-  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true 
+  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true
   cleareSelection();
   const content = nodeTxt.innerHTML;
   if (!content) return;
@@ -93,7 +139,7 @@ modelTxt.restore = () => {
     if (arg.err) {
       console.log('error in restoring *.lngt:');  console.log(arg.err);
       return;
-    }    
+    }
     const {name, path, content} = arg;
     modelTxt.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
@@ -102,15 +148,8 @@ modelTxt.restore = () => {
 
 /////////////************  Изменение состояния  ************************
 
-modelTxt.setStateAdd = () => {
-  if (nodeDelete) nodeDelete.removeAttribute('id');
-  if (nodeTransl) nodeTransl.removeAttribute('id');
-  nodeDelete = nodeTransl = null;
-}
 
 modelTxt.setStateDelete = () => {
-
-
   let _from, _to;   // from - показывает ключевое слово
   if (!nodeAdd) return;
   nodeDelete = nodeAdd.previousElementSibling;
@@ -126,8 +165,8 @@ modelTxt.setStateTransl = () => {}
 
 
 
-//////////////************  Изменение области выделения  ************************ 
- 
+//////////////************  Изменение области выделения  ************************
+
 modelTxt.addSelection = () => {
   //if (stateTxt === 'delete interval') return;
   let current = nodeBlank.innerHTML

@@ -18,25 +18,16 @@ vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); //
 
 
 model.setState = (_state) => {
-  if (_state === state) return; // такого не должно случиться
-  switch (_state) {
-    case 'add':
-      setStateAdd();
-      break;
-    case 'delete':
-      setStateDelete();
-      break;
-    case 'transl':
-      setStateTransl();
-      break;
-  }
-
-
+  if (_state === state) return; // наверное это потом уберём
+  const pozz = modelTxt.setState(_state); // || {_from: '0', _to: '0'}
+  modelTransl.setState(_state);
+  if (pozz !== false) modelAudio.setPozz(pozz);
   state = _state;
   vent.publish('changeState', {state});
-  modelAudio.advertPozz();
+  modelAudio.advertPozz(); // это надо включить в   modelAudio.setState(_state);
 };
 
+/*
 function setStateAdd() {
   modelTxt.setStateAdd();
   modelAudio.nextUnit();
@@ -52,10 +43,10 @@ function setStateTransl() {
   const num = modelTransl.setStateTransl();
   modelTxt.setStateTransl(num);
 }
+*/
 
 
-
-////////************  Txt ************ 
+////////************  Txt ************
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
@@ -83,7 +74,7 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, content}
 
 
 
-////////************  Transl ************ 
+////////************  Transl ************
 model.setAreaTransl  = (area) => { modelTransl.setRoot(area); }
 
 model.setLoadedTranslFile = (file) => { // file: {name, path, content}
@@ -93,7 +84,7 @@ model.setLoadedTranslFile = (file) => { // file: {name, path, content}
 model.fnTransl = (act) => {}
 
 
-///////************  Audio ************ 
+///////************  Audio ************
 
 model.setLoadedAudioFile = (file) => { // file: {name, path, content}
   modelAudio.decodeFile(file);
@@ -124,8 +115,8 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
   modelAudio.advertPozz();
 }
 
- 
-///////************  save/restore ************ 
+
+///////************  save/restore ************
 
 model.save = () => {
   modelTxt.save();

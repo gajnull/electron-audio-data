@@ -51,6 +51,10 @@ function setLocalStorage() {
   localStorage.setItem('name-transl', file.name);
 }
 
+const setState = (state) => {
+
+}
+
 // Сохранение файла
 const save = () => {
   if (!file.name) return;
@@ -185,6 +189,7 @@ function getStartPoz() {
 const modelTransl = {
   setRoot,
   setLoadedFile,
+  setState,
   save,
   restore
 };

@@ -92,8 +92,11 @@ const modelAudio = {
     pozMin = pozFrom = pozCurrent = pozTo;
   },
 
+  setPozz({_from, _to}) {
+  },
+
 // установка аудиоинтервала (из файла .lngt)
-  assignInterval({ _from, _to }) {  // должно быть playing = false
+  assignInterval({_from, _to}) {  // должно быть playing = false
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
   },

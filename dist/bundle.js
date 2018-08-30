@@ -99,41 +99,34 @@ __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function
 
 
 model.setState = function (_state) {
-  if (_state === state) return; // такого не должно случиться
-  switch (_state) {
-    case 'add':
-      setStateAdd();
-      break;
-    case 'delete':
-      setStateDelete();
-      break;
-    case 'transl':
-      setStateTransl();
-      break;
-  }
-
+  if (_state === state) return; // наверное это потом уберём
+  var pozz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setState(_state); // || {_from: '0', _to: '0'}
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setState(_state);
+  if (pozz !== false) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setPozz(pozz);
   state = _state;
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeState', { state: state });
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz(); // это надо включить в   modelAudio.setState(_state);
 };
 
+/*
 function setStateAdd() {
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setStateAdd();
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
+  modelTxt.setStateAdd();
+  modelAudio.nextUnit();
 }
 
 function setStateDelete() {
-  var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setStateDelete(); // from - показывает ключевое слово
-  if (!interval) return;
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
+  const interval = modelTxt.setStateDelete();   // from - показывает ключевое слово
+  if(!interval) return;
+  modelAudio.assignInterval(interval);
 }
 
 function setStateTransl() {
-  var num = __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setStateTransl();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setStateTransl(num);
+  const num = modelTransl.setStateTransl();
+  modelTxt.setStateTransl(num);
 }
+*/
 
-////////************  Txt ************ 
+////////************  Txt ************
 
 model.setArea = function (area) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
@@ -162,7 +155,7 @@ model.setLoadedTxtFile = function (file) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
 };
 
-////////************  Transl ************ 
+////////************  Transl ************
 model.setAreaTransl = function (area) {
   __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setRoot(area);
 };
@@ -174,7 +167,7 @@ model.setLoadedTranslFile = function (file) {
 
 model.fnTransl = function (act) {};
 
-///////************  Audio ************ 
+///////************  Audio ************
 
 model.setLoadedAudioFile = function (file) {
   // file: {name, path, content}
@@ -208,7 +201,7 @@ model.fnEditAudio = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
-///////************  save/restore ************ 
+///////************  save/restore ************
 
 model.save = function () {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save();
@@ -961,12 +954,16 @@ var modelAudio = {
     // должно быть playing = false
     pozMin = pozFrom = pozCurrent = pozTo;
   },
+  setPozz: function setPozz(_ref2) {
+    var _from = _ref2._from,
+        _to = _ref2._to;
+  },
 
 
   // установка аудиоинтервала (из файла .lngt)
-  assignInterval: function assignInterval(_ref2) {
-    var _from = _ref2._from,
-        _to = _ref2._to;
+  assignInterval: function assignInterval(_ref3) {
+    var _from = _ref3._from,
+        _to = _ref3._to;
     // должно быть playing = false
     pozMin = pozCurrent = pozFrom = +_from;
     pozTo = +_to;
@@ -1137,6 +1134,8 @@ function setLocalStorage() {
   localStorage.setItem('name-transl', file.name);
 }
 
+var setState = function setState(state) {};
+
 // Сохранение файла
 var save = function save() {
   if (!file.name) return;
@@ -1273,6 +1272,7 @@ function getStartPoz() {
 var modelTransl = {
   setRoot: setRoot,
   setLoadedFile: setLoadedFile,
+  setState: setState,
   save: save,
   restore: restore
 };
@@ -1302,7 +1302,7 @@ nodeBlank = null,
     nodeDelete = null,
     nodeTransl = null;
 
-////////////************ установка  ************ 
+////////////************ установка  ************
 
 modelTxt.setRoot = function (root) {
   nodeTxt = root;
@@ -1344,10 +1344,56 @@ function setLocalStorage() {
   localStorage.setItem('name-lngt', file.name);
 }
 
+modelTxt.setState = function (state) {
+  var res = false;
+  if (state !== 'add') clearNodeAdd();
+  if (state !== 'delete') clearNodeDelete();
+  if (state !== 'transl') clearNodeTranl();
+  if (state === 'add') res = getLastPoz();
+  if (state === 'delete') res = getRangeLastNode();
+  return res;
+};
+
+function clearNodeAdd() {
+  var selection = nodeAdd.innerHTML;
+  if (selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeAdd.innerHTML = '';
+  }
+  return false;
+}
+
+function clearNodeDelete() {
+  if (nodeDelete) nodeDelete.removeAttribute('id');
+  if (nodeTransl) nodeDelete.removeAttribute('id');
+  nodeDelete = nodeTransl = null;
+}
+
+function clearNodeTranl() {}
+
+function getLastPoz() {
+  var _from = '0',
+      _to = '0';
+  var lastNode = nodeAdd.previousElementSibling;
+  if (!lastNode || !lastNode.hasAttribute('to')) return;
+  _from = _to = lastNode.getAttribute('to');
+  return { _from: _from, _to: _to };
+}
+
+function getRangeLastNode() {
+  var _from = '0',
+      _to = '0';
+  var lastNode = nodeAdd.previousElementSibling;
+  if (!lastNode || !lastNode.hasAttribute('from')) return;
+  _from = lastNode.getAttribute('from');
+  _to = lastNode.getAttribute('to');
+  return { _from: _from, _to: _to };
+}
+
 ////////////************ Сохранение/восстановление файла *************
 
 modelTxt.save = function () {
-  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true 
+  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true
   cleareSelection();
   var content = nodeTxt.innerHTML;
   if (!content) return;
@@ -1392,14 +1438,8 @@ ipcRenderer.on('file-restored', function (event, arg) {
 
 /////////////************  Изменение состояния  ************************
 
-modelTxt.setStateAdd = function () {
-  if (nodeDelete) nodeDelete.removeAttribute('id');
-  if (nodeTransl) nodeTransl.removeAttribute('id');
-  nodeDelete = nodeTransl = null;
-};
 
 modelTxt.setStateDelete = function () {
-
   var _from = void 0,
       _to = void 0; // from - показывает ключевое слово
   if (!nodeAdd) return;
@@ -1414,7 +1454,7 @@ modelTxt.setStateDelete = function () {
 
 modelTxt.setStateTransl = function () {};
 
-//////////////************  Изменение области выделения  ************************ 
+//////////////************  Изменение области выделения  ************************
 
 modelTxt.addSelection = function () {
   //if (stateTxt === 'delete interval') return;
@@ -1612,7 +1652,7 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 
