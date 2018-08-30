@@ -8,6 +8,7 @@ const evs = {
   //altSpace() {}, // срабатывает событие окна
   shiftSpace() {},
   ctrlSpace() {},
+  shiftTab() {},
   f2() {}
 };
 

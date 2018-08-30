@@ -30,29 +30,32 @@ model.setState = (_state) => {
       setStateTransl();
       break;
   }
+
+
   state = _state;
   vent.publish('changeState', {state});
   modelAudio.advertPozz();
 };
 
 function setStateAdd() {
-  modelTxt.gotoToAdd();
+  modelTxt.setStateAdd();
   modelAudio.nextUnit();
 }
 
 function setStateDelete() {
-  const interval = modelTxt.gotoToDelete();   // from - показывает ключевое слово
+  const interval = modelTxt.setStateDelete();   // from - показывает ключевое слово
   if(!interval) return;
   modelAudio.assignInterval(interval);
 }
 
-function setStateTransl(file) {
-  //
+function setStateTransl() {
+  const num = modelTransl.setStateTransl();
+  modelTxt.setStateTransl(num);
 }
 
 
 
-//////// Txt
+////////************  Txt ************ 
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 
@@ -80,7 +83,7 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, content}
 
 
 
-//////// Transl
+////////************  Transl ************ 
 model.setAreaTransl  = (area) => { modelTransl.setRoot(area); }
 
 model.setLoadedTranslFile = (file) => { // file: {name, path, content}
@@ -90,7 +93,7 @@ model.setLoadedTranslFile = (file) => { // file: {name, path, content}
 model.fnTransl = (act) => {}
 
 
-/////// Audio
+///////************  Audio ************ 
 
 model.setLoadedAudioFile = (file) => { // file: {name, path, content}
   modelAudio.decodeFile(file);
@@ -121,8 +124,8 @@ model.fnEditAudio = (action, args) => { // возможно args не понад
   modelAudio.advertPozz();
 }
 
-
-/////// save/restore
+ 
+///////************  save/restore ************ 
 
 model.save = () => {
   modelTxt.save();

@@ -7,13 +7,13 @@ const modelTxt = {};
 let file = {};       // {name, path}
                       // path: fullPath + name
 let nodeTxt = null,   // весь элемент
-    nodeCurrent = null,
-    nodeSelection = null,
-    nodeLast = null
-    //stateTxt = 'add interval';  // 'delete interval'
+    nodeBlank = null,
+    nodeAdd = null, nodeDelete = null, nodeTransl = null
 
 
-// установка
+
+////////////************ установка  ************ 
+
 modelTxt.setRoot = (root) => {
   nodeTxt = root;
 };
@@ -21,8 +21,8 @@ modelTxt.setRoot = (root) => {
 modelTxt.setLoadedFile = ({name, path, content}) => { 
   txtToLngt();
   nodeTxt.innerHTML = content;
-  nodeSelection = nodeTxt.querySelector('#selection-txt');  // метод getElementById есть только у document
-  nodeCurrent = nodeTxt.querySelector('#current-txt');
+  nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
+  nodeBlank = nodeTxt.querySelector('#blank-txt');
 
   file = {name, path};
   setLocalStorage();
@@ -41,8 +41,8 @@ modelTxt.setLoadedFile = ({name, path, content}) => {
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
     s = `<main-info></main-info>
-         <span id="selection-txt"></span>
-         <span id="current-txt">&nbsp&nbsp${s}</span>`;
+         <span id="add-txt"></span>
+         <span id="blank-txt">&nbsp&nbsp${s}</span>`;
     content = s;
   }
 
@@ -53,7 +53,10 @@ function setLocalStorage() {
   localStorage.setItem('name-lngt', file.name);
 }
 
-// Сохранение файла
+
+
+////////////************ Сохранение/восстановление файла *************
+
 modelTxt.save = () => {
   if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true 
   cleareSelection();
@@ -77,7 +80,6 @@ modelTxt.save = () => {
     vent.publish('savedLngt', file);
   });
 
-// Восстановление файла
 modelTxt.restore = () => {
   const name = file.name || localStorage.getItem('name-lngt');
   const path = file.path || localStorage.getItem('path-lngt');
@@ -96,96 +98,109 @@ modelTxt.restore = () => {
     modelTxt.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
 
-// Изменение области выделения
+
+
+/////////////************  Изменение состояния  ************************
+
+modelTxt.setStateAdd = () => {
+  if (nodeDelete) nodeDelete.removeAttribute('id');
+  if (nodeTransl) nodeTransl.removeAttribute('id');
+  nodeDelete = nodeTransl = null;
+}
+
+modelTxt.setStateDelete = () => {
+
+
+  let _from, _to;   // from - показывает ключевое слово
+  if (!nodeAdd) return;
+  nodeDelete = nodeAdd.previousElementSibling;
+  if(!nodeDelete || !nodeDelete.hasAttribute('from')) return;
+  _from = nodeDelete.getAttribute('from');
+  _to = nodeDelete.getAttribute('to');
+  nodeDelete.id = 'delete-txt';
+  cleareSelection();
+  return { _from, _to };
+}
+
+modelTxt.setStateTransl = () => {}
+
+
+
+//////////////************  Изменение области выделения  ************************ 
+ 
 modelTxt.addSelection = () => {
   //if (stateTxt === 'delete interval') return;
-  let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML
+  let current = nodeBlank.innerHTML
+  let selection = nodeAdd.innerHTML
   if (!current) return;
   const s = current.match(/^.+?(\s|<br>)/)
   if (s) {
-    nodeSelection.innerHTML = selection + s[0]
-    nodeCurrent.innerHTML = current.slice(s[0].length)
+    nodeAdd.innerHTML = selection + s[0]
+    nodeBlank.innerHTML = current.slice(s[0].length)
   } else {  //конец текстового файла
-    nodeSelection.innerHTML = selection + current
-    nodeCurrent.innerHTML = ''
+    nodeAdd.innerHTML = selection + current
+    nodeBlank.innerHTML = ''
   }
 }
 
 modelTxt.reduceSelection = () => {
   //if (stateTxt === 'delete interval') return;
-  let current = nodeCurrent.innerHTML
-  let selection = nodeSelection.innerHTML
+  let current = nodeBlank.innerHTML
+  let selection = nodeAdd.innerHTML
   if(!selection) return;
   const s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/)
   if(s) {
-    nodeCurrent.innerHTML = s[2] + current;
-    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+    nodeBlank.innerHTML = s[2] + current;
+    nodeAdd.innerHTML = selection.slice(0, -s[2].length);
   } else {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
+    nodeBlank.innerHTML = selection + current;
+    nodeAdd.innerHTML = '';
   }
 }
 
 // Установка аудиоинтервала в выделеный участок
 modelTxt.setUnit = ({ pozFrom, pozTo }) => {
-  const selection = nodeSelection.innerHTML;
+  const selection = nodeAdd.innerHTML;
   if (selection.trim() === '') return;
-  nodeSelection.innerHTML = '';
+  nodeAdd.innerHTML = '';
   const span = document.createElement('span');
   span.innerHTML = selection;
   span.setAttribute('from', pozFrom);
   span.setAttribute('to', pozTo);
-  nodeSelection.before(span);
+  nodeAdd.before(span);
   return true;
 }
 
 // Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
 modelTxt.deleteUnit = () => {
   let _from, _to;   // from - показывает ключевое слово
-  let span = nodeLast.previousElementSibling;  // возможно можно const span
-  nodeLast.removeAttribute('id');
-  const txtTmp = nodeLast.innerHTML;
-  nodeCurrent.innerHTML = txtTmp + nodeCurrent.innerHTML;
-  nodeLast.remove();
+  let span = nodeDelete.previousElementSibling;  // возможно можно const span
+  nodeDelete.removeAttribute('id');
+  const txtTmp = nodeDelete.innerHTML;
+  nodeBlank.innerHTML = txtTmp + nodeBlank.innerHTML;
+  nodeDelete.remove();
   if (span && span.hasAttribute('from') &&  span.hasAttribute('to')) {
     _from = + span.getAttribute('from');
     _to = + span.getAttribute('to');
-    span.id = 'last-txt';
-    nodeLast = span;
+    span.id = 'delete-txt';
+    nodeDelete = span;
   }
   return { _from, _to };
 }
 
-modelTxt.gotoToAdd = () => {
-  if (nodeLast) nodeLast.removeAttribute('id');
-  nodeLast = null;
-}
-
-modelTxt.gotoToDelete = () => {
-  let _from, _to;   // from - показывает ключевое слово
-  if (!nodeSelection) return;
-  nodeLast = nodeSelection.previousElementSibling;
-  if(!nodeLast || !nodeLast.hasAttribute('from')) return;
-  _from = nodeLast.getAttribute('from');
-  _to = nodeLast.getAttribute('to');
-  nodeLast.id = 'last-txt';
-  cleareSelection();
-  return { _from, _to };
-}
 
 function cleareSelection() {
-  const current = nodeCurrent.innerHTML;
-  const selection = nodeSelection.innerHTML;
+  const current = nodeBlank.innerHTML;
+  const selection = nodeAdd.innerHTML;
   if(selection) {
-    nodeCurrent.innerHTML = selection + current;
-    nodeSelection.innerHTML = '';
+    nodeBlank.innerHTML = selection + current;
+    nodeAdd.innerHTML = '';
   }
 }
 
 function getStartPoz() {
   let poz = 0;
-  const span = nodeSelection.previousElementSibling;
+  const span = nodeAdd.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
   return poz;
 }

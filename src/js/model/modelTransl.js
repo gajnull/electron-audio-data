@@ -38,7 +38,7 @@ const setLoadedFile = ({name, path, content}) => {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = `<main-info ru></main-info>
+    s = `<main-info lang="ru"></main-info>
          <span id="selection-transl"></span>
          <span id="current-transl">&nbsp&nbsp${s}</span>`;
     return s;
@@ -146,12 +146,12 @@ modelTransl.deleteUnit = () => {
   return { _from, _to };
 }
 
-modelTransl.gotoToAdd = () => {
+modelTransl.setStateTransl = () => {
   if (nodeLast) nodeLast.removeAttribute('id');
   nodeLast = null;
 }
 
-modelTransl.gotoToDelete = () => {
+modelTransl.setStateDelete = () => {
   let _from, _to;   // from - показывает ключевое слово
   if (!nodeSelection) return;
   nodeLast = nodeSelection.previousElementSibling;
