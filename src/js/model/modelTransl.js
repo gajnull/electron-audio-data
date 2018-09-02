@@ -6,9 +6,9 @@ const subfolder = 'target';
 let file = {};       // {name, path, size}
                       // path: fullPath + name
 let nodeTransl = null,   // весь элемент
-    nodeCurrent = null,
+    nodeBlank = null,
     nodeSelection = null  // выделяется из nodeCurrent
-    //nodeLast = null
+
 
 
 // установка
@@ -21,7 +21,7 @@ const setLoadedFile = ({name, path, content}) => {
   s = txtToTransl(s);
   nodeTransl.innerHTML = s;
   nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
-  nodeCurrent = nodeTransl.querySelector('#current-transl');
+  nodeBlank = nodeTransl.querySelector('#blank-transl');
 
   file = {name, path /*, startPoz: getStartPoz()*/ };
   setLocalStorage();
@@ -40,7 +40,7 @@ const setLoadedFile = ({name, path, content}) => {
     //Добавляем тэги для начальной работы с текстом
     s = `<main-info lang="ru"></main-info>
          <span id="selection-transl"></span>
-         <span id="current-transl">&nbsp&nbsp${s}</span>`;
+         <span id="blank-transl">&nbsp&nbsp${s}</span>`;
     return s;
   }
 
@@ -52,8 +52,23 @@ function setLocalStorage() {
 }
 
 const setState = (state) => {
+  clearNodeSelection();
+  return getCountUnits();
+};
 
+function clearNodeSelection() {
+  const selection = nodeSelection.innerHTML;
+  if(selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeSelection.innerHTML = '';
+  }
 }
+
+function getCountUnits() { // количество уже назначеннх кусков
+  const nodes = nodeTransl.querySelectorAll('span[transl]') || [];
+  return nodes.length;
+}
+
 
 // Сохранение файла
 const save = () => {

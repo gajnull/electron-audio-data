@@ -99,20 +99,16 @@ __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function
 
 
 model.setState = function (_state) {
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
   if (_state === state) return; // наверное это потом уберём
-  var pozz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setState(_state); // || {_from: '0', _to: '0'}
-  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setState(_state);
-  if (pozz !== false) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setPozz(pozz);
+  var countUnits = __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setState(_state);
+  var pozz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setState(_state, countUnits); // {_from: '0', _to: '0'}
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setPozz(pozz);
   state = _state;
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeState', { state: state });
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz(); // это надо включить в   modelAudio.setState(_state);
 };
 
 /*
-function setStateAdd() {
-  modelTxt.setStateAdd();
-  modelAudio.nextUnit();
-}
 
 function setStateDelete() {
   const interval = modelTxt.setStateDelete();   // from - показывает ключевое слово
@@ -131,10 +127,22 @@ function setStateTransl() {
 model.setArea = function (area) {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
 };
+/*
+model.fnTxtSelection = (action) => {
+  if(state === 'delete') return;
+  modelTxt[action]();
+}*/
 
-model.fnTxtSelection = function (action) {
+model.addSelection = function () {
   if (state === 'delete') return;
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action]();
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].addSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].addSelection();
+};
+
+model.reduceSelection = function () {
+  if (state === 'delete') return;
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].reduceSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].reduceSelection();
 };
 
 // действия, совершаемые при state === 'add'
@@ -707,10 +715,10 @@ function setInfoLodedLngt(_ref) {
 var hotKeys = {
   init: function init() {
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('reduceSelection');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].reduceSelection();
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTxtSelection('addSelection');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].addSelection();
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
       __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio('tooglePlay');
@@ -957,6 +965,10 @@ var modelAudio = {
   setPozz: function setPozz(_ref2) {
     var _from = _ref2._from,
         _to = _ref2._to;
+
+    pozMin = pozCurrent = pozFrom = +_from;
+    pozTo = +_to;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
   },
 
 
@@ -1088,9 +1100,8 @@ var file = {}; // {name, path, size}
 // path: fullPath + name
 var nodeTransl = null,
     // весь элемент
-nodeCurrent = null,
+nodeBlank = null,
     nodeSelection = null; // выделяется из nodeCurrent
-//nodeLast = null
 
 
 // установка
@@ -1107,7 +1118,7 @@ var setLoadedFile = function setLoadedFile(_ref) {
   s = txtToTransl(s);
   nodeTransl.innerHTML = s;
   nodeSelection = nodeTransl.querySelector('#selection-transl'); // метод getElementById есть только у document
-  nodeCurrent = nodeTransl.querySelector('#current-transl');
+  nodeBlank = nodeTransl.querySelector('#blank-transl');
 
   file = { name: name, path: path /*, startPoz: getStartPoz()*/ };
   setLocalStorage();
@@ -1124,7 +1135,7 @@ var setLoadedFile = function setLoadedFile(_ref) {
     s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
     s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<main-info lang="ru"></main-info>\n         <span id="selection-transl"></span>\n         <span id="current-transl">&nbsp&nbsp' + s + '</span>';
+    s = '<main-info lang="ru"></main-info>\n         <span id="selection-transl"></span>\n         <span id="blank-transl">&nbsp&nbsp' + s + '</span>';
     return s;
   }
 };
@@ -1134,7 +1145,24 @@ function setLocalStorage() {
   localStorage.setItem('name-transl', file.name);
 }
 
-var setState = function setState(state) {};
+var setState = function setState(state) {
+  clearNodeSelection();
+  return getCountUnits();
+};
+
+function clearNodeSelection() {
+  var selection = nodeSelection.innerHTML;
+  if (selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeSelection.innerHTML = '';
+  }
+}
+
+function getCountUnits() {
+  // количество уже назначеннх кусков
+  var nodes = nodeTransl.querySelectorAll('span[transl]') || [];
+  return nodes.length;
+}
 
 // Сохранение файла
 var save = function save() {
@@ -1344,14 +1372,20 @@ function setLocalStorage() {
   localStorage.setItem('name-lngt', file.name);
 }
 
-modelTxt.setState = function (state) {
-  var res = false;
-  if (state !== 'add') clearNodeAdd();
-  if (state !== 'delete') clearNodeDelete();
-  if (state !== 'transl') clearNodeTranl();
-  if (state === 'add') res = getLastPoz();
-  if (state === 'delete') res = getRangeLastNode();
-  return res;
+/////////////************  Изменение состояния  ************************
+
+modelTxt.setState = function (state, countUnits) {
+  //let res = false;
+  if (!file.name) return { _from: '0', _to: '0' };
+  //if (state !== 'add') clearNodeAdd();
+  clearNodeAdd();
+  //if (state !== 'delete') clearNodeDelete();
+  clearNodeDelete();
+  //if (state !== 'transl') clearNodeTranl();
+  clearNodeTranl();
+  if (state === 'add') return setNodeAdd();
+  if (state === 'delete') return setNodeDelete();
+  if (state === 'transl') return setNodeTransl(countUnits);
 };
 
 function clearNodeAdd() {
@@ -1360,41 +1394,57 @@ function clearNodeAdd() {
     nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
     nodeAdd.innerHTML = '';
   }
-  return false;
 }
 
 function clearNodeDelete() {
   if (nodeDelete) nodeDelete.removeAttribute('id');
+  nodeDelete = null;
+}
+
+function clearNodeTranl() {
   if (nodeTransl) nodeDelete.removeAttribute('id');
-  nodeDelete = nodeTransl = null;
+  nodeTransl = null;
 }
 
-function clearNodeTranl() {}
-
-function getLastPoz() {
+function setNodeAdd() {
   var _from = '0',
       _to = '0';
   var lastNode = nodeAdd.previousElementSibling;
-  if (!lastNode || !lastNode.hasAttribute('to')) return;
-  _from = _to = lastNode.getAttribute('to');
+  if (lastNode && lastNode.hasAttribute('to')) {
+    _from = _to = lastNode.getAttribute('to');
+  }
   return { _from: _from, _to: _to };
 }
 
-function getRangeLastNode() {
-  var _from = '0',
-      _to = '0';
-  var lastNode = nodeAdd.previousElementSibling;
-  if (!lastNode || !lastNode.hasAttribute('from')) return;
-  _from = lastNode.getAttribute('from');
-  _to = lastNode.getAttribute('to');
-  return { _from: _from, _to: _to };
+function setNodeDelete() {
+  var pozz = { _from: '0', _to: '0' };
+  if (!nodeAdd) return pozz;
+  nodeDelete = nodeAdd.previousElementSibling; // не лучший вариант поиска
+  if (!nodeDelete || !nodeDelete.hasAttribute('from')) return pozz;
+  nodeDelete.id = 'delete-txt';
+  pozz._from = nodeDelete.getAttribute('from');
+  pozz._to = nodeDelete.getAttribute('to');
+  return pozz;
+}
+
+function setNodeTransl(countUnits) {
+  if (countUnits > 0) {
+    nodes = nodeTxt.querySelector('span[from]');
+    if (nodes && nodes[countUnits]) {
+      nodeTransl = nodes[countUnits];
+      nodeTransl.id = 'transl-txt';
+    }
+  }
+  return { _from: '0', _to: '0' };
 }
 
 ////////////************ Сохранение/восстановление файла *************
 
 modelTxt.save = function () {
   if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true
-  cleareSelection();
+  clearNodeAdd();
+  clearNodeDelete();
+  clearNodeTranl();
   var content = nodeTxt.innerHTML;
   if (!content) return;
   var path = /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '.lngt');
@@ -1435,24 +1485,6 @@ ipcRenderer.on('file-restored', function (event, arg) {
 
   modelTxt.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
 });
-
-/////////////************  Изменение состояния  ************************
-
-
-modelTxt.setStateDelete = function () {
-  var _from = void 0,
-      _to = void 0; // from - показывает ключевое слово
-  if (!nodeAdd) return;
-  nodeDelete = nodeAdd.previousElementSibling;
-  if (!nodeDelete || !nodeDelete.hasAttribute('from')) return;
-  _from = nodeDelete.getAttribute('from');
-  _to = nodeDelete.getAttribute('to');
-  nodeDelete.id = 'delete-txt';
-  cleareSelection();
-  return { _from: _from, _to: _to };
-};
-
-modelTxt.setStateTransl = function () {};
 
 //////////////************  Изменение области выделения  ************************
 
@@ -1520,15 +1552,6 @@ modelTxt.deleteUnit = function () {
   }
   return { _from: _from, _to: _to };
 };
-
-function cleareSelection() {
-  var current = nodeBlank.innerHTML;
-  var selection = nodeAdd.innerHTML;
-  if (selection) {
-    nodeBlank.innerHTML = selection + current;
-    nodeAdd.innerHTML = '';
-  }
-}
 
 function getStartPoz() {
   var poz = 0;
@@ -1657,7 +1680,7 @@ exports = module.exports = __webpack_require__(18)(false);
 
 
 // module
-exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #txt #blank-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #add-txt {\n    color: black; }\n  #txt #delete-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #transl #add-transl {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #transl #blank-transl {\n    color: black; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #txt #blank-txt {\n    color: black; }\n  #txt #add-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #delete-txt, #txt #transl-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #transl #selection-transl {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #transl #blank-transl {\n    color: black; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n", ""]);
 
 // exports
 

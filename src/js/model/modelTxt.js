@@ -53,14 +53,22 @@ function setLocalStorage() {
   localStorage.setItem('name-lngt', file.name);
 }
 
-modelTxt.setState = (state) => {
-  let res = false;
-  if (state !== 'add') clearNodeAdd();
-  if (state !== 'delete') clearNodeDelete();
-  if (state !== 'transl') clearNodeTranl();
-  if (state === 'add') res = getLastPoz();
-  if (state === 'delete') res = getRangeLastNode();
-  return res;
+
+
+/////////////************  Изменение состояния  ************************
+
+modelTxt.setState = (state, countUnits) => {
+  //let res = false;
+  if (!file.name) return {_from: '0', _to: '0'};
+  //if (state !== 'add') clearNodeAdd();
+  clearNodeAdd();
+  //if (state !== 'delete') clearNodeDelete();
+  clearNodeDelete();
+  //if (state !== 'transl') clearNodeTranl();
+  clearNodeTranl();
+  if (state === 'add') return setNodeAdd();
+  if (state === 'delete') return setNodeDelete();
+  if (state === 'transl') return setNodeTransl(countUnits);
 }
 
 function clearNodeAdd() {
@@ -69,43 +77,58 @@ function clearNodeAdd() {
     nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
     nodeAdd.innerHTML = '';
   }
-  return false;
 }
 
 function clearNodeDelete() {
   if (nodeDelete) nodeDelete.removeAttribute('id');
-  if (nodeTransl) nodeDelete.removeAttribute('id');
-  nodeDelete = nodeTransl = null;
+  nodeDelete = null;
 }
 
 function clearNodeTranl() {
-
+  if (nodeTransl) nodeDelete.removeAttribute('id');
+  nodeTransl = null;
 }
 
-function getLastPoz() {
-  let _from = '0', _to = '0';
+function setNodeAdd() {
+  let _from = '0',
+      _to = '0';
   const lastNode = nodeAdd.previousElementSibling;
-  if(!lastNode || !lastNode.hasAttribute('to')) return;
-  _from = _to = lastNode.getAttribute('to');
+  if(lastNode && lastNode.hasAttribute('to')) {
+    _from = _to = lastNode.getAttribute('to');
+  }
   return {_from, _to};
 }
 
-function getRangeLastNode() {
-  let _from = '0', _to = '0';
-  const lastNode = nodeAdd.previousElementSibling;
-  if(!lastNode || !lastNode.hasAttribute('from')) return;
-  _from = lastNode.getAttribute('from');
-   _to = lastNode.getAttribute('to');
-  return {_from, _to};
+function setNodeDelete() {
+  const pozz = {_from: '0', _to: '0'};
+  if (!nodeAdd) return pozz;
+  nodeDelete = nodeAdd.previousElementSibling;  // не лучший вариант поиска
+  if (!nodeDelete || !nodeDelete.hasAttribute('from')) return pozz;
+  nodeDelete.id = 'delete-txt';
+  pozz._from = nodeDelete.getAttribute('from');
+  pozz._to = nodeDelete.getAttribute('to');
+  return pozz;
 }
 
+function setNodeTransl(countUnits) {
+  if (countUnits > 0) {
+    nodes = nodeTxt.querySelector('span[from]');
+    if (nodes && nodes[countUnits]) {
+      nodeTransl = nodes[countUnits];
+      nodeTransl.id = 'transl-txt';
+    }
+  }
+  return {_from: '0', _to: '0'};
+}
 
 
 ////////////************ Сохранение/восстановление файла *************
 
 modelTxt.save = () => {
   if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true
-  cleareSelection();
+  clearNodeAdd();
+  clearNodeDelete();
+  clearNodeTranl();
   const content = nodeTxt.innerHTML;
   if (!content) return;
   const path =  /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.lngt');
@@ -144,24 +167,6 @@ modelTxt.restore = () => {
     modelTxt.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
 
-
-
-/////////////************  Изменение состояния  ************************
-
-
-modelTxt.setStateDelete = () => {
-  let _from, _to;   // from - показывает ключевое слово
-  if (!nodeAdd) return;
-  nodeDelete = nodeAdd.previousElementSibling;
-  if(!nodeDelete || !nodeDelete.hasAttribute('from')) return;
-  _from = nodeDelete.getAttribute('from');
-  _to = nodeDelete.getAttribute('to');
-  nodeDelete.id = 'delete-txt';
-  cleareSelection();
-  return { _from, _to };
-}
-
-modelTxt.setStateTransl = () => {}
 
 
 
@@ -227,21 +232,12 @@ modelTxt.deleteUnit = () => {
   return { _from, _to };
 }
 
-
-function cleareSelection() {
-  const current = nodeBlank.innerHTML;
-  const selection = nodeAdd.innerHTML;
-  if(selection) {
-    nodeBlank.innerHTML = selection + current;
-    nodeAdd.innerHTML = '';
-  }
-}
-
 function getStartPoz() {
   let poz = 0;
   const span = nodeAdd.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
   return poz;
 }
+
 
 export default modelTxt;

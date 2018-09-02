@@ -18,20 +18,16 @@ vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); //
 
 
 model.setState = (_state) => {
+  modelAudio.stop();
   if (_state === state) return; // наверное это потом уберём
-  const pozz = modelTxt.setState(_state); // || {_from: '0', _to: '0'}
-  modelTransl.setState(_state);
-  if (pozz !== false) modelAudio.setPozz(pozz);
+  const countUnits = modelTransl.setState(_state);
+  const pozz = modelTxt.setState(_state, countUnits); // {_from: '0', _to: '0'}
+  modelAudio.setPozz(pozz);
   state = _state;
   vent.publish('changeState', {state});
-  modelAudio.advertPozz(); // это надо включить в   modelAudio.setState(_state);
 };
 
 /*
-function setStateAdd() {
-  modelTxt.setStateAdd();
-  modelAudio.nextUnit();
-}
 
 function setStateDelete() {
   const interval = modelTxt.setStateDelete();   // from - показывает ключевое слово
@@ -49,11 +45,23 @@ function setStateTransl() {
 ////////************  Txt ************
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
-
+/*
 model.fnTxtSelection = (action) => {
   if(state === 'delete') return;
   modelTxt[action]();
-}
+}*/
+
+model.addSelection = () => {
+  if(state === 'delete') return;
+  if(state === 'add') modelTxt.addSelection();
+  if(state === 'transl') modelTransl.addSelection();
+};
+
+model.reduceSelection = () => {
+  if(state === 'delete') return;
+  if(state === 'add') modelTxt.reduceSelection();
+  if(state === 'transl') modelTransl.reduceSelection();
+};
 
 // действия, совершаемые при state === 'add'
 model.fnTxt = (action, args) => {

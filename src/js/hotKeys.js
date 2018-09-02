@@ -4,8 +4,8 @@ import setHotKey from './model/keyboard';
 
 const hotKeys = {
 	init: () => {
-		setHotKey('arrowLeft', () => { model.fnTxtSelection('reduceSelection'); });
-		setHotKey('arrowRight', () => { model.fnTxtSelection('addSelection'); });
+		setHotKey('arrowLeft', () => { model.reduceSelection(); });
+		setHotKey('arrowRight', () => { model.addSelection(); });
     setHotKey('space', () => { model.fnAudio('tooglePlay'); });
     setHotKey('ctrlSpace', () => { model.fnAudio('repeate'); });
     setHotKey('shiftSpace', () => { model.fnAudio('setUnit'); });

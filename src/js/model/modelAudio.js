@@ -93,6 +93,9 @@ const modelAudio = {
   },
 
   setPozz({_from, _to}) {
+    pozMin = pozCurrent = pozFrom = +_from;
+    pozTo = +_to;
+    vent.publish('changedPoz', getPoz());
   },
 
 // установка аудиоинтервала (из файла .lngt)
