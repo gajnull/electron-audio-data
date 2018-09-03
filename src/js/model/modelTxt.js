@@ -58,13 +58,9 @@ function setLocalStorage() {
 /////////////************  Изменение состояния  ************************
 
 modelTxt.setState = (state, countUnits) => {
-  //let res = false;
   if (!file.name) return {_from: '0', _to: '0'};
-  //if (state !== 'add') clearNodeAdd();
   clearNodeAdd();
-  //if (state !== 'delete') clearNodeDelete();
   clearNodeDelete();
-  //if (state !== 'transl') clearNodeTranl();
   clearNodeTranl();
   if (state === 'add') return setNodeAdd();
   if (state === 'delete') return setNodeDelete();
@@ -85,7 +81,7 @@ function clearNodeDelete() {
 }
 
 function clearNodeTranl() {
-  if (nodeTransl) nodeDelete.removeAttribute('id');
+  if (nodeTransl) nodeTransl.removeAttribute('id');
   nodeTransl = null;
 }
 
@@ -111,12 +107,10 @@ function setNodeDelete() {
 }
 
 function setNodeTransl(countUnits) {
-  if (countUnits > 0) {
-    nodes = nodeTxt.querySelector('span[from]');
-    if (nodes && nodes[countUnits]) {
-      nodeTransl = nodes[countUnits];
-      nodeTransl.id = 'transl-txt';
-    }
+  const nodes = nodeTxt.querySelectorAll('span[from]');
+  if (nodes && nodes[countUnits]) {
+    nodeTransl = nodes[countUnits]; // следующий кусок, т.к. index = length - 1
+    nodeTransl.id = 'transl-txt';
   }
   return {_from: '0', _to: '0'};
 }

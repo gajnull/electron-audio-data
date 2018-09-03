@@ -1,12 +1,11 @@
 export default function webAudioAPI() {
-
   const contextClass = (window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext);
   if (!contextClass) {
     console.log('Web Audio API недоступно');
     return;
   }
 
-  const res = {}
+  const res = {};
   let context, source, buffer,
       playing, startTime, startPoz;
 

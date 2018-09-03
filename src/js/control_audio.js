@@ -9,16 +9,9 @@ controlAudio.init = function() {
   transl = document.getElementById('btns-transl');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
-  transl.onclick = (event) => {
-    const target = event.target;
-    if (!target.hasAttribute('act')) return;
-    target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
-    const attr = target.getAttribute('act');
-    model.fnTransl(attr);
-  }
-
   model.on('changeState', changeState);  //меняем набор кнопок
   model.on('decodedAudio', handlerDecoded);
+  model.on('loadedTransl', handlerLoadedTransl);
   model.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
@@ -32,19 +25,30 @@ controlAudio.close = function() {
 
 function handlerDecoded() {
   btns.onclick = function(event) {
-    const target = event.target
+    const target = event.target;
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      model.fnAudio(attr);
+      model.fnAdd(attr);
     }
   };
   intervals.onclick = function(event) {
-    const target = event.target
+    const target = event.target;
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       const attr = target.getAttribute('act');
-      model.fnEditAudio(attr);
+      model.fnDelete(attr);
+    }
+  };
+}
+
+function handlerLoadedTransl() {
+  transl.onclick = function(event) {
+    const target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      const attr = target.getAttribute('act');
+      model.fnTransl(attr);
     }
   };
 }
@@ -62,5 +66,6 @@ function changeState({ state }) {
   intervals.style.display = (state === 'delete') ? 'flex' : 'none';
   transl.style.display = (state === 'transl') ? 'flex' : 'none';
 }
+
 
 export default controlAudio;

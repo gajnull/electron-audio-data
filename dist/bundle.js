@@ -97,92 +97,32 @@ __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
 }); // это можно в modelTxt
 
+model.setArea = function (area) {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
+};
+
+model.setAreaTransl = function (area) {
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setRoot(area);
+};
 
 model.setState = function (_state) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
   if (_state === state) return; // наверное это потом уберём
   var countUnits = __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setState(_state);
+  if (_state === 'transl' && countUnits === -1) return; // файл с переводом не загружен
   var pozz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setState(_state, countUnits); // {_from: '0', _to: '0'}
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setPozz(pozz);
   state = _state;
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeState', { state: state });
 };
 
-/*
+////////************  actions ************
 
-function setStateDelete() {
-  const interval = modelTxt.setStateDelete();   // from - показывает ключевое слово
-  if(!interval) return;
-  modelAudio.assignInterval(interval);
-}
-
-function setStateTransl() {
-  const num = modelTransl.setStateTransl();
-  modelTxt.setStateTransl(num);
-}
-*/
-
-////////************  Txt ************
-
-model.setArea = function (area) {
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
-};
-/*
-model.fnTxtSelection = (action) => {
-  if(state === 'delete') return;
-  modelTxt[action]();
-}*/
-
-model.addSelection = function () {
-  if (state === 'delete') return;
-  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].addSelection();
-  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].addSelection();
+model.fnTransl = function (act) {
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */][act]();
 };
 
-model.reduceSelection = function () {
-  if (state === 'delete') return;
-  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].reduceSelection();
-  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].reduceSelection();
-};
-
-// действия, совершаемые при state === 'add'
-model.fnTxt = function (action, args) {
-  if (state === 'delete') model.toogleState();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
-};
-
-// действия, совершаемые при state === 'delete'
-model.fnTxtDelete = function (action, args) {
-  if (state === 'add') model.toogleState();
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][action](args);
-};
-
-model.setLoadedTxtFile = function (file) {
-  // file: {name, path, content}
-  if (state === 'delete') model.setState('add');
-  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
-};
-
-////////************  Transl ************
-model.setAreaTransl = function (area) {
-  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setRoot(area);
-};
-
-model.setLoadedTranslFile = function (file) {
-  // file: {name, path, content}
-  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
-};
-
-model.fnTransl = function (act) {};
-
-///////************  Audio ************
-
-model.setLoadedAudioFile = function (file) {
-  // file: {name, path, content}
-  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].decodeFile(file);
-};
-
-model.fnAudio = function (action, args) {
+model.fnAdd = function (action, args) {
   // возможно args не понадобится
   if (state === 'delete') model.toogleState(); // если используется клавиатура
   var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
@@ -194,7 +134,7 @@ model.fnAudio = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
-model.fnEditAudio = function (action, args) {
+model.fnDelete = function (action, args) {
   // возможно args не понадобится
   //if (state === 'add') model.toogleState();  // если используется клавиатура
   if (action === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][action](args);
@@ -209,7 +149,39 @@ model.fnEditAudio = function (action, args) {
   __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
 };
 
-///////************  save/restore ************
+///////************  Selection  ************
+
+model.addSelection = function () {
+  if (state === 'delete') return;
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].addSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].addSelection();
+};
+
+model.reduceSelection = function () {
+  if (state === 'delete') return;
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].reduceSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].reduceSelection();
+};
+
+///////************    Load   **************
+
+model.setLoadedAudioFile = function (file) {
+  // file: {name, path, content}
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].decodeFile(file);
+};
+
+model.setLoadedTranslFile = function (file) {
+  // file: {name, path, content}
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
+};
+
+model.setLoadedTxtFile = function (file) {
+  // file: {name, path, content}
+  if (state === 'delete') model.setState('add');
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
+};
+
+///////************  Save/Restore ************
 
 model.save = function () {
   __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save();
@@ -352,16 +324,9 @@ controlAudio.init = function () {
   transl = document.getElementById('btns-transl');
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
-  transl.onclick = function (event) {
-    var target = event.target;
-    if (!target.hasAttribute('act')) return;
-    target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
-    var attr = target.getAttribute('act');
-    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl(attr);
-  };
-
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState); //меняем набор кнопок
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', handlerDecoded);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', handlerLoadedTransl);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
@@ -379,7 +344,7 @@ function handlerDecoded() {
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       var attr = target.getAttribute('act');
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAudio(attr);
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd(attr);
     }
   };
   intervals.onclick = function (event) {
@@ -387,7 +352,18 @@ function handlerDecoded() {
     if (target.hasAttribute('act')) {
       target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
       var attr = target.getAttribute('act');
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnEditAudio(attr);
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete(attr);
+    }
+  };
+}
+
+function handlerLoadedTransl() {
+  transl.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl(attr);
     }
   };
 }
@@ -440,7 +416,7 @@ fileAudio.init = function () {
 
 fileAudio.close = function () {
   btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', chooseFile);
+  input.removeEventListener('change', choosedFile);
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', setInfoLodedAudio);
 };
 
@@ -451,6 +427,7 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
   var path = file.path;
   var name = file.name;
 
@@ -885,7 +862,6 @@ timer = null,
 var file = { // пока не используется
   name: null,
   path: null
-  //size: null
 };
 
 var modelAudio = {
@@ -1050,6 +1026,7 @@ var modelAudio = {
     var name = file.name || localStorage.getItem('name-audio');
     var path = file.path || localStorage.getItem('path-audio');
     if (!name || !path) return;
+    console.log(name + ' ;:; ' + path);
     ipcRenderer.send('will-restore-audio', { name: name, path: path });
   }
 };
@@ -1146,6 +1123,7 @@ function setLocalStorage() {
 }
 
 var setState = function setState(state) {
+  if (!nodeSelection) return -1;
   clearNodeSelection();
   return getCountUnits();
 };
@@ -1160,8 +1138,8 @@ function clearNodeSelection() {
 
 function getCountUnits() {
   // количество уже назначеннх кусков
-  var nodes = nodeTransl.querySelectorAll('span[transl]') || [];
-  return nodes.length;
+  var nodes = nodeTransl.querySelectorAll('span[transl]');
+  return nodes ? nodes.length : 0; // возможно проверка не нужна
 }
 
 // Сохранение файла
@@ -1375,13 +1353,9 @@ function setLocalStorage() {
 /////////////************  Изменение состояния  ************************
 
 modelTxt.setState = function (state, countUnits) {
-  //let res = false;
   if (!file.name) return { _from: '0', _to: '0' };
-  //if (state !== 'add') clearNodeAdd();
   clearNodeAdd();
-  //if (state !== 'delete') clearNodeDelete();
   clearNodeDelete();
-  //if (state !== 'transl') clearNodeTranl();
   clearNodeTranl();
   if (state === 'add') return setNodeAdd();
   if (state === 'delete') return setNodeDelete();
@@ -1402,7 +1376,7 @@ function clearNodeDelete() {
 }
 
 function clearNodeTranl() {
-  if (nodeTransl) nodeDelete.removeAttribute('id');
+  if (nodeTransl) nodeTransl.removeAttribute('id');
   nodeTransl = null;
 }
 
@@ -1428,12 +1402,10 @@ function setNodeDelete() {
 }
 
 function setNodeTransl(countUnits) {
-  if (countUnits > 0) {
-    nodes = nodeTxt.querySelector('span[from]');
-    if (nodes && nodes[countUnits]) {
-      nodeTransl = nodes[countUnits];
-      nodeTransl.id = 'transl-txt';
-    }
+  var nodes = nodeTxt.querySelectorAll('span[from]');
+  if (nodes && nodes[countUnits]) {
+    nodeTransl = nodes[countUnits]; // следующий кусок, т.к. index = length - 1
+    nodeTransl.id = 'transl-txt';
   }
   return { _from: '0', _to: '0' };
 }
@@ -1569,7 +1541,6 @@ function getStartPoz() {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = webAudioAPI;
 function webAudioAPI() {
-
   var contextClass = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext;
   if (!contextClass) {
     console.log('Web Audio API недоступно');

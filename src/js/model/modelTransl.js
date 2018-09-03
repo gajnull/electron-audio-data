@@ -52,6 +52,7 @@ function setLocalStorage() {
 }
 
 const setState = (state) => {
+  if (!nodeSelection) return -1;
   clearNodeSelection();
   return getCountUnits();
 };
@@ -65,8 +66,8 @@ function clearNodeSelection() {
 }
 
 function getCountUnits() { // количество уже назначеннх кусков
-  const nodes = nodeTransl.querySelectorAll('span[transl]') || [];
-  return nodes.length;
+  const nodes = nodeTransl.querySelectorAll('span[transl]');
+  return (nodes) ? nodes.length : 0;  // возможно проверка не нужна
 }
 
 

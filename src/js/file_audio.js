@@ -19,7 +19,7 @@ fileAudio.init = function() {
 
 fileAudio.close = function() {
   btn.removeEventListener('click', clickInput);
-  input.removeEventListener('change', chooseFile);
+  input.removeEventListener('change', choosedFile);
   model.off('decodedAudio', setInfoLodedAudio);
 }
 
@@ -30,6 +30,7 @@ function clickInput() {
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
   const file = input.files[0];
+  input.value = '';  // единственный способ чтобы заново открыть тотже файл
   const path = file.path;
   const name = file.name;
 

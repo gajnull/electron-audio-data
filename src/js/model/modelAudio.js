@@ -16,12 +16,10 @@ let playing = false,  // Состояние проигрывателя - игр�
     timer = null,
     timerStop = null;
 
-
 let file = { // пока не используется
   name: null,
   path: null
-  //size: null
-}
+};
 
 
 const modelAudio = {
@@ -170,6 +168,7 @@ const modelAudio = {
     const name = file.name || localStorage.getItem('name-audio');
     const path = file.path || localStorage.getItem('path-audio');
     if (!name || !path) return;
+    console.log(name + ' ;:; ' + path);
     ipcRenderer.send('will-restore-audio', {name, path});
   }
 }
