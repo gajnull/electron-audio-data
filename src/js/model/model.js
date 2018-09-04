@@ -34,36 +34,54 @@ model.setState = (_state) => {
 
 
 
-////////************  actions ************
+////////************ state-actions ************
 
-model.fnTransl = (act) => {
-  modelTransl[act]();
-}
-
-model.fnAdd = (action, args) => { // возможно args не понадобится
-  if (state === 'delete') model.toogleState();  // если используется клавиатура
-  const res = modelAudio[action](args);
-  if (action === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
+model.fnAdd = (act, args) => { // возможно args не понадобится
+  if (state !== 'add') return;
+  if (!modelTxt[act]) return;
+  const res = modelAudio[act](args);
+  if (act === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
     const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
     if (isAdd) modelAudio.nextUnit();
   }
   modelAudio.advertPozz();
 }
 
-model.fnDelete = (action, args) => { // возможно args не понадобится
-  //if (state === 'add') model.toogleState();  // если используется клавиатура
-  if (action === "repeate") modelAudio[action](args);
-  if (action === "cleare") {
+model.fnDelete = (act, args) => { // возможно args не понадобится
+  if (state !== 'delete') return;
+  if (!modelTxt[act]) return;
+  if (act === "repeate") modelAudio[act](args);
+  if (act === "cleare") {
     const interval = modelTxt.deleteUnit();  //
     if (interval) {
       modelAudio.assignInterval(interval);
     } else {
-      model.toogleState();
+      model.setState('add');
     }
   }
   modelAudio.advertPozz();
 }
 
+model.fnTransl = (act) => {
+  if (state !== 'transl') return;
+  if (!modelTransl[act]) return;
+  modelTransl[act]();
+}
+
+
+
+
+////////************ keys-actions ************
+
+model.fnAll = (act) => {
+  if (state === 'add') {
+    model.fnAdd(act); 
+  } else if (state === 'delete') {
+    model.fnDelete(act);
+  } else if (state === 'transl') {
+    model.fnTransl(act);
+  }  
+}
 
 ///////************  Selection  ************
 

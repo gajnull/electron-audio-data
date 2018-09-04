@@ -27,7 +27,7 @@ const modelAudio = {
   decodeFile({name, path, content}) {
     api.decode(content).then(res => {
       duration = res;
-      file.name = {name, path};
+      file = {name, path};
       vent.publish('decodedAudio', {name, path});
       vent.publish('changedPoz', getPoz());
       localStorage.setItem('path-audio', path);
@@ -168,7 +168,6 @@ const modelAudio = {
     const name = file.name || localStorage.getItem('name-audio');
     const path = file.path || localStorage.getItem('path-audio');
     if (!name || !path) return;
-    console.log(name + ' ;:; ' + path);
     ipcRenderer.send('will-restore-audio', {name, path});
   }
 }

@@ -6,11 +6,11 @@ const hotKeys = {
 	init: () => {
 		setHotKey('arrowLeft', () => { model.reduceSelection(); });
 		setHotKey('arrowRight', () => { model.addSelection(); });
-    setHotKey('space', () => { model.fnAudio('tooglePlay'); });
-    setHotKey('ctrlSpace', () => { model.fnAudio('repeate'); });
-    setHotKey('shiftSpace', () => { model.fnAudio('setUnit'); });
-    setHotKey('tab', () => { model.toogleState('edit'); });
-    setHotKey('shiftTab', () => { model.toogleState('transl'); });
+    setHotKey('space', () => { model.fnAll('tooglePlay'); });
+    setHotKey('tab', () => { model.fnAll('setUnit'); });
+    setHotKey('ctrlSpace', () => { model.fnAll('repeate'); });
+   // setHotKey('shiftSpace', () => { ; });
+    //setHotKey('shiftTab', () => { ; });
  	},
 
 	close: () => {
