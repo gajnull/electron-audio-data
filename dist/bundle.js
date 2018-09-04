@@ -121,7 +121,7 @@ model.setState = function (_state) {
 model.fnAdd = function (act, args) {
   // возможно args не понадобится
   if (state !== 'add') return;
-  if (!__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][act]) return;
+  //if (!modelTxt[act]) return;
   var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][act](args);
   if (act === "setUnit" && res) {
     // res = {pozFrom, pozTo} - если выбран звуковой интервал
@@ -134,7 +134,7 @@ model.fnAdd = function (act, args) {
 model.fnDelete = function (act, args) {
   // возможно args не понадобится
   if (state !== 'delete') return;
-  if (!__WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */][act]) return;
+  //if (!modelTxt[act]) return;
   if (act === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][act](args);
   if (act === "cleare") {
     var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); //
@@ -149,13 +149,15 @@ model.fnDelete = function (act, args) {
 
 model.fnTransl = function (act) {
   if (state !== 'transl') return;
-  if (!__WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */][act]) return;
-  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */][act]();
+  //if (!modelTransl[act]) return;
+  var arg = void 0;
+  if (act === 'offer') arg = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].getSelTransl();
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */][act](arg);
 };
 
 ////////************ keys-actions ************
 
-model.fnAll = function (act) {
+model.fnKeys = function (act) {
   if (state === 'add') {
     model.fnAdd(act);
   } else if (state === 'delete') {
@@ -714,13 +716,13 @@ var hotKeys = {
       __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].addSelection();
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAll('tooglePlay');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnKeys('tooglePlay');
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAll('setUnit');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnKeys('setUnit');
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAll('repeate');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnKeys('repeate');
     });
     // setHotKey('shiftSpace', () => { ; });
     //setHotKey('shiftTab', () => { ; });
@@ -1108,7 +1110,7 @@ var setLoadedFile = function setLoadedFile(_ref) {
   nodeSelection = nodeTransl.querySelector('#selection-transl'); // метод getElementById есть только у document
   nodeBlank = nodeTransl.querySelector('#blank-transl');
 
-  file = { name: name, path: path /*, startPoz: getStartPoz()*/ };
+  file = { name: name, path: path };
   setLocalStorage();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
 
@@ -1199,6 +1201,13 @@ ipcRenderer.on('file-restored', function (event, arg) {
   modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
 });
 
+var offer = function offer(txt) {
+  var count = txt.split(/\s|<br>/).length;
+  for (var i = 0; i < count; i++) {
+    addSelection();
+  }
+};
+
 /*
 // Изменение области выделения
 modelTransl.addSelection = () => {
@@ -1267,6 +1276,7 @@ modelTransl.setStateDelete = () => {
   return { _from, _to };
 }
 
+
 function cleareSelection() {
   const current = nodeCurrent.innerHTML;
   const selection = nodeSelection.innerHTML;
@@ -1277,19 +1287,11 @@ function cleareSelection() {
 }
 */
 
-/*
-function getStartPoz() {
-  let poz = 0;
-  const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
-  return poz;
-}
-*/
-
 var modelTransl = {
   setRoot: setRoot,
   setLoadedFile: setLoadedFile,
   setState: setState,
+  offer: offer,
   save: save,
   restore: restore
 };
@@ -1536,12 +1538,20 @@ modelTxt.deleteUnit = function () {
   return { _from: _from, _to: _to };
 };
 
+modelTxt.getSelTransl = function () {
+  return nodeTransl ? nodeTransl.innerHTML : null;
+};
+
 function getStartPoz() {
   var poz = 0;
   var span = nodeAdd.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
   return poz;
-}
+};
+
+// для корректной работы model.fnAdd()
+//modelTxt.tooglePlay = () => {};
+
 
 /* harmony default export */ __webpack_exports__["a"] = (modelTxt);
 
@@ -1657,7 +1667,7 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 

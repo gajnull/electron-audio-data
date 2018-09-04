@@ -6,9 +6,9 @@ const hotKeys = {
 	init: () => {
 		setHotKey('arrowLeft', () => { model.reduceSelection(); });
 		setHotKey('arrowRight', () => { model.addSelection(); });
-    setHotKey('space', () => { model.fnAll('tooglePlay'); });
-    setHotKey('tab', () => { model.fnAll('setUnit'); });
-    setHotKey('ctrlSpace', () => { model.fnAll('repeate'); });
+    setHotKey('space', () => { model.fnKeys('tooglePlay'); });
+    setHotKey('tab', () => { model.fnKeys('setUnit'); });
+    setHotKey('ctrlSpace', () => { model.fnKeys('repeate'); });
    // setHotKey('shiftSpace', () => { ; });
     //setHotKey('shiftTab', () => { ; });
  	},

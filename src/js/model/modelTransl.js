@@ -23,7 +23,7 @@ const setLoadedFile = ({name, path, content}) => {
   nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
   nodeBlank = nodeTransl.querySelector('#blank-transl');
 
-  file = {name, path /*, startPoz: getStartPoz()*/ };
+  file = {name, path };
   setLocalStorage();
   vent.publish('loadedTransl', file);
 
@@ -114,6 +114,16 @@ const restore = () => {
     modelTransl.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
   })
 
+
+const offer = (txt) => {
+  const count = txt.split(/\s|<br>/).length;
+  for (var i = 0; i < count; i++) {
+    addSelection();
+  }
+}
+
+
+
 /*
 // Изменение области выделения
 modelTransl.addSelection = () => {
@@ -183,6 +193,7 @@ modelTransl.setStateDelete = () => {
   return { _from, _to };
 }
 
+
 function cleareSelection() {
   const current = nodeCurrent.innerHTML;
   const selection = nodeSelection.innerHTML;
@@ -193,19 +204,12 @@ function cleareSelection() {
 }
 */
 
-/*
-function getStartPoz() {
-  let poz = 0;
-  const span = nodeSelection.previousElementSibling;
-  if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
-  return poz;
-}
-*/
 
 const modelTransl = {
   setRoot,
   setLoadedFile,
   setState,
+  offer,
   save,
   restore
 };

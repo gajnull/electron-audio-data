@@ -226,12 +226,21 @@ modelTxt.deleteUnit = () => {
   return { _from, _to };
 }
 
+modelTxt.getSelTransl = () => {
+  return (nodeTransl) ? nodeTransl.innerHTML : null;
+}
+
+
 function getStartPoz() {
   let poz = 0;
   const span = nodeAdd.previousElementSibling;
   if (span && span.hasAttribute('to')) poz = + span.getAttribute('to');
   return poz;
-}
+};
+
+// для корректной работы model.fnAdd()
+//modelTxt.tooglePlay = () => {};
+
 
 
 export default modelTxt;
