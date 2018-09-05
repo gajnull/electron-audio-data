@@ -63,7 +63,7 @@ model.fnDelete = (act, args) => { // возможно args не понадоби
 model.fnTransl = (act) => {
   if (state !== 'transl') return;
   let arg;
-  if (act === 'offer') arg = modelTxt.getSelTransl(); 
+  if (act === 'offer') arg = modelTxt.getSelTransl();
   const countUnits = modelTransl[act](arg);
   if (countUnits !== -1 && act === 'setUnit') modelTxt.setSelectionTransl(countUnits);
 }

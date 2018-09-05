@@ -8,7 +8,7 @@ const hotKeys = {
 		setHotKey('arrowRight', () => { model.addSelection(); });
     setHotKey('space', handlerSpace);
     setHotKey('tab',handlerTab);
-    setHotKey('ctrlSpace', () => { model.fnKeys('repeate'); });
+    setHotKey('ctrlSpace', handlerCtrlSpace);
    // setHotKey('shiftSpace', () => { ; });
     //setHotKey('shiftTab', () => { ; });
  	},
@@ -18,23 +18,23 @@ const hotKeys = {
 	}
 };
 
-// *** срабатывать будет только та функция в обработчике, которая соответствует state 
+// *** срабатывать будет только та функция в обработчике, которая соответствует state
 
-function handlerSpace() { 
+function handlerSpace() {
   model.fnAdd('tooglePlay');
-  model.fnDelete('tooglePlay'); // as well as 'ctrlSpace' 
+  model.fnDelete('repeate'); // as well as 'ctrlSpace'
   model.fnTransl('offer');
 }
 
-function handlerTab() { 
+function handlerTab() {
   model.fnAdd('setUnit');
-  model.fnDelete('cleare'); 
+  model.fnDelete('cleare');
   model.fnTransl('setUnit');
 }
 
-function handlerCtrlSpace() { 
+function handlerCtrlSpace() {
   model.fnAdd('repeate');
-  model.fnDelete('repeate'); 
+  model.fnDelete('repeate');
 }
 
 

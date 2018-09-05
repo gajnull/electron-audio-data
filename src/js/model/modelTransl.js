@@ -67,8 +67,7 @@ function clearNodeSelection() {
 }
 
 function getCountUnits() { // количество уже назначеннх кусков
-  const nodes = nodeTransl.querySelectorAll('span[transl]');
-  console.dir(nodes);
+  const nodes = nodeTransl.querySelectorAll('span[transl="true"]');
   return (nodes) ? nodes.length : 0;  // возможно проверка не нужна
 }
 
@@ -159,7 +158,7 @@ const setUnit = () => { // если вернёт -1, то порция пере�
   let selection = nodeSelection.innerHTML;
   if (!selection) return -1;
   nodeSelection.removeAttribute('id');
-  nodeSelection.setAttribute('trasl', 'true');
+  nodeSelection.setAttribute('transl', 'true');
   nodeSelection = document.createElement('span');
   nodeSelection.id = 'selection-transl';
   nodeBlank.before(nodeSelection);

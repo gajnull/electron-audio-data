@@ -23,7 +23,7 @@ fileTxt.close = function() {
   input.removeEventListener('change', choosedFile);
   model.off('loadedLngt', setInfoLodedLngt);
   model.off('savedLngt', setInfoLodedLngt);
-}                                         
+}
 
 function clickInput() {
   input.click();

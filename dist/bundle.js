@@ -703,9 +703,7 @@ var hotKeys = {
     });
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', handlerSpace);
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', handlerTab);
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', function () {
-      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnKeys('repeate');
-    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', handlerCtrlSpace);
     // setHotKey('shiftSpace', () => { ; });
     //setHotKey('shiftTab', () => { ; });
   },
@@ -715,11 +713,11 @@ var hotKeys = {
   }
 };
 
-// *** срабатывать будет только та функция в обработчике, которая соответствует state 
+// *** срабатывать будет только та функция в обработчике, которая соответствует state
 
 function handlerSpace() {
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd('tooglePlay');
-  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete('tooglePlay'); // as well as 'ctrlSpace' 
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete('repeate'); // as well as 'ctrlSpace'
   __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl('offer');
 }
 
@@ -934,6 +932,7 @@ var modelAudio = {
     if (playing) return;
     if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
+    console.log(pozFrom, ' , ', pozTo);
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();
@@ -1155,8 +1154,7 @@ function clearNodeSelection() {
 
 function getCountUnits() {
   // количество уже назначеннх кусков
-  var nodes = nodeTransl.querySelectorAll('span[transl]');
-  console.dir(nodes);
+  var nodes = nodeTransl.querySelectorAll('span[transl="true"]');
   return nodes ? nodes.length : 0; // возможно проверка не нужна
 }
 
@@ -1249,7 +1247,7 @@ var setUnit = function setUnit() {
   var selection = nodeSelection.innerHTML;
   if (!selection) return -1;
   nodeSelection.removeAttribute('id');
-  nodeSelection.setAttribute('trasl', 'true');
+  nodeSelection.setAttribute('transl', 'true');
   nodeSelection = document.createElement('span');
   nodeSelection.id = 'selection-transl';
   nodeBlank.before(nodeSelection);
@@ -1305,9 +1303,7 @@ modelTxt.setLoadedFile = function (_ref) {
       content = _ref.content;
 
   txtToLngt();
-  nodeTxt.innerHTML = content;
-  nodeAdd = nodeTxt.querySelector('#add-txt'); // метод getElementById есть только у document
-  nodeBlank = nodeTxt.querySelector('#blank-txt');
+  initNodes();
 
   file = { name: name, path: path };
   setLocalStorage();
@@ -1327,6 +1323,22 @@ modelTxt.setLoadedFile = function (_ref) {
     //Добавляем тэги для начальной работы с текстом
     s = '<main-info></main-info>\n         <span id="add-txt"></span>\n         <span id="blank-txt">&nbsp&nbsp' + s + '</span>';
     content = s;
+  }
+
+  function initNodes() {
+    nodeTxt.innerHTML = content;
+    nodeAdd = nodeTxt.querySelector('#add-txt'); // метод getElementById есть только у document
+    nodeBlank = nodeTxt.querySelector('#blank-txt');
+    if (!nodeBlank) {
+      nodeBlank = document.createElement('span');
+      nodeBlank.id = 'blank-txt';
+      nodeTxt.appendChild(nodeBlank);
+    }
+    if (!nodeAdd) {
+      nodeAdd = document.createElement('span');
+      nodeAdd.id = 'add-txt';
+      nodeBlank.before(nodeAdd);
+    }
   }
 };
 
@@ -1646,7 +1658,7 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 

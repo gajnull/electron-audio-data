@@ -20,9 +20,7 @@ modelTxt.setRoot = (root) => {
 
 modelTxt.setLoadedFile = ({name, path, content}) => {
   txtToLngt();
-  nodeTxt.innerHTML = content;
-  nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
-  nodeBlank = nodeTxt.querySelector('#blank-txt');
+  initNodes();
 
   file = {name, path};
   setLocalStorage();
@@ -44,6 +42,22 @@ modelTxt.setLoadedFile = ({name, path, content}) => {
          <span id="add-txt"></span>
          <span id="blank-txt">&nbsp&nbsp${s}</span>`;
     content = s;
+  }
+
+  function initNodes() {
+    nodeTxt.innerHTML = content;
+    nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
+    nodeBlank = nodeTxt.querySelector('#blank-txt');
+    if (!nodeBlank) {
+      nodeBlank = document.createElement('span');
+      nodeBlank.id = 'blank-txt';
+      nodeTxt.appendChild(nodeBlank);
+    }
+    if (!nodeAdd) {
+      nodeAdd = document.createElement('span');
+      nodeAdd.id = 'add-txt';
+      nodeBlank.before(nodeAdd);
+    }
   }
 
 }
@@ -200,7 +214,7 @@ modelTxt.setSelectionTransl = (countUnits) => {
   console.log(countUnits);
   if (!file.name) return;
   clearNodeTranl();
-  setNodeTransl(countUnits);  
+  setNodeTransl(countUnits);
 }
 
 // Установка аудиоинтервала в выделеный участок
