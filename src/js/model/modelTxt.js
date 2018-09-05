@@ -196,6 +196,13 @@ modelTxt.reduceSelection = () => {
   }
 }
 
+modelTxt.setSelectionTransl = (countUnits) => {
+  console.log(countUnits);
+  if (!file.name) return;
+  clearNodeTranl();
+  setNodeTransl(countUnits);  
+}
+
 // Установка аудиоинтервала в выделеный участок
 modelTxt.setUnit = ({ pozFrom, pozTo }) => {
   const selection = nodeAdd.innerHTML;

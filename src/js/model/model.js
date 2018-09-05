@@ -38,7 +38,6 @@ model.setState = (_state) => {
 
 model.fnAdd = (act, args) => { // возможно args не понадобится
   if (state !== 'add') return;
-  //if (!modelTxt[act]) return;
   const res = modelAudio[act](args);
   if (act === "setUnit" && res) {  // res = {pozFrom, pozTo} - если выбран звуковой интервал
     const isAdd = modelTxt.setUnit(res);  // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
@@ -49,7 +48,6 @@ model.fnAdd = (act, args) => { // возможно args не понадобит�
 
 model.fnDelete = (act, args) => { // возможно args не понадобится
   if (state !== 'delete') return;
-  //if (!modelTxt[act]) return;
   if (act === "repeate") modelAudio[act](args);
   if (act === "cleare") {
     const interval = modelTxt.deleteUnit();  //
@@ -64,26 +62,13 @@ model.fnDelete = (act, args) => { // возможно args не понадоби
 
 model.fnTransl = (act) => {
   if (state !== 'transl') return;
-  //if (!modelTransl[act]) return;
   let arg;
-  if (act === 'offer') arg = modelTxt.getSelTransl();
-  modelTransl[act](arg);
+  if (act === 'offer') arg = modelTxt.getSelTransl(); 
+  const countUnits = modelTransl[act](arg);
+  if (countUnits !== -1 && act === 'setUnit') modelTxt.setSelectionTransl(countUnits);
 }
 
 
-
-
-////////************ keys-actions ************
-
-model.fnKeys = (act) => {
-  if (state === 'add') {
-    model.fnAdd(act);
-  } else if (state === 'delete') {
-    model.fnDelete(act);
-  } else if (state === 'transl') {
-    model.fnTransl(act);
-  }
-}
 
 ///////************  Selection  ************
 
