@@ -1,5 +1,4 @@
 import vent from './vent';
-import { log } from 'util';
 const {ipcRenderer} = window.require('electron');
 
 
@@ -20,6 +19,8 @@ const setRoot = (root) => {
 const setLoadedFile = ({name, path, content}) => {
   let s = content;
   s = txtToTransl(s);
+  initNodes(s);
+
   nodeTransl.innerHTML = s;
   nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
   nodeBlank = nodeTransl.querySelector('#blank-transl');
@@ -47,6 +48,24 @@ const setLoadedFile = ({name, path, content}) => {
 
 }
 
+function initNodes(str) {
+  nodeTransl.innerHTML = str;
+  nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
+  nodeBlank = nodeTransl.querySelector('#blank-transl');
+
+  // Если открываем полностью сделанный файл
+  if (!nodeBlank) {
+    nodeBlank = document.createElement('span');
+    nodeBlank.id = 'blank-transl';
+    nodeTransl.appendChild(nodeBlank);
+  }
+  if (!nodeSelection) {
+    nodeSelection = document.createElement('span');
+    nodeSelection.id = 'add-txt';
+    nodeBlank.before(nodeSelection);
+  }
+}
+
 function setLocalStorage() {
   localStorage.setItem('path-transl', file.path);
   localStorage.setItem('name-transl', file.name);
@@ -66,6 +85,16 @@ function clearNodeSelection() {
   }
 }
 
+function deleteNodesSelectionBlank() {
+  if (!nodeBlank) return;
+  if((nodeBlank.innerHTML).trim() === '') {
+    nodeBlank.remove();
+    if (nodeSelection) nodeSelection.remove();
+  }
+}
+
+
+
 function getCountUnits() { // количество уже назначеннх кусков
   const nodes = nodeTransl.querySelectorAll('span[transl="true"]');
   return (nodes) ? nodes.length : 0;  // возможно проверка не нужна
@@ -76,12 +105,14 @@ function getCountUnits() { // количество уже назначеннх �
 const save = () => {
   if (!file.name) return;
   clearNodeSelection();
+  deleteNodesSelectionBlank();
   const content = nodeTransl.innerHTML;
   if (!content) return;
   const path =  /\.transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.transl');
   const name =  /\.transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.transl');
 
   ipcRenderer.send('will-save-file', {path, name, content, kind: 'transl'});
+  initNodes(content); // в deleteNodesSelectionBlank могли удалить nodeSelection и nodeBlank 
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {

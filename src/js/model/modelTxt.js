@@ -20,7 +20,7 @@ modelTxt.setRoot = (root) => {
 
 modelTxt.setLoadedFile = ({name, path, content}) => {
   txtToLngt();
-  initNodes();
+  initNodes(content);
 
   file = {name, path};
   setLocalStorage();
@@ -44,22 +44,23 @@ modelTxt.setLoadedFile = ({name, path, content}) => {
     content = s;
   }
 
-  function initNodes() {
-    nodeTxt.innerHTML = content;
-    nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
-    nodeBlank = nodeTxt.querySelector('#blank-txt');
-    if (!nodeBlank) {
-      nodeBlank = document.createElement('span');
-      nodeBlank.id = 'blank-txt';
-      nodeTxt.appendChild(nodeBlank);
-    }
-    if (!nodeAdd) {
-      nodeAdd = document.createElement('span');
-      nodeAdd.id = 'add-txt';
-      nodeBlank.before(nodeAdd);
-    }
-  }
+}
 
+function initNodes(str) {
+  nodeTxt.innerHTML = str;
+  nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
+  nodeBlank = nodeTxt.querySelector('#blank-txt');
+  // Если открываем полностью сделанный файл
+  if (!nodeBlank) {
+    nodeBlank = document.createElement('span');
+    nodeBlank.id = 'blank-txt';
+    nodeTxt.appendChild(nodeBlank);
+  }
+  if (!nodeAdd) {
+    nodeAdd = document.createElement('span');
+    nodeAdd.id = 'add-txt';
+    nodeBlank.before(nodeAdd);
+  }
 }
 
 function setLocalStorage() {
@@ -86,6 +87,14 @@ function clearNodeAdd() {
   if(selection) {
     nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
     nodeAdd.innerHTML = '';
+  }
+}
+
+function deleteNodesAddBlank() {
+  if (!nodeBlank) return;
+  if((nodeBlank.innerHTML).trim() === '') {
+    nodeBlank.remove();
+    if (nodeAdd) nodeAdd.remove();
   }
 }
 
@@ -137,12 +146,14 @@ modelTxt.save = () => {
   clearNodeAdd();
   clearNodeDelete();
   clearNodeTranl();
+  deleteNodesAddBlank();
   const content = nodeTxt.innerHTML;
   if (!content) return;
   const path =  /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.lngt');
   const name =  /\.lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.lngt');
 
   ipcRenderer.send('will-save-file', {path, name, content, kind: 'lngt'});
+  initNodes(content);
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
@@ -211,7 +222,6 @@ modelTxt.reduceSelection = () => {
 }
 
 modelTxt.setSelectionTransl = (countUnits) => {
-  console.log(countUnits);
   if (!file.name) return;
   clearNodeTranl();
   setNodeTransl(countUnits);
