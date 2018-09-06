@@ -21,10 +21,6 @@ const setLoadedFile = ({name, path, content}) => {
   s = txtToTransl(s);
   initNodes(s);
 
-  nodeTransl.innerHTML = s;
-  nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
-  nodeBlank = nodeTransl.querySelector('#blank-transl');
-
   file = {name, path };
   setLocalStorage();
   vent.publish('loadedTransl', file);
@@ -61,9 +57,10 @@ function initNodes(str) {
   }
   if (!nodeSelection) {
     nodeSelection = document.createElement('span');
-    nodeSelection.id = 'add-txt';
+    nodeSelection.id = 'selection-transl';
     nodeBlank.before(nodeSelection);
   }
+
 }
 
 function setLocalStorage() {
@@ -87,7 +84,8 @@ function clearNodeSelection() {
 
 function deleteNodesSelectionBlank() {
   if (!nodeBlank) return;
-  if((nodeBlank.innerHTML).trim() === '') {
+  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
+  if (str === '') {
     nodeBlank.remove();
     if (nodeSelection) nodeSelection.remove();
   }
@@ -112,7 +110,7 @@ const save = () => {
   const name =  /\.transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.transl');
 
   ipcRenderer.send('will-save-file', {path, name, content, kind: 'transl'});
-  initNodes(content); // в deleteNodesSelectionBlank могли удалить nodeSelection и nodeBlank 
+  initNodes(content); // в deleteNodesSelectionBlank могли удалить nodeSelection и nodeBlank
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {

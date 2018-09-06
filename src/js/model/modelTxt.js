@@ -92,7 +92,8 @@ function clearNodeAdd() {
 
 function deleteNodesAddBlank() {
   if (!nodeBlank) return;
-  if((nodeBlank.innerHTML).trim() === '') {
+  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
+  if (str === '') {
     nodeBlank.remove();
     if (nodeAdd) nodeAdd.remove();
   }
