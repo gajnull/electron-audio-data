@@ -10,7 +10,9 @@ const evs = {
   changeStateAudio: [], //publish - {playing}
   //transl events
   loadedTransl: [], //publish - {name, path, content} 
-  savedTransl: [] //publish - {name, path}   
+  savedTransl: [], //publish - {name, path}   
+  // notifications
+  popup: [] //publish - {msg}
 }
 
 const vent = {

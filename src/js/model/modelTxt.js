@@ -19,17 +19,15 @@ modelTxt.setRoot = (root) => {
 };
 
 modelTxt.setLoadedFile = ({name, path, content}) => {
-  txtToLngt();
-  initNodes(content);
-
+  let str = txtToLngt(content);
+  initNodes(str)
   file = {name, path};
-  setLocalStorage();
   vent.publish('loadedLngt', {name, path, startPoz: getStartPoz()});
 
-  function txtToLngt() {
-    if (/\.lngt$/.test(name)) return;
+  function txtToLngt(str) {
+    if (/\._lngt$/.test(name)) return;
 
-    let s = content;
+    let s = str;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -41,7 +39,7 @@ modelTxt.setLoadedFile = ({name, path, content}) => {
     s = `<main-info></main-info>
          <span id="add-txt"></span>
          <span id="blank-txt">&nbsp&nbsp${s}</span>`;
-    content = s;
+    return s;
   }
 
 }
@@ -50,7 +48,7 @@ function initNodes(str) {
   nodeTxt.innerHTML = str;
   nodeAdd = nodeTxt.querySelector('#add-txt');  // метод getElementById есть только у document
   nodeBlank = nodeTxt.querySelector('#blank-txt');
-  // Если открываем полностью сделанный файл
+  /*
   if (!nodeBlank) {
     nodeBlank = document.createElement('span');
     nodeBlank.id = 'blank-txt';
@@ -60,12 +58,7 @@ function initNodes(str) {
     nodeAdd = document.createElement('span');
     nodeAdd.id = 'add-txt';
     nodeBlank.before(nodeAdd);
-  }
-}
-
-function setLocalStorage() {
-  localStorage.setItem('path-lngt', file.path);
-  localStorage.setItem('name-lngt', file.name);
+  }*/
 }
 
 
@@ -90,14 +83,14 @@ function clearNodeAdd() {
   }
 }
 
-function deleteNodesAddBlank() {
+/*function deleteNodesAddBlank() {
   if (!nodeBlank) return;
   const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
   if (str === '') {
     nodeBlank.remove();
     if (nodeAdd) nodeAdd.remove();
   }
-}
+}*/
 
 function clearNodeDelete() {
   if (nodeDelete) nodeDelete.removeAttribute('id');
@@ -147,20 +140,22 @@ modelTxt.save = () => {
   clearNodeAdd();
   clearNodeDelete();
   clearNodeTranl();
-  deleteNodesAddBlank();
   const content = nodeTxt.innerHTML;
   if (!content) return;
-  const path =  /\.lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.lngt');
-  const name =  /\.lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.lngt');
+  const path =  /\._lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'_.lngt');
+  const name =  /\._lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'_.lngt');
 
-  ipcRenderer.send('will-save-file', {path, name, content, kind: 'lngt'});
-  initNodes(content);
+  ipcRenderer.send('will-save-file', {path, name, content, kind: '_lngt'});
+}
+
+modelTxt.make = () => {
+  ////
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    if (arg.kind !== 'lngt') return;  // {err, path, name, kind}
+    if (arg.kind !== '_lngt') return;  // {err, path, name, kind}
     if (arg.err) {
-      console.log('error in saving *.lngt:');  console.log(arg.err);
+      console.log('error in saving *._lngt:');  console.log(arg.err);
       return;
     }
     file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
@@ -169,22 +164,27 @@ modelTxt.save = () => {
     vent.publish('savedLngt', file);
   });
 
+  function setLocalStorage() {
+    localStorage.setItem('path-lngt', file.path);
+    localStorage.setItem('name-lngt', file.name);
+  }
+
 modelTxt.restore = () => {
-  const name = file.name || localStorage.getItem('name-lngt');
-  const path = file.path || localStorage.getItem('path-lngt');
+  const name = localStorage.getItem('name-lngt');
+  const path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
-  ipcRenderer.send('will-restore-file', {name, path, kind: 'lngt'});
+  ipcRenderer.send('will-restore-file', {name, path, kind: '_lngt'});
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
     //arg = {name, path, content, kind, err};
-    if (arg.kind !== 'lngt') return;
+    if (arg.kind !== '_lngt') return;
     if (arg.err) {
-      console.log('error in restoring *.lngt:');  console.log(arg.err);
+      console.log('error in restoring *._lngt:');  console.log(arg.err);
       return;
     }
     const {name, path, content} = arg;
-    modelTxt.setLoadedFile({name, path, content}); // здесь сами установятся file и localStorage
+    modelTxt.setLoadedFile({name, path, content}); // здесь сами установится file
   })
 
 
@@ -270,8 +270,6 @@ function getStartPoz() {
   return poz;
 };
 
-// для корректной работы model.fnAdd()
-//modelTxt.tooglePlay = () => {};
 
 
 

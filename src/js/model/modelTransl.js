@@ -22,11 +22,10 @@ const setLoadedFile = ({name, path, content}) => {
   initNodes(s);
 
   file = {name, path };
-  setLocalStorage();
   vent.publish('loadedTransl', file);
 
   function txtToTransl(_s) {
-    if (/\.transl$/.test(name)) return _s;
+    if (/\._transl$/.test(name)) return _s;
     let s = _s;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
@@ -49,7 +48,7 @@ function initNodes(str) {
   nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
   nodeBlank = nodeTransl.querySelector('#blank-transl');
 
-  // Если открываем полностью сделанный файл
+  /*
   if (!nodeBlank) {
     nodeBlank = document.createElement('span');
     nodeBlank.id = 'blank-transl';
@@ -59,7 +58,7 @@ function initNodes(str) {
     nodeSelection = document.createElement('span');
     nodeSelection.id = 'selection-transl';
     nodeBlank.before(nodeSelection);
-  }
+  }*/
 
 }
 
@@ -82,6 +81,7 @@ function clearNodeSelection() {
   }
 }
 
+/*
 function deleteNodesSelectionBlank() {
   if (!nodeBlank) return;
   const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
@@ -90,7 +90,7 @@ function deleteNodesSelectionBlank() {
     if (nodeSelection) nodeSelection.remove();
   }
 }
-
+*/
 
 
 function getCountUnits() { // количество уже назначеннх кусков
@@ -103,14 +103,16 @@ function getCountUnits() { // количество уже назначеннх �
 const save = () => {
   if (!file.name) return;
   clearNodeSelection();
-  deleteNodesSelectionBlank();
   const content = nodeTransl.innerHTML;
   if (!content) return;
-  const path =  /\.transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'.transl');
-  const name =  /\.transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'.transl');
+  const path =  /\._transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'._transl');
+  const name =  /\._transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'._transl');
 
   ipcRenderer.send('will-save-file', {path, name, content, kind: 'transl'});
-  initNodes(content); // в deleteNodesSelectionBlank могли удалить nodeSelection и nodeBlank
+}
+
+const make = () => {
+  ////
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
@@ -127,8 +129,8 @@ const save = () => {
 
 // Восстановление файла
 const restore = () => {
-  const name = file.name || localStorage.getItem('name-transl');
-  const path = file.path || localStorage.getItem('path-transl');
+  const name = localStorage.getItem('name-transl');
+  const path =localStorage.getItem('path-transl');
   if (!name || !path) return;
   ipcRenderer.send('will-restore-file', {name, path, kind: 'transl'});
 }
@@ -204,6 +206,7 @@ const modelTransl = {
   reduceSelection,
   setUnit,
   save,
+  make,
   restore
 };
 

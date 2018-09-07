@@ -1,1 +1,2312 @@
-!function(e){function t(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,t),o.l=!0,o.exports}var n={};t.m=e,t.c=n,t.i=function(e){return e},t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{configurable:!1,enumerable:!0,get:r})},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},t.p="",t(t.s=3)}([function(e,t,n){"use strict";var r=n(1),o=n(12),a=n(14),i=n(13),l={on:r.a.on,off:r.a.off},s="add";r.a.on("loadedLngt",function(e){var t=e.startPoz;o.a.setStartPoz(t)}),l.setArea=function(e){a.a.setRoot(e)},l.setAreaTransl=function(e){i.a.setRoot(e)},l.setState=function(e){if(o.a.stop(),e!==s){var t=i.a.setState(e);if("transl"!==e||-1!==t){var n=a.a.setState(e,t);o.a.setPozz(n),s=e,r.a.publish("changeState",{state:s})}}},l.fnAdd=function(e,t){if("add"===s){var n=o.a[e](t);if("setUnit"===e&&n){a.a.setUnit(n)&&o.a.nextUnit()}o.a.advertPozz()}},l.fnDelete=function(e,t){if("delete"===s){if("repeate"===e&&o.a[e](t),"cleare"===e){var n=a.a.deleteUnit();n?o.a.assignInterval(n):l.setState("add")}o.a.advertPozz()}},l.fnTransl=function(e){if("transl"===s){var t=void 0;"offer"===e&&(t=a.a.getSelTransl());var n=i.a[e](t);-1!==n&&"setUnit"===e&&a.a.setSelectionTransl(n)}},l.addSelection=function(){"delete"!==s&&("add"===s&&a.a.addSelection(),"transl"===s&&i.a.addSelection())},l.reduceSelection=function(){"delete"!==s&&("add"===s&&a.a.reduceSelection(),"transl"===s&&i.a.reduceSelection())},l.setLoadedAudioFile=function(e){o.a.decodeFile(e)},l.setLoadedTranslFile=function(e){i.a.setLoadedFile(e)},l.setLoadedTxtFile=function(e){"delete"===s&&l.setState("add"),a.a.setLoadedFile(e)},l.save=function(){a.a.save(),i.a.save()},l.restore=function(){a.a.restore(),i.a.restore(),o.a.restore()},t.a=l},function(e,t,n){"use strict";var r={changeState:[],loadedLngt:[],savedLngt:[],decodedAudio:[],changedPoz:[],changeStateAudio:[],loadedTransl:[],savedTransl:[]},o={on:function(e,t){e in r?r[e].push(t):console.log("ошибка в vent.on - события "+e+" нет")},off:function(e,t){e in r?r[e]=r[e].filter(function(e){return e!==t}):console.log("ошибка в vent.off - события "+e+" нет")},publish:function(e,t){e in r?r[e].forEach(function(e){e(t)}):console.log("ошибка в vent.publish - события "+e+" нет")}};o.dispatch=o.publish,t.a=o},function(e,t,n){"use strict";function r(){a.a.init(),i.a.init(),s.a.init(),l.a.init(),c.a.init(),d.a.init(),u.a.init(),f.a.init()}t.a=r;var o=n(19),a=(n.n(o),n(0),n(9)),i=n(8),l=n(6),s=n(16),c=n(5),u=n(4),f=n(10),d=n(7)},function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=n(2);n.i(r.a)()},function(e,t,n){"use strict";function r(){c.onclick=function(e){var t=e.target;if(t.hasAttribute("act")){t.blur();var n=t.getAttribute("act");l.a.fnAdd(n)}},u.onclick=function(e){var t=e.target;if(t.hasAttribute("act")){t.blur();var n=t.getAttribute("act");l.a.fnDelete(n)}}}function o(){f.onclick=function(e){var t=e.target;if(t.hasAttribute("act")){t.blur();var n=t.getAttribute("act");l.a.fnTransl(n)}}}function a(e){var t=e.playing;d.innerHTML=t?"Stop":"Play"}function i(e){var t=e.state;c.style.display="add"===t?"flex":"none",u.style.display="delete"===t?"flex":"none",f.style.display="transl"===t?"flex":"none"}var l=n(0),s={},c=void 0,u=void 0,f=void 0,d=void 0;s.init=function(){c=document.getElementById("btns"),u=document.getElementById("btns-intervals"),f=document.getElementById("btns-transl"),d=c.querySelector('button[act="tooglePlay"]'),l.a.on("changeState",i),l.a.on("decodedAudio",r),l.a.on("loadedTransl",o),l.a.on("changeStateAudio",a)},s.close=function(){l.a.off("decodedAudio",r),l.a.off("changeStateAudio",a),l.a.off("changeState",i),c.onclick="",c=null},t.a=s},function(e,t,n){"use strict";function r(){c.click()}function o(){function e(e){var t=e.target.result;i.a.setLoadedAudioFile({name:o,path:r,content:t})}function t(e){"NotReadableError"==e.target.error.name&&(s.innerHTML="Выберите другой звуковой файл")}if(0!==c.files.length){var n=c.files[0];c.value="";var r=n.path,o=n.name;s.innerHTML="loding...";var a=new FileReader;a.readAsArrayBuffer(n),a.onload=e,a.onerror=t}}function a(e){var t=e.name,n=e.path;s.innerHTML=t,s.setAttribute("title",n)}var i=n(0),l={},s=void 0,c=void 0;l.init=function(){s=document.getElementById("file-audio"),c=document.getElementById("input-audio"),s.addEventListener("click",r),c.addEventListener("change",o),i.a.on("decodedAudio",a)},l.close=function(){s.removeEventListener("click",r),c.removeEventListener("change",o),i.a.off("decodedAudio",a)},t.a=l},function(e,t,n){"use strict";function r(e){var t=e.target.getAttribute("state");t&&a.a.setState(t)}function o(e){var t=e.state;u.classList.remove("current"),u=c.querySelector("[state="+t+"]"),u.classList.add("current")}var a=n(0),i={},l=void 0,s=void 0,c=void 0,u=void 0;i.init=function(){l=document.querySelector('#btns-files-state .btns-file button[act="save"]'),s=document.querySelector('#btns-files-state .btns-file button[act="restore"]'),c=document.getElementById("btns-state"),u=c.querySelector(".current"),l.addEventListener("click",a.a.save),s.addEventListener("click",a.a.restore),c.addEventListener("click",r),a.a.on("changeState",o)},i.close=function(){l.removeEventListener("click",a.a.save),s.removeEventListener("click",a.a.restore),c.removeEventListener("click",r),a.a.off("changeState",o),l=s=c=btnCurrent=null},t.a=i},function(e,t,n){"use strict";function r(){s.click()}function o(){function e(e){var t=e.target.result;i.a.setLoadedTranslFile({name:o,path:r,content:t})}function t(e){"NotReadableError"==e.target.error.name&&(l.innerHTML="Выберите другой текстовой файл")}if(0!==s.files.length){var n=s.files[0];s.value="";var r=n.path,o=n.name;l.innerHTML="loding...";var a=new FileReader;a.readAsText(n),a.onload=e,a.onerror=t}}function a(e){var t=e.path,n=e.name;l.innerHTML=n,l.setAttribute("title",t)}var i=n(0),l=void 0,s=void 0,c=function(){l=document.getElementById("file-transl"),s=document.getElementById("input-transl"),l.addEventListener("click",r),s.addEventListener("change",o),i.a.on("loadedTransl",a),i.a.on("savedTransl",a)},u=function(){l.removeEventListener("click",r),s.removeEventListener("change",o),i.a.off("loadedTransl",a),i.a.off("savedTransl",a)},f={init:c,close:u};t.a=f},function(e,t,n){"use strict";function r(){c.click()}function o(){function e(e){var t=e.target.result;i.a.setLoadedTxtFile({name:o,path:r,content:t})}function t(e){"NotReadableError"==e.target.error.name&&(s.innerHTML="Выберите другой текстовой файл")}if(0!==c.files.length){var n=c.files[0];c.value="";var r=n.path,o=n.name;s.innerHTML="loding...";var a=new FileReader;a.readAsText(n),a.onload=e,a.onerror=t}}function a(e){var t=e.path,n=e.name;s.innerHTML=n,s.setAttribute("title",t)}var i=n(0),l={},s=void 0,c=void 0;l.init=function(){s=document.getElementById("file-txt"),c=document.getElementById("input-txt"),s.addEventListener("click",r),c.addEventListener("change",o),i.a.on("loadedLngt",a),i.a.on("savedLngt",a)},l.close=function(){s.removeEventListener("click",r),c.removeEventListener("change",o),i.a.off("loadedLngt",a),i.a.off("savedLngt",a)},t.a=l},function(e,t,n){"use strict";function r(){i.a.fnAdd("tooglePlay"),i.a.fnDelete("repeate"),i.a.fnTransl("offer")}function o(){i.a.fnAdd("setUnit"),i.a.fnDelete("cleare"),i.a.fnTransl("setUnit")}function a(){i.a.fnAdd("repeate"),i.a.fnDelete("repeate")}var i=n(0),l=n(11),s={init:function(){n.i(l.a)("arrowLeft",function(){i.a.reduceSelection()}),n.i(l.a)("arrowRight",function(){i.a.addSelection()}),n.i(l.a)("space",r),n.i(l.a)("tab",o),n.i(l.a)("ctrlSpace",a)},close:function(){n.i(l.a)("clear")}};t.a=s},function(e,t,n){"use strict";function r(e){var t=e.pozCurrent,n=void 0===t?0:t,r=e.duration,o=void 0===r?0:r,a=e.pozMin,l=void 0===a?0:a,s=e.pozFrom,c=void 0===s?0:s,u=e.pozTo,f=void 0===u?0:u,d=(n-l).toFixed(1),p=(c-l).toFixed(1),v=(f-l).toFixed(1),g=(+n).toFixed(1),b=(+o).toFixed(1);i.innerHTML='\n    <div>\n      <span> Текущий отрезок (выбрано): </span>\n      <span info = "curr-region"> '+d+" ("+p+" - "+v+')</span>\n    </div>\n    <div class = "mid-border">\n      <span> Позиция в файле/Всего: </span>\n      <span info = "poz-file"> '+g+" / "+b+" </span>\n    </div>\n  "}var o=n(0),a={},i=void 0;a.init=function(){o.a.on("changedPoz",r),i=document.getElementById("info")},a.close=function(){o.a.off("changedPoz",r),i=null},t.a=a},function(e,t,n){"use strict";function r(e){var t=e.keyCode;if(t in l){e.preventDefault();var n=l[t];if(!n)return;e.ctrlKey&&(n="ctrl"+n[0].toUpperCase()+n.slice(1)),e.shiftKey&&(n="shift"+n[0].toUpperCase()+n.slice(1)),n in i&&i[n]()}}function o(e,t){if("clear"===e)return void a();e in i?i[e]=t:console.warn("Такой клавиши: "+e+"(сочетания клавиш) не предусмотрено")}function a(){for(var e in i)i[e]=function(){}}t.a=o;var i={arrowLeft:function(){},arrowRight:function(){},space:function(){},tab:function(){},shiftSpace:function(){},ctrlSpace:function(){},shiftTab:function(){},f2:function(){}},l={37:"arrowLeft",39:"arrowRight",32:"space",9:"tab",113:"f2"};document.onkeydown=r},function(e,t,n){"use strict";function r(){return arguments.length>0&&void 0!==arguments[0]&&arguments[0]&&(f=c.getCurrentPoz()),{pozMin:u,pozCurrent:f,duration:d,pozFrom:p,pozTo:v}}function o(){if(v<p+.3&&f>p+.3&&(v=f),!(v>p+.3))return!0}var a=n(1),i=n(15),l=window.require("electron"),s=l.ipcRenderer,c=n.i(i.a)(),u=0,f=0,d=0,p=0,v=0,g=!1,b=null,m=null,h={name:null,path:null},x={decodeFile:function(e){var t=e.name,n=e.path,o=e.content;c.decode(o).then(function(e){d=e,h={name:t,path:n},a.a.publish("decodedAudio",{name:t,path:n}),a.a.publish("changedPoz",r()),localStorage.setItem("path-audio",n),localStorage.setItem("name-audio",t)})},tooglePlay:function(){g?this.stop():this.play()},play:function(){var e=this;g||(c.play(f),g=!0,a.a.publish("changeStateAudio",{playing:g}),b=setInterval(function(){a.a.publish("changedPoz",r(!0)),f>d&&e.tooglePlay()},100))},stop:function(){g&&(clearInterval(b),m&&clearTimeout(m),f=c.stop(),g=!1,a.a.publish("changeStateAudio",{playing:g}),f>d&&(f=d))},repeate:function(){var e=this;if(!g&&!o()){var t=1e3*(v-p);console.log(p," , ",v),t<0||(f=p,this.play(),m=setTimeout(function(){e.stop()},t))}},reset:function(){p=f=v=u},setUnit:function(){if(!g&&!o())return{pozFrom:p,pozTo:v}},nextUnit:function(){u=p=f=v},setPozz:function(e){var t=e._from,n=e._to;u=f=p=+t,v=+n,a.a.publish("changedPoz",r())},assignInterval:function(e){var t=e._from,n=e._to;u=f=p=+t,v=+n},gotoStart:function(){g||(f=u)},gotoFrom:function(){g||(f=p)},gotoTo:function(){g||(f=v)},fromMoveBack:function(){var e=Math.round(10*(p-.1))/10;e<u&&(e=u),p=e},fromSet:function(){p=+f.toFixed(1),v<p&&(v=p)},fromMoveForward:function(){var e=Math.round(10*(p+.1))/10;e>d&&(e=d),(p=e)>v&&(v=p)},toMoveBack:function(){var e=Math.round(10*(v-.1))/10;e<u&&(e=u),(v=e)<p&&(p=v)},toSet:function(){g&&this.stop(),v=+f.toFixed(1),p>v&&(p=v)},toMoveForward:function(){if(!g){var e=Math.round(10*(v+.1))/10;e>d&&(e=d),v=e}},setStartPoz:function(e){u=f=p=v=+e,a.a.publish("changedPoz",r())},advertPozz:function(){a.a.publish("changedPoz",r())},restore:function(){var e=h.name||localStorage.getItem("name-audio"),t=h.path||localStorage.getItem("path-audio");e&&t&&s.send("will-restore-audio",{name:e,path:t})}};s.on("audio-restored",function(e,t){if(t.err)return console.log("error in restoring audio:"),void console.log(t.err);var n=t.content.buffer,r=t.name,o=t.path;x.decodeFile({name:r,path:o,content:n})}),t.a=x},function(e,t,n){"use strict";function r(e){d.innerHTML=e,v=d.querySelector("#selection-transl"),p=d.querySelector("#blank-transl"),p||(p=document.createElement("span"),p.id="blank-transl",d.appendChild(p)),v||(v=document.createElement("span"),v.id="selection-transl",p.before(v))}function o(){localStorage.setItem("path-transl",f.path),localStorage.setItem("name-transl",f.name)}function a(){var e=v.innerHTML;e&&(p.innerHTML=e+p.innerHTML,v.innerHTML="")}function i(){if(p){""===p.innerHTML.replace(/\s|<br>|&nbsp;/g,"")&&(p.remove(),v&&v.remove())}}function l(){var e=d.querySelectorAll('span[transl="true"]');return e?e.length:0}var s=n(1),c=window.require("electron"),u=c.ipcRenderer,f={},d=null,p=null,v=null,g=function(e){d=e},b=function(e){var t=e.name,n=e.path,a=e.content,i=a;i=function(e){if(/\.transl$/.test(t))return e;var n=e;return n=n.replace(/</g,"(").replace(/>/g,")"),n=n.replace(/\n/g,"<br>"),n=n.replace(/\s*<br>\s*/g,"<br>&nbsp&nbsp"),n=n.replace(/\s+/g," "),n=n.replace(/\s([.,:;!\)])/g,"$1"),n='<main-info lang="ru"></main-info>\n         <span id="selection-transl"></span>\n         <span id="blank-transl">&nbsp&nbsp'+n+"</span>"}(i),r(i),f={name:t,path:n},o(),s.a.publish("loadedTransl",f)},m=function(e){return v?(a(),l()):-1},h=function(){if(f.name){a(),i();var e=d.innerHTML;if(e){var t=/\.transl$/.test(f.path)?f.path:f.path.replace(/\.[^.]{1,5}$/,".transl"),n=/\.transl$/.test(f.name)?f.name:f.name.replace(/\.[^.]{1,5}$/,".transl");u.send("will-save-file",{path:t,name:n,content:e,kind:"transl"}),r(e)}}};u.on("file-saved",function(e,t){if("transl"===t.kind){if(t.err)return console.log("error in saving *.transl:"),void console.log(t.err);f.path=t.path,f.name=t.name,o(),s.a.publish("savedTransl",f)}});var x=function(){var e=f.name||localStorage.getItem("name-transl"),t=f.path||localStorage.getItem("path-transl");e&&t&&u.send("will-restore-file",{name:e,path:t,kind:"transl"})};u.on("file-restored",function(e,t){if("transl"===t.kind){if(t.err)return console.log("error in restoring *.transl:"),void console.log(t.err);var n=t.name,r=t.path,o=t.content;M.setLoadedFile({name:n,path:r,content:o})}});var L=function(e){var t=e.split(/[.,!?]|<br>/).length,n=0;a();do{y(),n=v.innerHTML.split(/[.,!?]|<br>/).length}while(n<t&&""!==p.innerHTML)},y=function(){var e=p.innerHTML;if(e){var t=e.match(/^.+?(\s|<br>)/);t?(v.innerHTML=v.innerHTML+t[0],p.innerHTML=e.slice(t[0].length)):(v.innerHTML=v.innerHTML+e,p.innerHTML="")}},T=function(){var e=v.innerHTML;if(e){var t=e.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);t?(p.innerHTML=t[2]+p.innerHTML,v.innerHTML=e.slice(0,-t[2].length)):(p.innerHTML=e+p.innerHTML,v.innerHTML="")}},S=function(){return v.innerHTML?(v.removeAttribute("id"),v.setAttribute("transl","true"),v=document.createElement("span"),v.id="selection-transl",p.before(v),l()):-1},M={setRoot:g,setLoadedFile:b,setState:m,offer:L,addSelection:y,reduceSelection:T,setUnit:S,save:h,restore:x};t.a=M},function(e,t,n){"use strict";function r(e){h.innerHTML=e,L=h.querySelector("#add-txt"),x=h.querySelector("#blank-txt"),x||(x=document.createElement("span"),x.id="blank-txt",h.appendChild(x)),L||(L=document.createElement("span"),L.id="add-txt",x.before(L))}function o(){localStorage.setItem("path-lngt",m.path),localStorage.setItem("name-lngt",m.name)}function a(){var e=L.innerHTML;e&&(x.innerHTML=e+x.innerHTML,L.innerHTML="")}function i(){if(x){""===x.innerHTML.replace(/\s|<br>|&nbsp;/g,"")&&(x.remove(),L&&L.remove())}}function l(){y&&y.removeAttribute("id"),y=null}function s(){T&&T.removeAttribute("id"),T=null}function c(){var e="0",t="0",n=L.previousElementSibling;return n&&n.hasAttribute("to")&&(e=t=n.getAttribute("to")),{_from:e,_to:t}}function u(){var e={_from:"0",_to:"0"};return L&&(y=L.previousElementSibling)&&y.hasAttribute("from")?(y.id="delete-txt",e._from=y.getAttribute("from"),e._to=y.getAttribute("to"),e):e}function f(e){var t=h.querySelectorAll("span[from]");return t&&t[e]&&(T=t[e],T.id="transl-txt"),{_from:"0",_to:"0"}}function d(){var e=0,t=L.previousElementSibling;return t&&t.hasAttribute("to")&&(e=+t.getAttribute("to")),e}var p=n(1),v=window.require("electron"),g=v.ipcRenderer,b={},m={},h=null,x=null,L=null,y=null,T=null;b.setRoot=function(e){h=e},b.setLoadedFile=function(e){var t=e.name,n=e.path,a=e.content;!function(){if(!/\.lngt$/.test(t)){var e=a;e=e.replace(/</g,"(").replace(/>/g,")"),e=e.replace(/\n/g,"<br>"),e=e.replace(/\s*<br>\s*/g,"<br>&nbsp&nbsp"),e=e.replace(/\s+/g," "),e=e.replace(/\s([.,:;!\)])/g,"$1"),e='<main-info></main-info>\n         <span id="add-txt"></span>\n         <span id="blank-txt">&nbsp&nbsp'+e+"</span>",a=e}}(),r(a),m={name:t,path:n},o(),p.a.publish("loadedLngt",{name:t,path:n,startPoz:d()})},b.setState=function(e,t){return m.name?(a(),l(),s(),"add"===e?c():"delete"===e?u():"transl"===e?f(t):void 0):{_from:"0",_to:"0"}},b.save=function(){if(m.name){a(),l(),s(),i();var e=h.innerHTML;if(e){var t=/\.lngt$/.test(m.path)?m.path:m.path.replace(/\.[^.]{1,5}$/,".lngt"),n=/\.lngt$/.test(m.name)?m.name:m.name.replace(/\.[^.]{1,5}$/,".lngt");g.send("will-save-file",{path:t,name:n,content:e,kind:"lngt"}),r(e)}}},g.on("file-saved",function(e,t){if("lngt"===t.kind){if(t.err)return console.log("error in saving *.lngt:"),void console.log(t.err);m.path=t.path,m.name=t.name,o(),p.a.publish("savedLngt",m)}}),b.restore=function(){var e=m.name||localStorage.getItem("name-lngt"),t=m.path||localStorage.getItem("path-lngt");e&&t&&g.send("will-restore-file",{name:e,path:t,kind:"lngt"})},g.on("file-restored",function(e,t){if("lngt"===t.kind){if(t.err)return console.log("error in restoring *.lngt:"),void console.log(t.err);var n=t.name,r=t.path,o=t.content;b.setLoadedFile({name:n,path:r,content:o})}}),b.addSelection=function(){var e=x.innerHTML,t=L.innerHTML;if(e){var n=e.match(/^.+?(\s|<br>)/);n?(L.innerHTML=t+n[0],x.innerHTML=e.slice(n[0].length)):(L.innerHTML=t+e,x.innerHTML="")}},b.reduceSelection=function(){var e=x.innerHTML,t=L.innerHTML;if(t){var n=t.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);n?(x.innerHTML=n[2]+e,L.innerHTML=t.slice(0,-n[2].length)):(x.innerHTML=t+e,L.innerHTML="")}},b.setSelectionTransl=function(e){m.name&&(s(),f(e))},b.setUnit=function(e){var t=e.pozFrom,n=e.pozTo,r=L.innerHTML;if(""!==r.trim()){L.innerHTML="";var o=document.createElement("span");return o.innerHTML=r,o.setAttribute("from",t),o.setAttribute("to",n),L.before(o),!0}},b.deleteUnit=function(){var e=void 0,t=void 0,n=y.previousElementSibling;y.removeAttribute("id");var r=y.innerHTML;return x.innerHTML=r+x.innerHTML,y.remove(),n&&n.hasAttribute("from")&&n.hasAttribute("to")&&(e=+n.getAttribute("from"),t=+n.getAttribute("to"),n.id="delete-txt",y=n),{_from:e,_to:t}},b.getSelTransl=function(){return T?T.innerHTML:null},t.a=b},function(e,t,n){"use strict";function r(){function e(){l=s=0,i=!1}var t=window.AudioContext||window.webkitAudioContext||window.mozAudioContext||window.oAudioContext||window.msAudioContext;if(!t)return void console.log("Web Audio API недоступно");var n={},r=void 0,o=void 0,a=void 0,i=void 0,l=void 0,s=void 0;return n.decode=function(n){return new Promise(function(o,i){r=new t,r.decodeAudioData(n,function(t){a=t,e();var n=Math.round(10*a.duration)/10;o(n)},i)})},n.play=function(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0;o=r.createBufferSource(),o.connect(r.destination),o.buffer=a,l=r.currentTime,s=e,o.start(0,s),i=!0},n.getCurrentPoz=function(){return Math.round(10*(r.currentTime-l+s))/10},n.stop=function(){return o.stop(),i=!1,n.getCurrentPoz()},n}t.a=r},function(e,t,n){"use strict";function r(e){var t=e.state;i.style.display="transl"===t?"block":"none"}var o=n(0),a=void 0,i=void 0,l=function(){a=document.getElementById("txt"),i=document.getElementById("transl"),o.a.setArea(a),o.a.setAreaTransl(i),o.a.on("changeState",r)},s=function(){o.a.off("changeState",r),a=i=null},c={init:l,close:s};t.a=c},function(e,t,n){t=e.exports=n(18)(!1),t.push([e.i,'a,abbr,address,article,aside,audio,big,blockquote,body,canvas,caption,cite,code,dd,del,details,div,dl,dt,em,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,iframe,img,label,legend,li,mark,menu,nav,ol,output,p,pre,section,small,span,strike,strong,summary,table,tbody,td,tfoot,th,thead,time,tr,tt,ul,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}table{border-collapse:collapse;border-spacing:0}#work,body,html{height:100%}#work{background-color:#e8f3f7;display:flex;flex-flow:column nowrap}#work .part{margin:0 5px 5px}#work #files{margin:5px 5px 5px 0}#area{flex:1 0 100px;background-color:#f4f8f7;display:flex}#info{background-color:#b6d0c9}#files{display:flex;flex-wrap:wrap}#files .file-field{flex:1 0 200px;margin:5px 0 0 5px;background-color:#c2dfea;border:.5px solid #8c95aa;border-radius:4px;padding:6px;cursor:pointer}#btns-files-state{display:flex}#btns-files-state .btns-file{flex:1 0 100px;align-content:stretch;display:flex}#btns-files-state .btns-file button{width:100px;margin-right:5px;cursor:pointer;color:#fdfaf2;border:.5px solid #86644f;border-radius:4px;padding:5px;background-color:#a47c64}#btns-files-state #btns-state{flex:1 0 100px;align-content:right;display:flex;max-width:400px}#btns-files-state #btns-state button{flex:1 0 25px;margin-left:5px;cursor:pointer;color:#fdfaf2;border:.5px solid #86644f;border-radius:4px;padding:5px;background-color:#255677}#btns-files-state #btns-state button.current{background-color:#6e94b6}#info{display:flex;border:.5px solid #8c95aa}#info div{flex:1 1 270px;padding:5px;overflow:auto}#info .mid-border,#info .td-border{border-left:.5px solid #8c95aa}#btns{display:flex}#btns-intervals,#btns-transl{display:none}#btns-intervals button,#btns-transl button,#btns button{background-color:#879c64;color:#e7ece0;border-radius:5px;margin:0 1px;padding:5px 0;cursor:pointer}#btns{justify-content:space-between}#btns .btns-group{display:flex}#btns .btns-control button{width:70px}#btns .btns-from-to button{width:47px}#btns .btns-from-to button.z{width:30px}#btns-intervals button,#btns-transl button{width:100px}#txt{padding:5px;overflow-y:scroll;color:#50a3c3}#txt #blank-txt{color:#000}#txt #add-txt{background-color:#50a3c3;color:#f7fbfc}#txt #delete-txt,#txt #transl-txt{background-color:#6e557b;color:#f7fbfc}#transl{display:none;padding:5px;overflow-y:scroll;color:#50a3c3}#transl #selection-transl{background-color:#50a3c3;color:#f7fbfc}#transl #blank-transl{color:#000}#area .area{border:.5px solid #8c95aa;flex:1 0 100px}',""])},function(e,t){function n(e,t){var n=e[1]||"",o=e[3];if(!o)return n;if(t&&"function"==typeof btoa){var a=r(o);return[n].concat(o.sources.map(function(e){return"/*# sourceURL="+o.sourceRoot+e+" */"})).concat([a]).join("\n")}return[n].join("\n")}function r(e){return"/*# sourceMappingURL=data:application/json;charset=utf-8;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(e))))+" */"}e.exports=function(e){var t=[];return t.toString=function(){return this.map(function(t){var r=n(t,e);return t[2]?"@media "+t[2]+"{"+r+"}":r}).join("")},t.i=function(e,n){"string"==typeof e&&(e=[[null,e,""]]);for(var r={},o=0;o<this.length;o++){var a=this[o][0];"number"==typeof a&&(r[a]=!0)}for(o=0;o<e.length;o++){var i=e[o];"number"==typeof i[0]&&r[i[0]]||(n&&!i[2]?i[2]=n:n&&(i[2]="("+i[2]+") and ("+n+")"),t.push(i))}},t}},function(e,t,n){var r=n(17);"string"==typeof r&&(r=[[e.i,r,""]]);var o={};o.transform=void 0;n(20)(r,o);r.locals&&(e.exports=r.locals)},function(e,t,n){function r(e,t){for(var n=0;n<e.length;n++){var r=e[n],o=v[r.id];if(o){o.refs++;for(var a=0;a<o.parts.length;a++)o.parts[a](r.parts[a]);for(;a<r.parts.length;a++)o.parts.push(u(r.parts[a],t))}else{for(var i=[],a=0;a<r.parts.length;a++)i.push(u(r.parts[a],t));v[r.id]={id:r.id,refs:1,parts:i}}}}function o(e,t){for(var n=[],r={},o=0;o<e.length;o++){var a=e[o],i=t.base?a[0]+t.base:a[0],l=a[1],s=a[2],c=a[3],u={css:l,media:s,sourceMap:c};r[i]?r[i].parts.push(u):n.push(r[i]={id:i,parts:[u]})}return n}function a(e,t){var n=b(e.insertInto);if(!n)throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");var r=x[x.length-1];if("top"===e.insertAt)r?r.nextSibling?n.insertBefore(t,r.nextSibling):n.appendChild(t):n.insertBefore(t,n.firstChild),x.push(t);else{if("bottom"!==e.insertAt)throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");n.appendChild(t)}}function i(e){if(null===e.parentNode)return!1;e.parentNode.removeChild(e);var t=x.indexOf(e);t>=0&&x.splice(t,1)}function l(e){var t=document.createElement("style");return e.attrs.type="text/css",c(t,e.attrs),a(e,t),t}function s(e){var t=document.createElement("link");return e.attrs.type="text/css",e.attrs.rel="stylesheet",c(t,e.attrs),a(e,t),t}function c(e,t){Object.keys(t).forEach(function(n){e.setAttribute(n,t[n])})}function u(e,t){var n,r,o,a;if(t.transform&&e.css){if(!(a=t.transform(e.css)))return function(){};e.css=a}if(t.singleton){var c=h++;n=m||(m=l(t)),r=f.bind(null,n,c,!1),o=f.bind(null,n,c,!0)}else e.sourceMap&&"function"==typeof URL&&"function"==typeof URL.createObjectURL&&"function"==typeof URL.revokeObjectURL&&"function"==typeof Blob&&"function"==typeof btoa?(n=s(t),r=p.bind(null,n,t),o=function(){i(n),n.href&&URL.revokeObjectURL(n.href)}):(n=l(t),r=d.bind(null,n),o=function(){i(n)});return r(e),function(t){if(t){if(t.css===e.css&&t.media===e.media&&t.sourceMap===e.sourceMap)return;r(e=t)}else o()}}function f(e,t,n,r){var o=n?"":r.css;if(e.styleSheet)e.styleSheet.cssText=y(t,o);else{var a=document.createTextNode(o),i=e.childNodes;i[t]&&e.removeChild(i[t]),i.length?e.insertBefore(a,i[t]):e.appendChild(a)}}function d(e,t){var n=t.css,r=t.media;if(r&&e.setAttribute("media",r),e.styleSheet)e.styleSheet.cssText=n;else{for(;e.firstChild;)e.removeChild(e.firstChild);e.appendChild(document.createTextNode(n))}}function p(e,t,n){var r=n.css,o=n.sourceMap,a=void 0===t.convertToAbsoluteUrls&&o;(t.convertToAbsoluteUrls||a)&&(r=L(r)),o&&(r+="\n/*# sourceMappingURL=data:application/json;base64,"+btoa(unescape(encodeURIComponent(JSON.stringify(o))))+" */");var i=new Blob([r],{type:"text/css"}),l=e.href;e.href=URL.createObjectURL(i),l&&URL.revokeObjectURL(l)}var v={},g=function(e){var t;return function(){return void 0===t&&(t=e.apply(this,arguments)),t}}(function(){return window&&document&&document.all&&!window.atob}),b=function(e){var t={};return function(n){return void 0===t[n]&&(t[n]=e.call(this,n)),t[n]}}(function(e){return document.querySelector(e)}),m=null,h=0,x=[],L=n(21);e.exports=function(e,t){if("undefined"!=typeof DEBUG&&DEBUG&&"object"!=typeof document)throw new Error("The style-loader cannot be used in a non-browser environment");t=t||{},t.attrs="object"==typeof t.attrs?t.attrs:{},t.singleton||(t.singleton=g()),t.insertInto||(t.insertInto="head"),t.insertAt||(t.insertAt="bottom");var n=o(e,t);return r(n,t),function(e){for(var a=[],i=0;i<n.length;i++){var l=n[i],s=v[l.id];s.refs--,a.push(s)}if(e){r(o(e,t),t)}for(var i=0;i<a.length;i++){var s=a[i];if(0===s.refs){for(var c=0;c<s.parts.length;c++)s.parts[c]();delete v[s.id]}}}};var y=function(){var e=[];return function(t,n){return e[t]=n,e.filter(Boolean).join("\n")}}()},function(e,t){e.exports=function(e){var t="undefined"!=typeof window&&window.location;if(!t)throw new Error("fixUrls requires window.location");if(!e||"string"!=typeof e)return e;var n=t.protocol+"//"+t.host,r=n+t.pathname.replace(/\/[^\/]*$/,"/");return e.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi,function(e,t){var o=t.trim().replace(/^"(.*)"$/,function(e,t){return t}).replace(/^'(.*)'$/,function(e,t){return t});if(/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(o))return e;var a;return a=0===o.indexOf("//")?o:0===o.indexOf("/")?n+o:r+o.replace(/^\.\//,""),"url("+JSON.stringify(a)+")"})}}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// identity function for calling harmony imports with the correct context
+/******/ 	__webpack_require__.i = function(value) { return value; };
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__modelAudio__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__modelTxt__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__modelTransl__ = __webpack_require__(13);
+//export const something = 'test'
+
+
+
+
+
+var model = {
+  on: __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on, // в vent.on this не используется
+  off: __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].off
+};
+
+var state = 'add',
+    // 'delete'/'transl'
+playing = false,
+    timer = null,
+    timerStop = null;
+
+__WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].on('loadedLngt', function (_ref) {
+  var startPoz = _ref.startPoz;
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setStartPoz(startPoz);
+}); // это можно в modelTxt
+
+model.setArea = function (area) {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setRoot(area);
+};
+
+model.setAreaTransl = function (area) {
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setRoot(area);
+};
+
+model.setState = function (_state) {
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].stop();
+  if (_state === state) return; // наверное это потом уберём
+  var countUnits = __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setState(_state);
+  if (_state === 'transl' && countUnits === -1) return; // файл с переводом не загружен
+  var pozz = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setState(_state, countUnits); // {_from: '0', _to: '0'}
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].setPozz(pozz);
+  state = _state;
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeState', { state: state });
+};
+
+////////************ state-actions ************
+
+model.fnAdd = function (act, args) {
+  // возможно args не понадобится
+  if (state !== 'add') return;
+  var res = __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][act](args);
+  if (act === "setUnit" && res) {
+    // res = {pozFrom, pozTo} - если выбран звуковой интервал
+    var isAdd = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setUnit(res); // isAdd - если выделена область текста, тогда устанавливаем для неё звуковой интервал
+    if (isAdd) __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].nextUnit();
+  }
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
+};
+
+model.fnDelete = function (act, args) {
+  // возможно args не понадобится
+  if (state !== 'delete') return;
+  if (act === "repeate") __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */][act](args);
+  if (act === "cleare") {
+    var interval = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].deleteUnit(); //
+    if (interval) {
+      __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].assignInterval(interval);
+    } else {
+      model.setState('add');
+    }
+  }
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].advertPozz();
+};
+
+model.fnTransl = function (act) {
+  if (state !== 'transl') return;
+  var arg = void 0;
+  if (act === 'offer') arg = __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].getSelTransl();
+  var countUnits = __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */][act](arg);
+  if (countUnits !== -1 && act === 'setUnit') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setSelectionTransl(countUnits);
+};
+
+///////************  Selection  ************
+
+model.addSelection = function () {
+  if (state === 'delete') return;
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].addSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].addSelection();
+};
+
+model.reduceSelection = function () {
+  if (state === 'delete') return;
+  if (state === 'add') __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].reduceSelection();
+  if (state === 'transl') __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].reduceSelection();
+};
+
+///////************    Load   **************
+
+model.setLoadedAudioFile = function (file) {
+  // file: {name, path, content}
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].decodeFile(file);
+};
+
+model.setLoadedTranslFile = function (file) {
+  // file: {name, path, content}
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].setLoadedFile(file);
+};
+
+model.setLoadedTxtFile = function (file) {
+  // file: {name, path, content}
+  if (state === 'delete') model.setState('add');
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].setLoadedFile(file);
+};
+
+///////************  Save/Restore ************
+
+model.save = function () {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].save();
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].save();
+};
+
+model.restore = function () {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].restore();
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].restore();
+  __WEBPACK_IMPORTED_MODULE_1__modelAudio__["a" /* default */].restore(); // если аудио загружено, то оставляем как есть
+};
+
+model.make = function () {
+  __WEBPACK_IMPORTED_MODULE_2__modelTxt__["a" /* default */].make();
+  __WEBPACK_IMPORTED_MODULE_3__modelTransl__["a" /* default */].make();
+};
+
+//////
+model.popup = function (msg) {
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('popup', msg);
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (model);
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+
+var evs = {
+  changeState: [], //publish - {state}
+  //lngt events
+  loadedLngt: [], //publish - {name, path, content, startPoz}
+  savedLngt: [], //publish - {name, path}
+  //audio events
+  decodedAudio: [], //publish - {name, path}
+  changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
+  changeStateAudio: [], //publish - {playing}
+  //transl events
+  loadedTransl: [], //publish - {name, path, content} 
+  savedTransl: [], //publish - {name, path}   
+  // notifications
+  popup: [] //publish - {msg}
+};
+
+var vent = {
+  on: function on(ev, fn) {
+    if (ev in evs) {
+      evs[ev].push(fn);
+    } else {
+      console.log('ошибка в vent.on - события ' + ev + ' нет');
+    }
+  },
+  off: function off(ev, fn) {
+    if (ev in evs) {
+      evs[ev] = evs[ev].filter(function (fnEv) {
+        return fnEv !== fn;
+      });
+    } else {
+      console.log('ошибка в vent.off - события ' + ev + ' нет');
+    }
+  },
+  publish: function publish(ev, data) {
+    //console.log(ev); console.log(evs)
+    // if(ev !=='changedPoz') {console.log(ev); console.log(evs[ev]);}
+    if (ev in evs) {
+      evs[ev].forEach(function (fnEv) {
+        fnEv(data);
+      });
+    } else {
+      console.log('ошибка в vent.publish - события ' + ev + ' нет');
+    }
+  }
+};
+
+vent.dispatch = vent.publish; // для постепенного перехода
+
+/* harmony default export */ __webpack_exports__["a"] = (vent);
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = work;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__scss_style_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__scss_style_scss__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__js_model_model__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__js_file_txt__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__js_file_end__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__js_txt_area__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__js_file_audio__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__js_control_audio__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__js_file_transl__ = __webpack_require__(7);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function work() {
+  __WEBPACK_IMPORTED_MODULE_2__js_hotKeys__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_3__js_file_txt__["a" /* default */].init(); // в fileTxt будет чтение текстового файла
+  __WEBPACK_IMPORTED_MODULE_5__js_txt_area__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_4__js_file_end__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_6__js_file_audio__["a" /* default */].init(); // в fileTxt будет чтение содержимого звукового файла
+  __WEBPACK_IMPORTED_MODULE_9__js_file_transl__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_7__js_control_audio__["a" /* default */].init();
+  __WEBPACK_IMPORTED_MODULE_8__js_infoTiming__["a" /* default */].init();
+}
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__work_js__ = __webpack_require__(2);
+
+
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__work_js__["a" /* default */])();
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+
+
+var controlAudio = {};
+
+var btns = void 0,
+    intervals = void 0,
+    transl = void 0,
+    btnPlay = void 0;
+controlAudio.init = function () {
+  btns = document.getElementById('btns');
+  intervals = document.getElementById('btns-intervals');
+  transl = document.getElementById('btns-transl');
+  btnPlay = btns.querySelector('button[act="tooglePlay"]');
+
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState); //меняем набор кнопок
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', handlerDecoded);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', handlerLoadedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
+};
+
+controlAudio.close = function () {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', handlerDecoded);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeStateAudio', changeBtnPlay);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
+  btns.onclick = '';
+  btns = null;
+};
+
+function handlerDecoded() {
+  btns.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd(attr);
+    }
+  };
+  intervals.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete(attr);
+    }
+  };
+}
+
+function handlerLoadedTransl() {
+  transl.onclick = function (event) {
+    var target = event.target;
+    if (target.hasAttribute('act')) {
+      target.blur(); //убираем фокусировку, чтобы пробел не срабатывал как нажатие на кнопку
+      var attr = target.getAttribute('act');
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl(attr);
+    }
+  };
+}
+
+function changeBtnPlay(_ref) {
+  var playing = _ref.playing;
+
+  if (playing) {
+    btnPlay.innerHTML = 'Stop';
+  } else {
+    btnPlay.innerHTML = 'Play';
+  }
+}
+
+function changeState(_ref2) {
+  var state = _ref2.state;
+
+  btns.style.display = state === 'add' ? 'flex' : 'none';
+  intervals.style.display = state === 'delete' ? 'flex' : 'none';
+  transl.style.display = state === 'transl' ? 'flex' : 'none';
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (controlAudio);
+
+/***/ }),
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/****************************************************************
+  во внешнем модуле используется fileAudio.init() и
+  fileAudio.close()
+*****************************************************************/
+
+
+var fileAudio = {};
+
+var btn = void 0,
+    input = void 0;
+
+fileAudio.init = function () {
+  btn = document.getElementById('file-audio');
+  input = document.getElementById('input-audio');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('decodedAudio', setInfoLodedAudio);
+};
+
+fileAudio.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('decodedAudio', setInfoLodedAudio);
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsArrayBuffer(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedAudioFile({ name: name, path: path, content: content });
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой звуковой файл';
+    }
+  }
+}
+
+function setInfoLodedAudio(_ref) {
+  var name = _ref.name,
+      path = _ref.path;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileAudio);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+//управление сохранением и восстановлением текстового файла .lngt
+
+
+var fileEnd = {};
+
+var /*btnSave, btnRestore,*/btnsFiles = void 0,
+    btnsState = void 0,
+    btnCurrentState = void 0;
+
+fileEnd.init = function () {
+  //btnSave = document.querySelector('#btns-files-state .btns-file button[act="save"]');
+  //btnRestore = document.querySelector('#btns-files-state .btns-file button[act="restore"]');
+  btnsFiles = document.querySelector('#btns-files-state .btns-file');
+
+  btnsState = document.getElementById('btns-state');
+  btnCurrentState = btnsState.querySelector('.current');
+
+  //btnSave.addEventListener('click', model.save);
+  //btnRestore.addEventListener('click',  model.restore);
+  btnsFiles.addEventListener('click', handlerFiles);
+  btnsState.addEventListener('click', setState);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
+};
+
+fileEnd.close = function () {
+  //btnSave.removeEventListener('click', model.save);
+  //btnRestore.removeEventListener('click', model.restore);
+  btnsFiles.removeEventListener('click', handlerFiles);
+  btnsState.removeEventListener('click', setState);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
+  btnSave = /*btnRestore = btnsState*/btnsFiles = btnCurrent = null;
+};
+
+//function saveFiles() {model.save();}function restoreFiles() {model.restore();}
+
+function setState(ev) {
+  var state = ev.target.getAttribute('state');
+  if (state) __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setState(state);
+}
+
+function changeState(_ref) {
+  var state = _ref.state;
+
+  btnCurrentState.classList.remove('current');
+
+  btnCurrentState = btnsState.querySelector('[state=' + state + ']');
+  btnCurrentState.classList.add('current');
+}
+
+function handlerFiles(ev) {
+  var act = ev.target.getAttribute('act');
+  if (act) __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */][act]();
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileEnd);
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
+
+
+var btn = void 0,
+    input = void 0;
+
+var init = function init() {
+  btn = document.getElementById('file-transl');
+  input = document.getElementById('input-transl');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedTransl', setInfoLodedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('savedTransl', setInfoLodedTransl);
+};
+
+var close = function close() {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedTransl', setInfoLodedTransl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedTransl', setInfoLodedTransl); // 'savedLngt' нельзя объеденить с 'loadedLngt'
+}; // так как на loadedLngt меняется содержимое текста
+
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  //const size = file.size;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTranslFile({ name: name, path: path, content: content }); //!!!
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+function setInfoLodedTransl(_ref) {
+  var path = _ref.path,
+      name = _ref.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+var fileTransl = {
+  init: init,
+  close: close
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTransl);
+
+/***/ }),
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/****************************************************************
+  Компонент для загрузки текстового файла.
+  во внешнем модуле используется fileTxt.init() и fileTxt.close()
+*****************************************************************/
+
+
+var fileTxt = {};
+
+var btn = void 0,
+    input = void 0;
+
+fileTxt.init = function () {
+  btn = document.getElementById('file-txt');
+  input = document.getElementById('input-txt');
+
+  btn.addEventListener('click', clickInput);
+  input.addEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('loadedLngt', setInfoLodedLngt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('savedLngt', setInfoLodedLngt);
+};
+
+fileTxt.close = function () {
+  btn.removeEventListener('click', clickInput);
+  input.removeEventListener('change', choosedFile);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('loadedLngt', setInfoLodedLngt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('savedLngt', setInfoLodedLngt);
+};
+
+function clickInput() {
+  input.click();
+}
+
+function choosedFile() {
+  if (input.files.length === 0) return; //здесь ";" обязательно
+  var file = input.files[0];
+  input.value = ''; // единственный способ чтобы заново открыть тотже файл
+  var path = file.path;
+  var name = file.name;
+  //const size = file.size;
+
+  btn.innerHTML = 'loding...';
+
+  var reader = new FileReader();
+  reader.readAsText(file);
+
+  //reader.onloadstart = startProgress
+  //reader.onprogress = updateProgress
+  reader.onload = loaded;
+  reader.onerror = errorHandler;
+
+  function loaded(ev) {
+    var content = ev.target.result;
+    __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setLoadedTxtFile({ name: name, path: path, content: content });
+  }
+
+  function errorHandler(ev) {
+    if (ev.target.error.name == "NotReadableError") {
+      btn.innerHTML = 'Выберите другой текстовой файл';
+    }
+  }
+}
+
+function setInfoLodedLngt(_ref) {
+  var path = _ref.path,
+      name = _ref.name;
+
+  btn.innerHTML = name;
+  btn.setAttribute('title', path);
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (fileTxt);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_keyboard__ = __webpack_require__(11);
+//управление сохранением и восстановлением текстового файла .lngt
+
+
+
+var hotKeys = {
+  init: function init() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowLeft', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].reduceSelection();
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('arrowRight', function () {
+      __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].addSelection();
+    });
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('space', handlerSpace);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('tab', handlerTab);
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('ctrlSpace', handlerCtrlSpace);
+    // setHotKey('shiftSpace', () => { ; });
+    //setHotKey('shiftTab', () => { ; });
+  },
+
+  close: function close() {
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__model_keyboard__["a" /* default */])('clear');
+  }
+};
+
+// *** срабатывать будет только та функция в обработчике, которая соответствует state
+
+function handlerSpace() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd('tooglePlay');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete('repeate'); // as well as 'ctrlSpace'
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl('offer');
+}
+
+function handlerTab() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd('setUnit');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete('cleare');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnTransl('setUnit');
+}
+
+function handlerCtrlSpace() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnAdd('repeate');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].fnDelete('repeate');
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (hotKeys);
+
+/***/ }),
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+
+var infoTiming = {};
+
+var info = void 0;
+
+infoTiming.init = function () {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changedPoz', showChangedPoz);
+  info = document.getElementById('info');
+};
+
+infoTiming.close = function () {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changedPoz', showChangedPoz);
+  info = null;
+};
+
+function showChangedPoz(_ref) {
+  var _ref$pozCurrent = _ref.pozCurrent,
+      pozCurrent = _ref$pozCurrent === undefined ? 0 : _ref$pozCurrent,
+      _ref$duration = _ref.duration,
+      duration = _ref$duration === undefined ? 0 : _ref$duration,
+      _ref$pozMin = _ref.pozMin,
+      pozMin = _ref$pozMin === undefined ? 0 : _ref$pozMin,
+      _ref$pozFrom = _ref.pozFrom,
+      pozFrom = _ref$pozFrom === undefined ? 0 : _ref$pozFrom,
+      _ref$pozTo = _ref.pozTo,
+      pozTo = _ref$pozTo === undefined ? 0 : _ref$pozTo;
+
+
+  var localPoz = (pozCurrent - pozMin).toFixed(1);
+  var localFrom = (pozFrom - pozMin).toFixed(1);
+  var localTo = (pozTo - pozMin).toFixed(1);
+  var totalPoz = (+pozCurrent).toFixed(1); // .toFixed(1) наверное здесь не обязательно
+  var total = (+duration).toFixed(1); // .toFixed(1) наверное здесь не обязательно
+
+  info.innerHTML = '\n    <div>\n      <span> \u0422\u0435\u043A\u0443\u0449\u0438\u0439 \u043E\u0442\u0440\u0435\u0437\u043E\u043A (\u0432\u044B\u0431\u0440\u0430\u043D\u043E): </span>\n      <span info = "curr-region"> ' + localPoz + ' (' + localFrom + ' - ' + localTo + ')</span>\n    </div>\n    <div class = "mid-border">\n      <span> \u041F\u043E\u0437\u0438\u0446\u0438\u044F \u0432 \u0444\u0430\u0439\u043B\u0435/\u0412\u0441\u0435\u0433\u043E: </span>\n      <span info = "poz-file"> ' + totalPoz + ' / ' + total + ' </span>\n    </div>\n  ';
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (infoTiming);
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony default export */ __webpack_exports__["a"] = (setHotKey);
+
+var evs = {
+  arrowLeft: function arrowLeft() {},
+  arrowRight: function arrowRight() {},
+  space: function space() {},
+  tab: function tab() {},
+
+  //altSpace() {}, // срабатывает событие окна
+  shiftSpace: function shiftSpace() {},
+  ctrlSpace: function ctrlSpace() {},
+  shiftTab: function shiftTab() {},
+  f2: function f2() {}
+};
+
+var keyCodes = {
+  37: 'arrowLeft', // <- влево
+  39: 'arrowRight', // -> вправо
+  32: 'space', // _ пробел
+  9: 'tab', // tab
+  113: 'f2' // F2 - пока не используется
+};
+
+document.onkeydown = keyboardHandler;
+
+function keyboardHandler(ev) {
+  //console.log(ev.keyCode);
+  var key = ev.keyCode;
+  if (key in keyCodes) {
+    ev.preventDefault();
+    //ev.stopPropagation()
+    var fn = keyCodes[key];
+    if (!fn) return;
+    if (ev.ctrlKey) fn = 'ctrl' + fn[0].toUpperCase() + fn.slice(1); // i.e. 'space' -> 'ctrlSpace'
+    //if (ev.altKey) fn = 'alt' + fn[0].toUpperCase() + fn.slice(1);
+    if (ev.shiftKey) fn = 'shift' + fn[0].toUpperCase() + fn.slice(1);
+    if (fn in evs) evs[fn]();
+  }
+}
+
+function setHotKey(keyName, fn) {
+  if (keyName === 'clear') {
+    clearAllEvs();
+    return;
+  }
+  if (keyName in evs) {
+    evs[keyName] = fn;
+  } else {
+    console.warn('Такой клавиши: ' + keyName + '(сочетания клавиш) не предусмотрено');
+  }
+}
+// очищаем все назначения клавиш
+function clearAllEvs() {
+  for (var keyName in evs) {
+    evs[keyName] = function () {};
+  }
+}
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__webAudioAPI__ = __webpack_require__(15);
+
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var api = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__webAudioAPI__["a" /* default */])();
+
+var pozMin = 0,
+    // Позиция конца предыдущего отрезка
+pozCurrent = 0,
+    // Текущая позиция
+duration = 0; // Продолжительность всего ауиотрека.
+// Запомненный отрезок
+var pozFrom = 0,
+    pozTo = 0,
+    delta = 0.1; // Шаг изменения позиции отрезка
+
+var playing = false,
+    // Состояние проигрывателя - играет/пауза
+timer = null,
+    timerStop = null;
+
+var file = { // пока не используется
+  name: null,
+  path: null
+};
+
+var modelAudio = {
+  decodeFile: function decodeFile(_ref) {
+    var name = _ref.name,
+        path = _ref.path,
+        content = _ref.content;
+
+    api.decode(content).then(function (res) {
+      duration = res;
+      file = { name: name, path: path };
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('decodedAudio', { name: name, path: path });
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+      localStorage.setItem('path-audio', path);
+      localStorage.setItem('name-audio', name);
+    });
+  },
+
+
+  ///// проигрывание/остановка
+  tooglePlay: function tooglePlay() {
+    if (playing) {
+      this.stop();
+    } else {
+      this.play();
+    }
+  },
+  play: function play() {
+    var _this = this;
+
+    if (playing) return; // может вызываться не только из tooglePlay()
+    api.play(pozCurrent);
+    playing = true;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+    timer = setInterval(function () {
+      __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz(true));
+      if (pozCurrent > duration) _this.tooglePlay(); // this.stop() - недостаточно
+    }, 100);
+  },
+  stop: function stop() {
+    if (!playing) return; // может вызываться не только из tooglePlay()
+    clearInterval(timer);
+    if (timerStop) {
+      clearTimeout(timerStop);
+    }
+    pozCurrent = api.stop();
+    playing = false;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changeStateAudio', { playing: playing });
+    if (pozCurrent > duration) pozCurrent = duration; //не должно быть - может превысить на доли секунды
+  },
+  repeate: function repeate() {
+    var _this2 = this;
+
+    //проигрываем выбранный отрезок
+    if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
+    var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
+    console.log(pozFrom, ' , ', pozTo);
+    if (period < 0) return; // не должно быть
+    pozCurrent = pozFrom;
+    this.play();
+    timerStop = setTimeout(function () {
+      _this2.stop();
+    }, period);
+  },
+  reset: function reset() {
+    pozFrom = pozCurrent = pozTo = pozMin;
+  },
+  setUnit: function setUnit() {
+    if (playing) return;
+    if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
+    return { pozFrom: pozFrom, pozTo: pozTo };
+  },
+  nextUnit: function nextUnit() {
+    // должно быть playing = false
+    pozMin = pozFrom = pozCurrent = pozTo;
+  },
+  setPozz: function setPozz(_ref2) {
+    var _from = _ref2._from,
+        _to = _ref2._to;
+
+    pozMin = pozCurrent = pozFrom = +_from;
+    pozTo = +_to;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+  },
+
+
+  // установка аудиоинтервала (из файла .lngt)
+  assignInterval: function assignInterval(_ref3) {
+    var _from = _ref3._from,
+        _to = _ref3._to;
+    // должно быть playing = false
+    pozMin = pozCurrent = pozFrom = +_from;
+    pozTo = +_to;
+  },
+
+
+  //// переход позиции старт, от и до (может в if(this.playing) вместо return надо this.stop(); )
+  gotoStart: function gotoStart() {
+    if (playing) return;
+    pozCurrent = pozMin;
+  },
+  gotoFrom: function gotoFrom() {
+    if (playing) return;
+    pozCurrent = pozFrom;
+  },
+  gotoTo: function gotoTo() {
+    if (playing) return;
+    pozCurrent = pozTo;
+  },
+
+
+  //// установка и изменение позицй от и до
+  fromMoveBack: function fromMoveBack() {
+    var newPoz = Math.round((pozFrom - delta) * 10) / 10;
+    if (newPoz < pozMin) {
+      newPoz = pozMin;
+    } // тогда скорее всего будет повторение, но иначе число this.pozMin может быть слишком дробным
+    pozFrom = newPoz;
+  },
+  fromSet: function fromSet() {
+    // playing может быть любым
+    pozFrom = +pozCurrent.toFixed(1);
+    if (pozTo < pozFrom) pozTo = pozFrom;
+  },
+  fromMoveForward: function fromMoveForward() {
+    var newPoz = Math.round((pozFrom + delta) * 10) / 10;
+    if (newPoz > duration) {
+      newPoz = duration;
+    }
+    pozFrom = newPoz;
+    if (pozFrom > pozTo) pozTo = pozFrom;
+  },
+  toMoveBack: function toMoveBack() {
+    var newPoz = Math.round((pozTo - delta) * 10) / 10;
+    if (newPoz < pozMin) {
+      newPoz = pozMin;
+    } // тогда скорее всего будет повторение, но иначе число pozMin может быть слишком дробным
+    pozTo = newPoz;
+    if (pozTo < pozFrom) pozFrom = pozTo;
+  },
+  toSet: function toSet() {
+    if (playing) this.stop();
+    pozTo = +pozCurrent.toFixed(1);
+    if (pozFrom > pozTo) pozFrom = pozTo;
+  },
+  toMoveForward: function toMoveForward() {
+    if (playing) return;
+    var newPoz = Math.round((pozTo + delta) * 10) / 10;
+    if (newPoz > duration) {
+      newPoz = duration;
+    }
+    pozTo = newPoz;
+  },
+  setStartPoz: function setStartPoz(poz) {
+    pozMin = pozCurrent = pozFrom = pozTo = +poz;
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz()); // может это надо в другом месте
+  },
+  advertPozz: function advertPozz() {
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('changedPoz', getPoz());
+  },
+  restore: function restore() {
+    var name = file.name || localStorage.getItem('name-audio');
+    var path = file.path || localStorage.getItem('path-audio');
+    if (!name || !path) return;
+    ipcRenderer.send('will-restore-audio', { name: name, path: path });
+  }
+};
+
+ipcRenderer.on('audio-restored', function (event, arg) {
+  if (arg.err) {
+    console.log('error in restoring audio:');console.log(arg.err);
+    return;
+  }
+  var content = arg.content.buffer;
+  var name = arg.name,
+      path = arg.path;
+
+  modelAudio.decodeFile({ name: name, path: path, content: content }); // здесь установятся file и localStorage
+});
+
+function getPoz() {
+  var updatePoz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+  if (updatePoz) pozCurrent = api.getCurrentPoz();
+  return {
+    pozMin: pozMin, pozCurrent: pozCurrent, duration: duration, pozFrom: pozFrom, pozTo: pozTo
+  };
+}
+
+function notFitUnit() {
+  // если отрезок не установлен (pozFrom + x > pozTo) и не может быть установлен (pozCurrent < pozFrom + x)
+  if (pozTo < pozFrom + 0.3 && pozCurrent > pozFrom + 0.3) pozTo = pozCurrent;
+  if (pozTo > pozFrom + 0.3) return;
+  return true;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (modelAudio);
+
+/***/ }),
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var subfolder = 'target';
+var file = {}; // {name, path, size}
+// path: fullPath + name
+var nodeTransl = null,
+    // весь элемент
+nodeBlank = null,
+    nodeSelection = null; // выделяется из nodeBlank
+
+
+// установка
+var setRoot = function setRoot(root) {
+  nodeTransl = root;
+};
+
+var setLoadedFile = function setLoadedFile(_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      content = _ref.content;
+
+  var s = content;
+  s = txtToTransl(s);
+  initNodes(s);
+
+  file = { name: name, path: path };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
+
+  function txtToTransl(_s) {
+    if (/\._transl$/.test(name)) return _s;
+    var s = _s;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<main-info lang="ru"></main-info>\n         <span id="selection-transl"></span>\n         <span id="blank-transl">&nbsp&nbsp' + s + '</span>';
+    return s;
+  }
+};
+
+function initNodes(str) {
+  nodeTransl.innerHTML = str;
+  nodeSelection = nodeTransl.querySelector('#selection-transl'); // метод getElementById есть только у document
+  nodeBlank = nodeTransl.querySelector('#blank-transl');
+
+  /*
+  if (!nodeBlank) {
+    nodeBlank = document.createElement('span');
+    nodeBlank.id = 'blank-transl';
+    nodeTransl.appendChild(nodeBlank);
+  }
+  if (!nodeSelection) {
+    nodeSelection = document.createElement('span');
+    nodeSelection.id = 'selection-transl';
+    nodeBlank.before(nodeSelection);
+  }*/
+}
+
+function setLocalStorage() {
+  localStorage.setItem('path-transl', file.path);
+  localStorage.setItem('name-transl', file.name);
+}
+
+var setState = function setState(state) {
+  if (!nodeSelection) return -1;
+  clearNodeSelection();
+  return getCountUnits();
+};
+
+function clearNodeSelection() {
+  var selection = nodeSelection.innerHTML;
+  if (selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeSelection.innerHTML = '';
+  }
+}
+
+/*
+function deleteNodesSelectionBlank() {
+  if (!nodeBlank) return;
+  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
+  if (str === '') {
+    nodeBlank.remove();
+    if (nodeSelection) nodeSelection.remove();
+  }
+}
+*/
+
+function getCountUnits() {
+  // количество уже назначеннх кусков
+  var nodes = nodeTransl.querySelectorAll('span[transl="true"]');
+  return nodes ? nodes.length : 0; // возможно проверка не нужна
+}
+
+// Сохранение файла
+var save = function save() {
+  if (!file.name) return;
+  clearNodeSelection();
+  var content = nodeTransl.innerHTML;
+  if (!content) return;
+  var path = /\._transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '._transl');
+  var name = /\._transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '._transl');
+
+  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: 'transl' });
+};
+
+var make = function make() {
+  ////
+};
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  if (arg.kind !== 'transl') return; // {err, path, name, kind}
+  if (arg.err) {
+    console.log('error in saving *.transl:');console.log(arg.err);
+    return;
+  }
+  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+  file.name = arg.name;
+  setLocalStorage();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedTransl', file);
+});
+
+// Восстановление файла
+var restore = function restore() {
+  var name = localStorage.getItem('name-transl');
+  var path = localStorage.getItem('path-transl');
+  if (!name || !path) return;
+  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: 'transl' });
+};
+
+ipcRenderer.on('file-restored', function (event, arg) {
+  //arg = {name, path, content, kind, err};
+  if (arg.kind !== 'transl') return;
+  if (arg.err) {
+    console.log('error in restoring *.transl:');console.log(arg.err);
+    return;
+  }
+  var name = arg.name,
+      path = arg.path,
+      content = arg.content;
+
+  modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
+});
+
+var offer = function offer(txt) {
+  var total = txt.split(/[.,!?]|<br>/).length;
+  var count = 0;
+  clearNodeSelection();
+  do {
+    addSelection();
+    count = nodeSelection.innerHTML.split(/[.,!?]|<br>/).length;
+  } while (count < total && nodeBlank.innerHTML !== '');
+};
+
+// Изменение области выделения
+var addSelection = function addSelection() {
+  var blank = nodeBlank.innerHTML;
+  if (!blank) return;
+  var s = blank.match(/^.+?(\s|<br>)/);
+  if (s) {
+    nodeSelection.innerHTML = nodeSelection.innerHTML + s[0];
+    nodeBlank.innerHTML = blank.slice(s[0].length);
+  } else {
+    //конец текстового файла
+    nodeSelection.innerHTML = nodeSelection.innerHTML + blank;
+    nodeBlank.innerHTML = '';
+  }
+};
+
+var reduceSelection = function reduceSelection() {
+  var selection = nodeSelection.innerHTML;
+  if (!selection) return;
+  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/); // ленивого квантификатора здесь не нужно
+  if (s) {
+    nodeBlank.innerHTML = s[2] + nodeBlank.innerHTML;
+    nodeSelection.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeSelection.innerHTML = '';
+  }
+};
+
+var setUnit = function setUnit() {
+  // если вернёт -1, то порция перевода не установлена, либо число установленных отрезков
+  var selection = nodeSelection.innerHTML;
+  if (!selection) return -1;
+  nodeSelection.removeAttribute('id');
+  nodeSelection.setAttribute('transl', 'true');
+  nodeSelection = document.createElement('span');
+  nodeSelection.id = 'selection-transl';
+  nodeBlank.before(nodeSelection);
+  return getCountUnits();
+};
+
+var modelTransl = {
+  setRoot: setRoot,
+  setLoadedFile: setLoadedFile,
+  setState: setState,
+  offer: offer,
+  addSelection: addSelection,
+  reduceSelection: reduceSelection,
+  setUnit: setUnit,
+  save: save,
+  make: make,
+  restore: restore
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTransl);
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vent__ = __webpack_require__(1);
+
+
+var _window$require = window.require('electron'),
+    ipcRenderer = _window$require.ipcRenderer;
+
+var modelTxt = {};
+
+//const subfolder = 'target';
+var file = {}; // {name, path}
+// path: fullPath + name
+var nodeTxt = null,
+    // весь элемент
+nodeBlank = null,
+    nodeAdd = null,
+    nodeDelete = null,
+    nodeTransl = null;
+
+////////////************ установка  ************
+
+modelTxt.setRoot = function (root) {
+  nodeTxt = root;
+};
+
+modelTxt.setLoadedFile = function (_ref) {
+  var name = _ref.name,
+      path = _ref.path,
+      content = _ref.content;
+
+  var str = txtToLngt(content);
+  initNodes(str);
+  file = { name: name, path: path };
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', { name: name, path: path, startPoz: getStartPoz() });
+
+  function txtToLngt(str) {
+    if (/\._lngt$/.test(name)) return;
+
+    var s = str;
+    //Нормализуем - убираем из текста возможные тэги
+    s = s.replace(/</g, '(').replace(/>/g, ')');
+    //Заменяем абзацы и упорядочиваем пробелы
+    s = s.replace(/\n/g, '<br>');
+    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
+    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
+    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    //Добавляем тэги для начальной работы с текстом
+    s = '<main-info></main-info>\n         <span id="add-txt"></span>\n         <span id="blank-txt">&nbsp&nbsp' + s + '</span>';
+    return s;
+  }
+};
+
+function initNodes(str) {
+  nodeTxt.innerHTML = str;
+  nodeAdd = nodeTxt.querySelector('#add-txt'); // метод getElementById есть только у document
+  nodeBlank = nodeTxt.querySelector('#blank-txt');
+  /*
+  if (!nodeBlank) {
+    nodeBlank = document.createElement('span');
+    nodeBlank.id = 'blank-txt';
+    nodeTxt.appendChild(nodeBlank);
+  }
+  if (!nodeAdd) {
+    nodeAdd = document.createElement('span');
+    nodeAdd.id = 'add-txt';
+    nodeBlank.before(nodeAdd);
+  }*/
+}
+
+/////////////************  Изменение состояния  ************************
+
+modelTxt.setState = function (state, countUnits) {
+  if (!file.name) return { _from: '0', _to: '0' };
+  clearNodeAdd();
+  clearNodeDelete();
+  clearNodeTranl();
+  if (state === 'add') return setNodeAdd();
+  if (state === 'delete') return setNodeDelete();
+  if (state === 'transl') return setNodeTransl(countUnits);
+};
+
+function clearNodeAdd() {
+  var selection = nodeAdd.innerHTML;
+  if (selection) {
+    nodeBlank.innerHTML = selection + nodeBlank.innerHTML;
+    nodeAdd.innerHTML = '';
+  }
+}
+
+/*function deleteNodesAddBlank() {
+  if (!nodeBlank) return;
+  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
+  if (str === '') {
+    nodeBlank.remove();
+    if (nodeAdd) nodeAdd.remove();
+  }
+}*/
+
+function clearNodeDelete() {
+  if (nodeDelete) nodeDelete.removeAttribute('id');
+  nodeDelete = null;
+}
+
+function clearNodeTranl() {
+  if (nodeTransl) nodeTransl.removeAttribute('id');
+  nodeTransl = null;
+}
+
+function setNodeAdd() {
+  var _from = '0',
+      _to = '0';
+  var lastNode = nodeAdd.previousElementSibling;
+  if (lastNode && lastNode.hasAttribute('to')) {
+    _from = _to = lastNode.getAttribute('to');
+  }
+  return { _from: _from, _to: _to };
+}
+
+function setNodeDelete() {
+  var pozz = { _from: '0', _to: '0' };
+  if (!nodeAdd) return pozz;
+  nodeDelete = nodeAdd.previousElementSibling; // не лучший вариант поиска
+  if (!nodeDelete || !nodeDelete.hasAttribute('from')) return pozz;
+  nodeDelete.id = 'delete-txt';
+  pozz._from = nodeDelete.getAttribute('from');
+  pozz._to = nodeDelete.getAttribute('to');
+  return pozz;
+}
+
+function setNodeTransl(countUnits) {
+  var nodes = nodeTxt.querySelectorAll('span[from]');
+  if (nodes && nodes[countUnits]) {
+    nodeTransl = nodes[countUnits]; // следующий кусок, т.к. index = length - 1
+    nodeTransl.id = 'transl-txt';
+  }
+  return { _from: '0', _to: '0' };
+}
+
+////////////************ Сохранение/восстановление файла *************
+
+modelTxt.save = function () {
+  if (!file.name) return; // можно другое свойство file проверить, Boolean(file = {}) = true
+  clearNodeAdd();
+  clearNodeDelete();
+  clearNodeTranl();
+  var content = nodeTxt.innerHTML;
+  if (!content) return;
+  var path = /\._lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '_.lngt');
+  var name = /\._lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '_.lngt');
+
+  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: '_lngt' });
+};
+
+modelTxt.make = function () {
+  ////
+};
+
+ipcRenderer.on('file-saved', function (event, arg) {
+  if (arg.kind !== '_lngt') return; // {err, path, name, kind}
+  if (arg.err) {
+    console.log('error in saving *._lngt:');console.log(arg.err);
+    return;
+  }
+  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
+  file.name = arg.name;
+  setLocalStorage();
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', file);
+});
+
+function setLocalStorage() {
+  localStorage.setItem('path-lngt', file.path);
+  localStorage.setItem('name-lngt', file.name);
+}
+
+modelTxt.restore = function () {
+  var name = localStorage.getItem('name-lngt');
+  var path = localStorage.getItem('path-lngt');
+  if (!name || !path) return;
+  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: '_lngt' });
+};
+
+ipcRenderer.on('file-restored', function (event, arg) {
+  //arg = {name, path, content, kind, err};
+  if (arg.kind !== '_lngt') return;
+  if (arg.err) {
+    console.log('error in restoring *._lngt:');console.log(arg.err);
+    return;
+  }
+  var name = arg.name,
+      path = arg.path,
+      content = arg.content;
+
+  modelTxt.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установится file
+});
+
+//////////////************  Изменение области выделения  ************************
+
+modelTxt.addSelection = function () {
+  //if (stateTxt === 'delete interval') return;
+  var current = nodeBlank.innerHTML;
+  var selection = nodeAdd.innerHTML;
+  if (!current) return;
+  var s = current.match(/^.+?(\s|<br>)/);
+  if (s) {
+    nodeAdd.innerHTML = selection + s[0];
+    nodeBlank.innerHTML = current.slice(s[0].length);
+  } else {
+    //конец текстового файла
+    nodeAdd.innerHTML = selection + current;
+    nodeBlank.innerHTML = '';
+  }
+};
+
+modelTxt.reduceSelection = function () {
+  //if (stateTxt === 'delete interval') return;
+  var current = nodeBlank.innerHTML;
+  var selection = nodeAdd.innerHTML;
+  if (!selection) return;
+  var s = selection.match(/.+(\s|<br>)(.+(\s|<br>)?)$/);
+  if (s) {
+    nodeBlank.innerHTML = s[2] + current;
+    nodeAdd.innerHTML = selection.slice(0, -s[2].length);
+  } else {
+    nodeBlank.innerHTML = selection + current;
+    nodeAdd.innerHTML = '';
+  }
+};
+
+modelTxt.setSelectionTransl = function (countUnits) {
+  if (!file.name) return;
+  clearNodeTranl();
+  setNodeTransl(countUnits);
+};
+
+// Установка аудиоинтервала в выделеный участок
+modelTxt.setUnit = function (_ref2) {
+  var pozFrom = _ref2.pozFrom,
+      pozTo = _ref2.pozTo;
+
+  var selection = nodeAdd.innerHTML;
+  if (selection.trim() === '') return;
+  nodeAdd.innerHTML = '';
+  var span = document.createElement('span');
+  span.innerHTML = selection;
+  span.setAttribute('from', pozFrom);
+  span.setAttribute('to', pozTo);
+  nodeAdd.before(span);
+  return true;
+};
+
+// Выделенный участок перемещаем в оставшуюся область, выделяем предыдущий участок
+modelTxt.deleteUnit = function () {
+  var _from = void 0,
+      _to = void 0; // from - показывает ключевое слово
+  var span = nodeDelete.previousElementSibling; // возможно можно const span
+  nodeDelete.removeAttribute('id');
+  var txtTmp = nodeDelete.innerHTML;
+  nodeBlank.innerHTML = txtTmp + nodeBlank.innerHTML;
+  nodeDelete.remove();
+  if (span && span.hasAttribute('from') && span.hasAttribute('to')) {
+    _from = +span.getAttribute('from');
+    _to = +span.getAttribute('to');
+    span.id = 'delete-txt';
+    nodeDelete = span;
+  }
+  return { _from: _from, _to: _to };
+};
+
+modelTxt.getSelTransl = function () {
+  return nodeTransl ? nodeTransl.innerHTML : null;
+};
+
+function getStartPoz() {
+  var poz = 0;
+  var span = nodeAdd.previousElementSibling;
+  if (span && span.hasAttribute('to')) poz = +span.getAttribute('to');
+  return poz;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (modelTxt);
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = webAudioAPI;
+function webAudioAPI() {
+  var contextClass = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext || window.msAudioContext;
+  if (!contextClass) {
+    console.log('Web Audio API недоступно');
+    return;
+  }
+
+  var res = {};
+  var context = void 0,
+      source = void 0,
+      buffer = void 0,
+      playing = void 0,
+      startTime = void 0,
+      startPoz = void 0;
+
+  res.decode = function (content) {
+    /////if (!(data instanceof ArrayBuffer)) return;
+    return new Promise(function (resolve, reject) {
+      context = new contextClass();
+      context.decodeAudioData(content, function (audioBuffer) {
+        buffer = audioBuffer;
+        initVars();
+        var duration = Math.round(buffer.duration * 10) / 10;
+        resolve(duration);
+      }, reject); // может надо () => {reject();}
+    });
+  };
+
+  function initVars() {
+    startTime = startPoz = 0;
+    playing = false;
+  }
+
+  res.play = function () {
+    var poz = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+    source = context.createBufferSource();
+    source.connect(context.destination);
+    source.buffer = buffer;
+
+    startTime = context.currentTime;
+    startPoz = poz;
+    source.start(0, startPoz);
+    playing = true;
+  };
+
+  res.getCurrentPoz = function () {
+    return Math.round((context.currentTime - startTime + startPoz) * 10) / 10;
+  };
+
+  res.stop = function () {
+    source.stop();
+    playing = false;
+    return res.getCurrentPoz();
+  };
+
+  function onError() {}
+
+  return res;
+}
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__model_model__ = __webpack_require__(0);
+
+
+var txt = void 0,
+    transl = void 0,
+    popup = void 0;
+
+var init = function init() {
+  txt = document.getElementById('txt');
+  transl = document.getElementById('transl');
+  popup = document.getElementById('popup');
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setArea(txt);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].setAreaTransl(transl);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('changeState', changeState);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].on('popup', popupNotification);
+  txt.addEventListener('click', handlerTxt);
+};
+
+var close = function close() {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('changeState', changeState);
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].off('popup', popupNotification);
+  txt.removeEventListener('click', handlerTxt);
+  txt = transl = null;
+};
+
+function changeState(_ref) {
+  var state = _ref.state;
+
+  if (state === 'transl') {
+    transl.style.display = 'block';
+  } else {
+    transl.style.display = 'none';
+  }
+}
+
+function popupNotification(msg) {
+  popup.innerHTML = msg;
+  popup.style.display = 'block';
+  setTimeout(function () {
+    popup.style.display = 'none';
+    popup.innerHTML = '';
+  }, 2000);
+}
+
+function handlerTxt(e) {
+  __WEBPACK_IMPORTED_MODULE_0__model_model__["a" /* default */].popup('Выделение управляется стрелками вправо и влево');
+}
+
+var txtArea = {
+  init: init,
+  close: close
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (txtArea);
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(18)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "@charset \"UTF-8\";\nhtml, body, div, span, iframe,\nh1, h2, h3, h4, h5, h6, p, blockquote, pre,\na, abbr, address, big, cite, code,\ndel, em, img, small, strike, strong, tt,\ndl, dt, dd, ol, ul, li,\nfieldset, form, label, legend,\ntable, caption, tbody, tfoot, thead, tr, th, td,\narticle, aside, canvas, details,\nfigure, figcaption, footer, header, hgroup,\nmenu, nav, output, section, summary,\ntime, mark, audio, video {\n  margin: 0;\n  padding: 0;\n  border: 0;\n  font-size: 100%;\n  font: inherit;\n  vertical-align: baseline; }\n\n/* HTML5 display-role reset for older browsers */\narticle, aside, details, figcaption, figure,\nfooter, header, hgroup, menu, nav, section {\n  display: block; }\n\nbody {\n  line-height: 1; }\n\nol, ul {\n  list-style: none; }\n\nblockquote, q {\n  quotes: none; }\n\nblockquote:before, blockquote:after,\nq:before, q:after {\n  content: '';\n  content: none; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\n/************************************\r\n\tПервая палитра\r\n*************************************/\n/************************************\r\n\tВторая палитра\r\n*************************************/\nhtml, body {\n  height: 100%; }\n\n#work {\n  background-color: #e8f3f7;\n  display: flex;\n  flex-flow: column nowrap;\n  height: 100%; }\n  #work .part {\n    margin: 0px 5px 5px 5px; }\n  #work #files {\n    margin: 5px 5px 5px 0px; }\n\n#area {\n  flex: 1 0 100px;\n  background-color: #f4f8f7;\n  display: flex; }\n\n#info {\n  background-color: #B6D0C9; }\n\n#files {\n  display: flex;\n  flex-wrap: wrap; }\n  #files .file-field {\n    flex: 1 0 200px;\n    margin: 5px 0 0 5px;\n    background-color: #C2DFEA;\n    border: 0.5px solid #8C95AA;\n    border-radius: 4px;\n    padding: 6px;\n    cursor: pointer; }\n\n#btns-files-state {\n  display: flex; }\n  #btns-files-state .btns-file {\n    flex: 1 0 100px;\n    align-content: stretch;\n    display: flex; }\n    #btns-files-state .btns-file button {\n      width: 100px;\n      margin-right: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #A47C64; }\n  #btns-files-state #btns-state {\n    flex: 1 0 100px;\n    align-content: right;\n    display: flex;\n    max-width: 400px; }\n    #btns-files-state #btns-state button {\n      flex: 1 0 25px;\n      margin-left: 5px;\n      cursor: pointer;\n      color: #fdfaf2;\n      border: 0.5px solid #86644f;\n      border-radius: 4px;\n      padding: 5px;\n      background-color: #255677; }\n    #btns-files-state #btns-state button.current {\n      background-color: #6e94b6; }\n\n/*\r\n.progress {\r\n  background-color: $a_blue;\r\n  position: absolute;\r\n  width: 30%;\r\n  height: 100%;\r\n  left: 0px;\r\n  top: 0px;\r\n  opacity: 0.3;\r\n}\r\n*/\n#info {\n  display: flex;\n  border: 0.5px solid #8C95AA; }\n  #info div {\n    flex: 1 1 270px;\n    padding: 5px;\n    overflow: auto; }\n  #info .mid-border {\n    border-left: 0.5px solid #8C95AA; }\n  #info .td-border {\n    border-left: 0.5px solid #8C95AA; }\n\n#btns {\n  display: flex; }\n\n#btns-intervals, #btns-transl {\n  display: none; }\n\n#btns button, #btns-intervals button, #btns-transl button {\n  background-color: #879c64;\n  color: #e7ece0;\n  border-radius: 5px;\n  margin: 0 1px;\n  padding: 5px 0;\n  cursor: pointer; }\n\n#btns {\n  justify-content: space-between; }\n  #btns .btns-group {\n    display: flex; }\n  #btns .btns-control button {\n    width: 70px; }\n  #btns .btns-from-to button {\n    width: 47px; }\n  #btns .btns-from-to button.z {\n    width: 30px; }\n\n#btns-intervals button, #btns-transl button {\n  width: 100px; }\n\n#txt {\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #txt #blank-txt {\n    color: black; }\n  #txt #add-txt {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #txt #delete-txt, #txt #transl-txt {\n    background-color: #6e557b;\n    color: #f7fbfc; }\n\n#transl {\n  display: none;\n  padding: 5px;\n  overflow-y: scroll;\n  color: #50a3c3; }\n  #transl #selection-transl {\n    background-color: #50a3c3;\n    color: #f7fbfc; }\n  #transl #blank-transl {\n    color: black; }\n\n#area .area {\n  border: 0.5px solid #8C95AA;\n  flex: 1 0 100px; }\n\n#popup {\n  display: none;\n  position: absolute;\n  z-index: 2;\n  width: 30%;\n  top: 30%;\n  left: 30%;\n  padding: 10px;\n  border: 2px solid #7b6353;\n  border-radius: 5px;\n  background-color: #f9e3d3;\n  color: #522709; }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(17);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(20)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss", function() {
+			var newContent = require("!!../../node_modules/css-loader/index.js!../../node_modules/sass-loader/lib/loader.js!./style.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+
+var stylesInDom = {};
+
+var	memoize = function (fn) {
+	var memo;
+
+	return function () {
+		if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+		return memo;
+	};
+};
+
+var isOldIE = memoize(function () {
+	// Test for IE <= 9 as proposed by Browserhacks
+	// @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+	// Tests for existence of standard globals is to allow style-loader
+	// to operate correctly into non-standard environments
+	// @see https://github.com/webpack-contrib/style-loader/issues/177
+	return window && document && document.all && !window.atob;
+});
+
+var getElement = (function (fn) {
+	var memo = {};
+
+	return function(selector) {
+		if (typeof memo[selector] === "undefined") {
+			memo[selector] = fn.call(this, selector);
+		}
+
+		return memo[selector]
+	};
+})(function (target) {
+	return document.querySelector(target)
+});
+
+var singleton = null;
+var	singletonCounter = 0;
+var	stylesInsertedAtTop = [];
+
+var	fixUrls = __webpack_require__(21);
+
+module.exports = function(list, options) {
+	if (typeof DEBUG !== "undefined" && DEBUG) {
+		if (typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+	}
+
+	options = options || {};
+
+	options.attrs = typeof options.attrs === "object" ? options.attrs : {};
+
+	// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+	// tags it will allow on a page
+	if (!options.singleton) options.singleton = isOldIE();
+
+	// By default, add <style> tags to the <head> element
+	if (!options.insertInto) options.insertInto = "head";
+
+	// By default, add <style> tags to the bottom of the target
+	if (!options.insertAt) options.insertAt = "bottom";
+
+	var styles = listToStyles(list, options);
+
+	addStylesToDom(styles, options);
+
+	return function update (newList) {
+		var mayRemove = [];
+
+		for (var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+
+			domStyle.refs--;
+			mayRemove.push(domStyle);
+		}
+
+		if(newList) {
+			var newStyles = listToStyles(newList, options);
+			addStylesToDom(newStyles, options);
+		}
+
+		for (var i = 0; i < mayRemove.length; i++) {
+			var domStyle = mayRemove[i];
+
+			if(domStyle.refs === 0) {
+				for (var j = 0; j < domStyle.parts.length; j++) domStyle.parts[j]();
+
+				delete stylesInDom[domStyle.id];
+			}
+		}
+	};
+};
+
+function addStylesToDom (styles, options) {
+	for (var i = 0; i < styles.length; i++) {
+		var item = styles[i];
+		var domStyle = stylesInDom[item.id];
+
+		if(domStyle) {
+			domStyle.refs++;
+
+			for(var j = 0; j < domStyle.parts.length; j++) {
+				domStyle.parts[j](item.parts[j]);
+			}
+
+			for(; j < item.parts.length; j++) {
+				domStyle.parts.push(addStyle(item.parts[j], options));
+			}
+		} else {
+			var parts = [];
+
+			for(var j = 0; j < item.parts.length; j++) {
+				parts.push(addStyle(item.parts[j], options));
+			}
+
+			stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+		}
+	}
+}
+
+function listToStyles (list, options) {
+	var styles = [];
+	var newStyles = {};
+
+	for (var i = 0; i < list.length; i++) {
+		var item = list[i];
+		var id = options.base ? item[0] + options.base : item[0];
+		var css = item[1];
+		var media = item[2];
+		var sourceMap = item[3];
+		var part = {css: css, media: media, sourceMap: sourceMap};
+
+		if(!newStyles[id]) styles.push(newStyles[id] = {id: id, parts: [part]});
+		else newStyles[id].parts.push(part);
+	}
+
+	return styles;
+}
+
+function insertStyleElement (options, style) {
+	var target = getElement(options.insertInto)
+
+	if (!target) {
+		throw new Error("Couldn't find a style target. This probably means that the value for the 'insertInto' parameter is invalid.");
+	}
+
+	var lastStyleElementInsertedAtTop = stylesInsertedAtTop[stylesInsertedAtTop.length - 1];
+
+	if (options.insertAt === "top") {
+		if (!lastStyleElementInsertedAtTop) {
+			target.insertBefore(style, target.firstChild);
+		} else if (lastStyleElementInsertedAtTop.nextSibling) {
+			target.insertBefore(style, lastStyleElementInsertedAtTop.nextSibling);
+		} else {
+			target.appendChild(style);
+		}
+		stylesInsertedAtTop.push(style);
+	} else if (options.insertAt === "bottom") {
+		target.appendChild(style);
+	} else {
+		throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+	}
+}
+
+function removeStyleElement (style) {
+	if (style.parentNode === null) return false;
+	style.parentNode.removeChild(style);
+
+	var idx = stylesInsertedAtTop.indexOf(style);
+	if(idx >= 0) {
+		stylesInsertedAtTop.splice(idx, 1);
+	}
+}
+
+function createStyleElement (options) {
+	var style = document.createElement("style");
+
+	options.attrs.type = "text/css";
+
+	addAttrs(style, options.attrs);
+	insertStyleElement(options, style);
+
+	return style;
+}
+
+function createLinkElement (options) {
+	var link = document.createElement("link");
+
+	options.attrs.type = "text/css";
+	options.attrs.rel = "stylesheet";
+
+	addAttrs(link, options.attrs);
+	insertStyleElement(options, link);
+
+	return link;
+}
+
+function addAttrs (el, attrs) {
+	Object.keys(attrs).forEach(function (key) {
+		el.setAttribute(key, attrs[key]);
+	});
+}
+
+function addStyle (obj, options) {
+	var style, update, remove, result;
+
+	// If a transform function was defined, run it on the css
+	if (options.transform && obj.css) {
+	    result = options.transform(obj.css);
+
+	    if (result) {
+	    	// If transform returns a value, use that instead of the original css.
+	    	// This allows running runtime transformations on the css.
+	    	obj.css = result;
+	    } else {
+	    	// If the transform function returns a falsy value, don't add this css.
+	    	// This allows conditional loading of css
+	    	return function() {
+	    		// noop
+	    	};
+	    }
+	}
+
+	if (options.singleton) {
+		var styleIndex = singletonCounter++;
+
+		style = singleton || (singleton = createStyleElement(options));
+
+		update = applyToSingletonTag.bind(null, style, styleIndex, false);
+		remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+
+	} else if (
+		obj.sourceMap &&
+		typeof URL === "function" &&
+		typeof URL.createObjectURL === "function" &&
+		typeof URL.revokeObjectURL === "function" &&
+		typeof Blob === "function" &&
+		typeof btoa === "function"
+	) {
+		style = createLinkElement(options);
+		update = updateLink.bind(null, style, options);
+		remove = function () {
+			removeStyleElement(style);
+
+			if(style.href) URL.revokeObjectURL(style.href);
+		};
+	} else {
+		style = createStyleElement(options);
+		update = applyToTag.bind(null, style);
+		remove = function () {
+			removeStyleElement(style);
+		};
+	}
+
+	update(obj);
+
+	return function updateStyle (newObj) {
+		if (newObj) {
+			if (
+				newObj.css === obj.css &&
+				newObj.media === obj.media &&
+				newObj.sourceMap === obj.sourceMap
+			) {
+				return;
+			}
+
+			update(obj = newObj);
+		} else {
+			remove();
+		}
+	};
+}
+
+var replaceText = (function () {
+	var textStore = [];
+
+	return function (index, replacement) {
+		textStore[index] = replacement;
+
+		return textStore.filter(Boolean).join('\n');
+	};
+})();
+
+function applyToSingletonTag (style, index, remove, obj) {
+	var css = remove ? "" : obj.css;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = replaceText(index, css);
+	} else {
+		var cssNode = document.createTextNode(css);
+		var childNodes = style.childNodes;
+
+		if (childNodes[index]) style.removeChild(childNodes[index]);
+
+		if (childNodes.length) {
+			style.insertBefore(cssNode, childNodes[index]);
+		} else {
+			style.appendChild(cssNode);
+		}
+	}
+}
+
+function applyToTag (style, obj) {
+	var css = obj.css;
+	var media = obj.media;
+
+	if(media) {
+		style.setAttribute("media", media)
+	}
+
+	if(style.styleSheet) {
+		style.styleSheet.cssText = css;
+	} else {
+		while(style.firstChild) {
+			style.removeChild(style.firstChild);
+		}
+
+		style.appendChild(document.createTextNode(css));
+	}
+}
+
+function updateLink (link, options, obj) {
+	var css = obj.css;
+	var sourceMap = obj.sourceMap;
+
+	/*
+		If convertToAbsoluteUrls isn't defined, but sourcemaps are enabled
+		and there is no publicPath defined then lets turn convertToAbsoluteUrls
+		on by default.  Otherwise default to the convertToAbsoluteUrls option
+		directly
+	*/
+	var autoFixUrls = options.convertToAbsoluteUrls === undefined && sourceMap;
+
+	if (options.convertToAbsoluteUrls || autoFixUrls) {
+		css = fixUrls(css);
+	}
+
+	if (sourceMap) {
+		// http://stackoverflow.com/a/26603875
+		css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+	}
+
+	var blob = new Blob([css], { type: "text/css" });
+
+	var oldSrc = link.href;
+
+	link.href = URL.createObjectURL(blob);
+
+	if(oldSrc) URL.revokeObjectURL(oldSrc);
+}
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports) {
+
+
+/**
+ * When source maps are enabled, `style-loader` uses a link element with a data-uri to
+ * embed the css on the page. This breaks all relative urls because now they are relative to a
+ * bundle instead of the current page.
+ *
+ * One solution is to only use full urls, but that may be impossible.
+ *
+ * Instead, this function "fixes" the relative urls to be absolute according to the current page location.
+ *
+ * A rudimentary test suite is located at `test/fixUrls.js` and can be run via the `npm test` command.
+ *
+ */
+
+module.exports = function (css) {
+  // get current location
+  var location = typeof window !== "undefined" && window.location;
+
+  if (!location) {
+    throw new Error("fixUrls requires window.location");
+  }
+
+	// blank or null?
+	if (!css || typeof css !== "string") {
+	  return css;
+  }
+
+  var baseUrl = location.protocol + "//" + location.host;
+  var currentDir = baseUrl + location.pathname.replace(/\/[^\/]*$/, "/");
+
+	// convert each url(...)
+	/*
+	This regular expression is just a way to recursively match brackets within
+	a string.
+
+	 /url\s*\(  = Match on the word "url" with any whitespace after it and then a parens
+	   (  = Start a capturing group
+	     (?:  = Start a non-capturing group
+	         [^)(]  = Match anything that isn't a parentheses
+	         |  = OR
+	         \(  = Match a start parentheses
+	             (?:  = Start another non-capturing groups
+	                 [^)(]+  = Match anything that isn't a parentheses
+	                 |  = OR
+	                 \(  = Match a start parentheses
+	                     [^)(]*  = Match anything that isn't a parentheses
+	                 \)  = Match a end parentheses
+	             )  = End Group
+              *\) = Match anything and then a close parens
+          )  = Close non-capturing group
+          *  = Match anything
+       )  = Close capturing group
+	 \)  = Match a close parens
+
+	 /gi  = Get all matches, not the first.  Be case insensitive.
+	 */
+	var fixedCss = css.replace(/url\s*\(((?:[^)(]|\((?:[^)(]+|\([^)(]*\))*\))*)\)/gi, function(fullMatch, origUrl) {
+		// strip quotes (if they exist)
+		var unquotedOrigUrl = origUrl
+			.trim()
+			.replace(/^"(.*)"$/, function(o, $1){ return $1; })
+			.replace(/^'(.*)'$/, function(o, $1){ return $1; });
+
+		// already a full url? no change
+		if (/^(#|data:|http:\/\/|https:\/\/|file:\/\/\/)/i.test(unquotedOrigUrl)) {
+		  return fullMatch;
+		}
+
+		// convert the url to a full url
+		var newUrl;
+
+		if (unquotedOrigUrl.indexOf("//") === 0) {
+		  	//TODO: should we add protocol?
+			newUrl = unquotedOrigUrl;
+		} else if (unquotedOrigUrl.indexOf("/") === 0) {
+			// path should be relative to the base url
+			newUrl = baseUrl + unquotedOrigUrl; // already starts with '/'
+		} else {
+			// path should be relative to current directory
+			newUrl = currentDir + unquotedOrigUrl.replace(/^\.\//, ""); // Strip leading './'
+		}
+
+		// send back the fixed url(...)
+		return "url(" + JSON.stringify(newUrl) + ")";
+	});
+
+	// send back the fixed css
+	return fixedCss;
+};
+
+
+/***/ })
+/******/ ]);

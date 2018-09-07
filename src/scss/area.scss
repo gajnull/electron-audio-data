@@ -36,3 +36,17 @@
   border: 0.5px solid $a_blue;
   flex: 1 0 100px;
 }
+
+#popup {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  width: 30%;
+  top: 30%;
+  left: 30%;
+  padding: 10px;
+  border: 2px solid #7b6353;
+  border-radius: 5px;
+  background-color: #f9e3d3;
+  color: #522709; 
+}

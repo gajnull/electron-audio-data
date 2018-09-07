@@ -108,13 +108,23 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, content}
 model.save = () => {
   modelTxt.save();
   modelTransl.save();
-}
+};
 
 model.restore = () => {
   modelTxt.restore();
   modelTransl.restore();
   modelAudio.restore(); // если аудио загружено, то оставляем как есть
-}
+};
 
+model.make = () => {
+  modelTxt.make();
+  modelTransl.make();
+};
+
+
+//////
+model.popup = (msg) => {
+  vent.publish('popup', msg);
+} 
 
 export default model;
