@@ -125,6 +125,6 @@ model.make = () => {
 //////
 model.popup = (msg) => {
   vent.publish('popup', msg);
-} 
+}
 
 export default model;

@@ -37,14 +37,13 @@ app.on('activate', function () {
   }
 })
 
-
 const fs = require('fs');
 const {ipcMain} = require('electron');
 //сохранение файла .lngt и .transl
 ipcMain.on('will-save-file', (event, arg) => {
-  const {name, path, content, kind} = arg;  
+  const {path, content, kind} = arg;
   fs.writeFile(path, content, (err)=>{
-    event.sender.send('file-saved', {err, path, name, kind});
+    event.sender.send('file-saved', {err, kind, path});
   });
 });
 //восстановление файла .lngt и .transl
@@ -63,4 +62,3 @@ ipcMain.on('will-restore-audio', (event, arg) => {
     event.sender.send('audio-restored', {name, path, content, err});
   });
 });
-

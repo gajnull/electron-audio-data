@@ -70,7 +70,6 @@ const modelAudio = {
     if (playing) return;
     if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     const period = (pozTo - pozFrom) * 1000;  // здесь не обязательно округлять
-    console.log(pozFrom, ' , ', pozTo);
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();

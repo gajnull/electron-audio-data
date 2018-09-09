@@ -11,22 +11,24 @@ let nodeTransl = null,   // весь элемент
 
 
 
-// установка
+////////////************ установка  ************
+
 const setRoot = (root) => {
   nodeTransl = root;
 };
 
 const setLoadedFile = ({name, path, content}) => {
-  let s = content;
-  s = txtToTransl(s);
-  initNodes(s);
+  file = {name, path};
+  let str = txtToTransl(content);
+  initNodes(str);
 
-  file = {name, path };
   vent.publish('loadedTransl', file);
 
-  function txtToTransl(_s) {
-    if (/\._transl$/.test(name)) return _s;
-    let s = _s;
+  function txtToTransl(content) {
+    if (!/\.txt$/.test(file.name)) return content;
+    file.name = (file.name).replace(/\.txt$/,'._transl');
+    file.path = (file.path).replace(/\.txt$/,'._transl');
+    let s = content;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -62,10 +64,8 @@ function initNodes(str) {
 
 }
 
-function setLocalStorage() {
-  localStorage.setItem('path-transl', file.path);
-  localStorage.setItem('name-transl', file.name);
-}
+
+/////////////************  Изменение состояния  ************************
 
 const setState = (state) => {
   if (!nodeSelection) return -1;
@@ -81,34 +81,20 @@ function clearNodeSelection() {
   }
 }
 
-/*
-function deleteNodesSelectionBlank() {
-  if (!nodeBlank) return;
-  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
-  if (str === '') {
-    nodeBlank.remove();
-    if (nodeSelection) nodeSelection.remove();
-  }
-}
-*/
-
-
 function getCountUnits() { // количество уже назначеннх кусков
   const nodes = nodeTransl.querySelectorAll('span[transl="true"]');
   return (nodes) ? nodes.length : 0;  // возможно проверка не нужна
 }
 
 
-// Сохранение файла
+////////////************ Сохранение/восстановление файла *************
+
 const save = () => {
   if (!file.name) return;
   clearNodeSelection();
   const content = nodeTransl.innerHTML;
   if (!content) return;
-  const path =  /\._transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'._transl');
-  const name =  /\._transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'._transl');
-
-  ipcRenderer.send('will-save-file', {path, name, content, kind: 'transl'});
+  ipcRenderer.send('will-save-file', {path: file.path, content, kind: '_transl'});
 }
 
 const make = () => {
@@ -116,30 +102,34 @@ const make = () => {
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    if (arg.kind !== 'transl') return;   // {err, path, name, kind}
+    if (arg.kind !== '_transl') return;   // {err, path, name, kind}
     if (arg.err) {
-      console.log('error in saving *.transl:');  console.log(arg.err);
+      console.log('error in saving *._transl:');  console.log(arg.err);
       return;
     }
-    file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
-    file.name = arg.name;
     setLocalStorage();
     vent.publish('savedTransl', file);
   });
 
-// Восстановление файла
+  function setLocalStorage() {
+    localStorage.setItem('path-transl', file.path);
+    localStorage.setItem('name-transl', file.name);
+  }
+
 const restore = () => {
   const name = localStorage.getItem('name-transl');
   const path =localStorage.getItem('path-transl');
   if (!name || !path) return;
-  ipcRenderer.send('will-restore-file', {name, path, kind: 'transl'});
+  if (!/\._transl$/.test(name) ||        // это не должно случиться
+      !/\._transl$/.test(path)) return;  // для случая, если при сохранении произошла ошибка
+  ipcRenderer.send('will-restore-file', {name, path, kind: '_transl'});
 }
 
   ipcRenderer.on('file-restored', (event, arg) => {
     //arg = {name, path, content, kind, err};
-    if (arg.kind !== 'transl') return;
+    if (arg.kind !== '_transl') return;
     if (arg.err) {
-      console.log('error in restoring *.transl:');  console.log(arg.err);
+      console.log('error in restoring *._transl:');  console.log(arg.err);
       return;
     }
     const {name, path, content} = arg;
@@ -147,18 +137,9 @@ const restore = () => {
   })
 
 
-const offer = (txt) => {
-  const total = txt.split(/[.,!?]|<br>/).length;
-  let count = 0;
-  clearNodeSelection();
-  do {
-    addSelection();
-    count = (nodeSelection.innerHTML).split(/[.,!?]|<br>/).length;
-  } while (count < total && nodeBlank.innerHTML !== '')
-}
 
+//////////////************  Изменение области выделения  ************************
 
-// Изменение области выделения
 const addSelection = () => {
   let blank = nodeBlank.innerHTML;
   if (!blank) return;
@@ -195,6 +176,17 @@ const setUnit = () => { // если вернёт -1, то порция пере�
   nodeBlank.before(nodeSelection);
   return getCountUnits();
 };
+
+const offer = (txt) => {
+  const total = txt.split(/[.,!?]|<br>/).length;
+  let count = 0;
+  clearNodeSelection();
+  do {
+    addSelection();
+    count = (nodeSelection.innerHTML).split(/[.,!?]|<br>/).length;
+  } while (count < total && nodeBlank.innerHTML !== '')
+}
+
 
 
 const modelTransl = {

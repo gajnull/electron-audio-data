@@ -5,7 +5,7 @@ let txt, transl, popup;
 const init = () => {
   txt = document.getElementById('txt');
   transl = document.getElementById('transl');
-  popup = document.getElementById('popup'); 
+  popup = document.getElementById('popup');
   model.setArea(txt);
   model.setAreaTransl(transl);
   model.on('changeState', changeState);
@@ -16,7 +16,7 @@ const init = () => {
 const close = () => {
   model.off('changeState', changeState);
   model.off('popup', popupNotification);
-  txt.removeEventListener('click', handlerTxt); 
+  txt.removeEventListener('click', handlerTxt);
   txt = transl = null;
 };
 

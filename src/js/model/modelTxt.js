@@ -19,26 +19,28 @@ modelTxt.setRoot = (root) => {
 };
 
 modelTxt.setLoadedFile = ({name, path, content}) => {
-  let str = txtToLngt(content);
-  initNodes(str)
   file = {name, path};
-  vent.publish('loadedLngt', {name, path, startPoz: getStartPoz()});
+  let str = txtToLngt(content);
+  initNodes(str);
 
-  function txtToLngt(str) {
-    if (/\._lngt$/.test(name)) return;
+  vent.publish('loadedLngt', {name: file.name, path: file.path, startPoz: getStartPoz()});
 
-    let s = str;
+  function txtToLngt(content) {
+    if (!/\.txt$/.test(file.name)) return content;
+    file.name = (file.name).replace(/\.txt$/,'._lngt');
+    file.path = (file.path).replace(/\.txt$/,'._lngt');
+    let s = content;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    s = s.replace(/\n/g, '<br>').
+          replace(/\s*<br>\s*/g,'<br>&nbsp;&nbsp;'). //для отступа
+          replace(/\s+/g, ' '). //все пробелы однотипные и по одному
+          replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
     s = `<main-info></main-info>
          <span id="add-txt"></span>
-         <span id="blank-txt">&nbsp&nbsp${s}</span>`;
+         <span id="blank-txt">&nbsp;&nbsp;${s}</span>`;
     return s;
   }
 
@@ -62,7 +64,6 @@ function initNodes(str) {
 }
 
 
-
 /////////////************  Изменение состояния  ************************
 
 modelTxt.setState = (state, countUnits) => {
@@ -82,15 +83,6 @@ function clearNodeAdd() {
     nodeAdd.innerHTML = '';
   }
 }
-
-/*function deleteNodesAddBlank() {
-  if (!nodeBlank) return;
-  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
-  if (str === '') {
-    nodeBlank.remove();
-    if (nodeAdd) nodeAdd.remove();
-  }
-}*/
 
 function clearNodeDelete() {
   if (nodeDelete) nodeDelete.removeAttribute('id');
@@ -142,26 +134,44 @@ modelTxt.save = () => {
   clearNodeTranl();
   const content = nodeTxt.innerHTML;
   if (!content) return;
-  const path =  /\._lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/,'_.lngt');
-  const name =  /\._lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/,'_.lngt');
-
-  ipcRenderer.send('will-save-file', {path, name, content, kind: '_lngt'});
+  ipcRenderer.send('will-save-file', {path: file.path, content, kind: '_lngt'});
 }
 
 modelTxt.make = () => {
-  ////
+  modelTxt.save();
+  if (!nodeTxt) return;
+  const nodes = nodeTxt.querySelectorAll('span[from]');
+  if (!nodes) return;
+  let arr = [];
+  nodes.forEach(node => {
+    arr.push({
+      txt: (node.innerHTML).replace('<>', '\n').replace('&nbsp;', ' '),
+      from: node.getAttribute('from'),
+      to: node.getAttribute('to')
+    });
+  });
+  const lngt = JSON.stringify(arr);
+  const path = (file.path).replace('/._lngt$/', '.lngt');
+  ipcRenderer.send('will-save-file', {path, lngt, kind: 'lngt'});
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    if (arg.kind !== '_lngt') return;  // {err, path, name, kind}
+    // {err, path, kind}
     if (arg.err) {
       console.log('error in saving *._lngt:');  console.log(arg.err);
       return;
     }
-    file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
-    file.name = arg.name;
-    setLocalStorage();
-    vent.publish('savedLngt', file);
+    if (arg.kind === '_lngt') {
+      setLocalStorage();
+      vent.publish('savedLngt', file);
+    }
+    if (arg.kind === 'lngt') {
+      const rest = (nodeBlank.innerHTML).replace(/(\s|<br>|&nbsp;)/g, '');
+      let msg = '<p> Сформирован окончательный файл: ' + arg.path + '</p>';
+      if (rest !== '') msg = msg +'<p> Остался неопределённый фрагмент: ' +
+                                  (nodeBlank.innerHTML).slice(0, 200) + '...</p>';
+      vent.publish('popup', msg);
+    }
   });
 
   function setLocalStorage() {
@@ -173,6 +183,9 @@ modelTxt.restore = () => {
   const name = localStorage.getItem('name-lngt');
   const path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
+  if (!/\._lngt$/.test(name) ||        // это не должно случиться
+      !/\._lngt$/.test(path)) return;  // для случая, если при сохранении произошла ошибка
+
   ipcRenderer.send('will-restore-file', {name, path, kind: '_lngt'});
 }
 
@@ -180,6 +193,7 @@ modelTxt.restore = () => {
     //arg = {name, path, content, kind, err};
     if (arg.kind !== '_lngt') return;
     if (arg.err) {
+      vent.publish('popup', '<p> ошибка при восстановлении <p>');
       console.log('error in restoring *._lngt:');  console.log(arg.err);
       return;
     }

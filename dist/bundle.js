@@ -951,7 +951,6 @@ var modelAudio = {
     if (playing) return;
     if (notFitUnit()) return; // если отрезок не установлен и не может быть установлен
     var period = (pozTo - pozFrom) * 1000; // здесь не обязательно округлять
-    console.log(pozFrom, ' , ', pozTo);
     if (period < 0) return; // не должно быть
     pozCurrent = pozFrom;
     this.play();
@@ -1113,7 +1112,8 @@ nodeBlank = null,
     nodeSelection = null; // выделяется из nodeBlank
 
 
-// установка
+////////////************ установка  ************
+
 var setRoot = function setRoot(root) {
   nodeTransl = root;
 };
@@ -1123,16 +1123,17 @@ var setLoadedFile = function setLoadedFile(_ref) {
       path = _ref.path,
       content = _ref.content;
 
-  var s = content;
-  s = txtToTransl(s);
-  initNodes(s);
-
   file = { name: name, path: path };
+  var str = txtToTransl(content);
+  initNodes(str);
+
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedTransl', file);
 
-  function txtToTransl(_s) {
-    if (/\._transl$/.test(name)) return _s;
-    var s = _s;
+  function txtToTransl(content) {
+    if (!/\.txt$/.test(file.name)) return content;
+    file.name = file.name.replace(/\.txt$/, '._transl');
+    file.path = file.path.replace(/\.txt$/, '._transl');
+    var s = content;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
@@ -1164,10 +1165,7 @@ function initNodes(str) {
   }*/
 }
 
-function setLocalStorage() {
-  localStorage.setItem('path-transl', file.path);
-  localStorage.setItem('name-transl', file.name);
-}
+/////////////************  Изменение состояния  ************************
 
 var setState = function setState(state) {
   if (!nodeSelection) return -1;
@@ -1183,33 +1181,20 @@ function clearNodeSelection() {
   }
 }
 
-/*
-function deleteNodesSelectionBlank() {
-  if (!nodeBlank) return;
-  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
-  if (str === '') {
-    nodeBlank.remove();
-    if (nodeSelection) nodeSelection.remove();
-  }
-}
-*/
-
 function getCountUnits() {
   // количество уже назначеннх кусков
   var nodes = nodeTransl.querySelectorAll('span[transl="true"]');
   return nodes ? nodes.length : 0; // возможно проверка не нужна
 }
 
-// Сохранение файла
+////////////************ Сохранение/восстановление файла *************
+
 var save = function save() {
   if (!file.name) return;
   clearNodeSelection();
   var content = nodeTransl.innerHTML;
   if (!content) return;
-  var path = /\._transl$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '._transl');
-  var name = /\._transl$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '._transl');
-
-  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: 'transl' });
+  ipcRenderer.send('will-save-file', { path: file.path, content: content, kind: '_transl' });
 };
 
 var make = function make() {
@@ -1217,30 +1202,34 @@ var make = function make() {
 };
 
 ipcRenderer.on('file-saved', function (event, arg) {
-  if (arg.kind !== 'transl') return; // {err, path, name, kind}
+  if (arg.kind !== '_transl') return; // {err, path, name, kind}
   if (arg.err) {
-    console.log('error in saving *.transl:');console.log(arg.err);
+    console.log('error in saving *._transl:');console.log(arg.err);
     return;
   }
-  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
-  file.name = arg.name;
   setLocalStorage();
   __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedTransl', file);
 });
 
-// Восстановление файла
+function setLocalStorage() {
+  localStorage.setItem('path-transl', file.path);
+  localStorage.setItem('name-transl', file.name);
+}
+
 var restore = function restore() {
   var name = localStorage.getItem('name-transl');
   var path = localStorage.getItem('path-transl');
   if (!name || !path) return;
-  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: 'transl' });
+  if (!/\._transl$/.test(name) || // это не должно случиться
+  !/\._transl$/.test(path)) return; // для случая, если при сохранении произошла ошибка
+  ipcRenderer.send('will-restore-file', { name: name, path: path, kind: '_transl' });
 };
 
 ipcRenderer.on('file-restored', function (event, arg) {
   //arg = {name, path, content, kind, err};
-  if (arg.kind !== 'transl') return;
+  if (arg.kind !== '_transl') return;
   if (arg.err) {
-    console.log('error in restoring *.transl:');console.log(arg.err);
+    console.log('error in restoring *._transl:');console.log(arg.err);
     return;
   }
   var name = arg.name,
@@ -1250,17 +1239,8 @@ ipcRenderer.on('file-restored', function (event, arg) {
   modelTransl.setLoadedFile({ name: name, path: path, content: content }); // здесь сами установятся file и localStorage
 });
 
-var offer = function offer(txt) {
-  var total = txt.split(/[.,!?]|<br>/).length;
-  var count = 0;
-  clearNodeSelection();
-  do {
-    addSelection();
-    count = nodeSelection.innerHTML.split(/[.,!?]|<br>/).length;
-  } while (count < total && nodeBlank.innerHTML !== '');
-};
+//////////////************  Изменение области выделения  ************************
 
-// Изменение области выделения
 var addSelection = function addSelection() {
   var blank = nodeBlank.innerHTML;
   if (!blank) return;
@@ -1298,6 +1278,16 @@ var setUnit = function setUnit() {
   nodeSelection.id = 'selection-transl';
   nodeBlank.before(nodeSelection);
   return getCountUnits();
+};
+
+var offer = function offer(txt) {
+  var total = txt.split(/[.,!?]|<br>/).length;
+  var count = 0;
+  clearNodeSelection();
+  do {
+    addSelection();
+    count = nodeSelection.innerHTML.split(/[.,!?]|<br>/).length;
+  } while (count < total && nodeBlank.innerHTML !== '');
 };
 
 var modelTransl = {
@@ -1349,24 +1339,25 @@ modelTxt.setLoadedFile = function (_ref) {
       path = _ref.path,
       content = _ref.content;
 
+  file = { name: name, path: path };
   var str = txtToLngt(content);
   initNodes(str);
-  file = { name: name, path: path };
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', { name: name, path: path, startPoz: getStartPoz() });
 
-  function txtToLngt(str) {
-    if (/\._lngt$/.test(name)) return;
+  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('loadedLngt', { name: file.name, path: file.path, startPoz: getStartPoz() });
 
-    var s = str;
+  function txtToLngt(content) {
+    if (!/\.txt$/.test(file.name)) return content;
+    file.name = file.name.replace(/\.txt$/, '._lngt');
+    file.path = file.path.replace(/\.txt$/, '._lngt');
+    var s = content;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g, '<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    s = s.replace(/\n/g, '<br>').replace(/\s*<br>\s*/g, '<br>&nbsp;&nbsp;'). //для отступа
+    replace(/\s+/g, ' '). //все пробелы однотипные и по одному
+    replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
-    s = '<main-info></main-info>\n         <span id="add-txt"></span>\n         <span id="blank-txt">&nbsp&nbsp' + s + '</span>';
+    s = '<main-info></main-info>\n         <span id="add-txt"></span>\n         <span id="blank-txt">&nbsp;&nbsp;' + s + '</span>';
     return s;
   }
 };
@@ -1407,15 +1398,6 @@ function clearNodeAdd() {
     nodeAdd.innerHTML = '';
   }
 }
-
-/*function deleteNodesAddBlank() {
-  if (!nodeBlank) return;
-  const str = (nodeBlank.innerHTML).replace(/\s|<br>|&nbsp;/g,'');
-  if (str === '') {
-    nodeBlank.remove();
-    if (nodeAdd) nodeAdd.remove();
-  }
-}*/
 
 function clearNodeDelete() {
   if (nodeDelete) nodeDelete.removeAttribute('id');
@@ -1466,26 +1448,43 @@ modelTxt.save = function () {
   clearNodeTranl();
   var content = nodeTxt.innerHTML;
   if (!content) return;
-  var path = /\._lngt$/.test(file.path) ? file.path : file.path.replace(/\.[^.]{1,5}$/, '_.lngt');
-  var name = /\._lngt$/.test(file.name) ? file.name : file.name.replace(/\.[^.]{1,5}$/, '_.lngt');
-
-  ipcRenderer.send('will-save-file', { path: path, name: name, content: content, kind: '_lngt' });
+  ipcRenderer.send('will-save-file', { path: file.path, content: content, kind: '_lngt' });
 };
 
 modelTxt.make = function () {
-  ////
+  modelTxt.save();
+  if (!nodeTxt) return;
+  var nodes = nodeTxt.querySelectorAll('span[from]');
+  if (!nodes) return;
+  var arr = [];
+  nodes.forEach(function (node) {
+    arr.push({
+      txt: node.innerHTML.replace('<>', '\n').replace('&nbsp;', ' '),
+      from: node.getAttribute('from'),
+      to: node.getAttribute('to')
+    });
+  });
+  var lngt = JSON.stringify(arr);
+  var path = file.path.replace('/._lngt$/', '.lngt');
+  ipcRenderer.send('will-save-file', { path: path, lngt: lngt, kind: 'lngt' });
 };
 
 ipcRenderer.on('file-saved', function (event, arg) {
-  if (arg.kind !== '_lngt') return; // {err, path, name, kind}
+  // {err, path, kind}
   if (arg.err) {
     console.log('error in saving *._lngt:');console.log(arg.err);
     return;
   }
-  file.path = arg.path; // если было расширение .txt (или другое), то оно изменится на .lngt
-  file.name = arg.name;
-  setLocalStorage();
-  __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', file);
+  if (arg.kind === '_lngt') {
+    setLocalStorage();
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('savedLngt', file);
+  }
+  if (arg.kind === 'lngt') {
+    var rest = nodeBlank.innerHTML.replace(/(\s|<br>|&nbsp;)/g, '');
+    var msg = '<p> Сформирован окончательный файл: ' + arg.path + '</p>';
+    if (rest !== '') msg = msg + '<p> Остался неопределённый фрагмент: ' + nodeBlank.innerHTML.slice(0, 200) + '...</p>';
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('popup', msg);
+  }
 });
 
 function setLocalStorage() {
@@ -1497,6 +1496,9 @@ modelTxt.restore = function () {
   var name = localStorage.getItem('name-lngt');
   var path = localStorage.getItem('path-lngt');
   if (!name || !path) return;
+  if (!/\._lngt$/.test(name) || // это не должно случиться
+  !/\._lngt$/.test(path)) return; // для случая, если при сохранении произошла ошибка
+
   ipcRenderer.send('will-restore-file', { name: name, path: path, kind: '_lngt' });
 };
 
@@ -1504,6 +1506,7 @@ ipcRenderer.on('file-restored', function (event, arg) {
   //arg = {name, path, content, kind, err};
   if (arg.kind !== '_lngt') return;
   if (arg.err) {
+    __WEBPACK_IMPORTED_MODULE_0__vent__["a" /* default */].publish('popup', '<p> ошибка при восстановлении <p>');
     console.log('error in restoring *._lngt:');console.log(arg.err);
     return;
   }
@@ -1731,7 +1734,7 @@ var txtArea = {
 /* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(18)(undefined);
+exports = module.exports = __webpack_require__(18)(false);
 // imports
 
 
