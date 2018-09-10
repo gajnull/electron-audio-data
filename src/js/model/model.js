@@ -106,8 +106,9 @@ model.setLoadedTxtFile = (file) => { // file: {name, path, content}
 ///////************  Save/Restore ************
 
 model.save = () => {
-  modelTxt.save();
-  modelTransl.save();
+  if (state === 'add') modelTxt.save();
+  if (state === 'transl') modelTransl.save();
+  if (state === 'delete') model.popup('Перейдите в режим редактирования или перевода', 2000);  
 };
 
 model.restore = () => {
@@ -117,14 +118,15 @@ model.restore = () => {
 };
 
 model.make = () => {
-  modelTxt.make();
-  modelTransl.make();
+  if (state === 'add') modelTxt.make();
+  if (state === 'transl') modelTransl.make();
+  if (state === 'delete') model.popup('Перейдите в режим редактирования или перевода', 2000);
 };
 
 
 //////
-model.popup = (msg) => {
-  vent.publish('popup', msg);
+model.popup = (msg, duration) => {
+  vent.publish('popup', {msg, duration});
 }
 
 export default model;

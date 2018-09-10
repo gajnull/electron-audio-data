@@ -26,16 +26,15 @@ const setLoadedFile = ({name, path, content}) => {
 
   function txtToTransl(content) {
     if (!/\.txt$/.test(file.name)) return content;
-    file.name = (file.name).replace(/\.txt$/,'._transl');
-    file.path = (file.path).replace(/\.txt$/,'._transl');
+    file.name = (file.name).replace(/(\.[a-zа-яё]{1,3})?\.txt$/,'._transl');  // тогда txt-файл с переводом можно также называть, но прибавлять через точку несколько букв(например *.ru.txt) 
+    file.path = (file.path).replace(/(\.[a-zа-яё]{1,3})?\.txt$/,'._transl');
     let s = content;
     //Нормализуем - убираем из текста возможные тэги
     s = s.replace(/</g, '(').replace(/>/g, ')');
     //Заменяем абзацы и упорядочиваем пробелы
-    s = s.replace(/\n/g, '<br>');
-    s = s.replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp'); //для отступа
-    s = s.replace(/\s+/g, ' '); //все пробелы однотипные и по одному
-    s = s.replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
+    s = s.replace(/\n/g, '<br>').replace(/\s*<br>\s*/g,'<br>&nbsp&nbsp'). //для отступа
+          replace(/\s+/g, ' '). //все пробелы однотипные и по одному
+          replace(/\s([.,:;!\)])/g, '$1'); //убираем ненужные пробелы
     //Добавляем тэги для начальной работы с текстом
     s = `<main-info lang="ru"></main-info>
          <span id="selection-transl"></span>
@@ -49,19 +48,6 @@ function initNodes(str) {
   nodeTransl.innerHTML = str;
   nodeSelection = nodeTransl.querySelector('#selection-transl');  // метод getElementById есть только у document
   nodeBlank = nodeTransl.querySelector('#blank-transl');
-
-  /*
-  if (!nodeBlank) {
-    nodeBlank = document.createElement('span');
-    nodeBlank.id = 'blank-transl';
-    nodeTransl.appendChild(nodeBlank);
-  }
-  if (!nodeSelection) {
-    nodeSelection = document.createElement('span');
-    nodeSelection.id = 'selection-transl';
-    nodeBlank.before(nodeSelection);
-  }*/
-
 }
 
 
@@ -98,17 +84,36 @@ const save = () => {
 }
 
 const make = () => {
-  ////
+  save();
+  if (!nodeTransl) return;
+  const nodes = nodeTransl.querySelectorAll('span[transl="true"]');
+  if (nodes.length === 0) return;
+  let arr = [];
+  nodes.forEach(node => {
+    arr.push((node.innerHTML).replace(/<br>/g, '\n').replace(/&nbsp;/g, ' '));
+  });
+  const content = JSON.stringify(arr);
+  const path = (file.path).replace(/\._transl$/, '.transl');
+  ipcRenderer.send('will-save-file', {path, content, kind: 'transl'});
 }
 
   ipcRenderer.on('file-saved', (event, arg) => {
-    if (arg.kind !== '_transl') return;   // {err, path, name, kind}
+    // {err, path, kind}
     if (arg.err) {
       console.log('error in saving *._transl:');  console.log(arg.err);
       return;
     }
-    setLocalStorage();
-    vent.publish('savedTransl', file);
+    if (arg.kind === '_transl') {    
+      setLocalStorage();
+      vent.publish('savedTransl', file);
+    }
+    if (arg.kind === 'transl') {
+      const rest = (nodeBlank.innerHTML).replace(/(\s|<br>|&nbsp;)/g, '');
+      let msg = '<p> Сформирован окончательный файл:<br>' + arg.path + '</p>';
+      if (rest !== '') msg = msg +'<p> Остался неопределённый фрагмент: ' +
+                                  (nodeBlank.innerHTML).slice(0, 100) + '...</p>';
+      vent.publish('popup', {msg, duration: 4000});
+    }    
   });
 
   function setLocalStorage() {

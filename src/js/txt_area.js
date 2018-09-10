@@ -28,13 +28,14 @@ function changeState({ state }) {
   }
 }
 
-function popupNotification(msg) {
+function popupNotification({msg, duration}) {
+  const _duration = duration || 2000;
   popup.innerHTML = msg;
   popup.style.display = 'block';
   setTimeout(() => {
     popup.style.display = 'none';
     popup.innerHTML = '';
-  }, 2000);
+  }, _duration);
 }
 
 function handlerTxt(e) {

@@ -12,7 +12,7 @@ const evs = {
   loadedTransl: [], //publish - {name, path, content} 
   savedTransl: [], //publish - {name, path}   
   // notifications
-  popup: [] //publish - {msg}
+  popup: [] //publish - {msg, duration}
 }
 
 const vent = {
