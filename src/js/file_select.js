@@ -2,11 +2,37 @@
   во внешнем модуле используется fileAudio.init() и
   fileAudio.close()
 *****************************************************************/
-import model from './model/model';
+import fileInput from './file_input';
 
-const fileAudio = {};
 
-let btn, input;
+const init = () => {
+  fileInput.init();
+  document.getElementById('files').addEventListener('click', selectFile);
+  model.on('loadedFile', setInfoLodedFile);
+};
+
+const close = () => {
+  fileInputs.close();
+  document.getElementById('files').removeEventListener('click', selectFile);
+  model.off('loadedFile', setInfoLodedFile);
+};
+
+function selectFile(ev) {
+  const el = ev.target;
+  if (!el.hasAttribute('type-file')) return;
+  const typeFile = el.getAttribute('type-file');
+  fileInput.selectFile(typeFile, el);
+}
+
+function setInfoLodedFile({type, name, path}) {
+  const el = document.querySelector('#files [type-file="' & type & '"]');
+  el.innerHTML = name;
+  el.setAttribute('title', path);
+}
+
+
+
+
 
 fileAudio.init = function() {
   btn = document.getElementById('file-audio');

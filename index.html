@@ -7,14 +7,15 @@
   <body>
     <div id="work">
 
+      <input id = "input-files" type="file" hidden>
       <input id = "input-audio" type="file" accept=".mp3,.wav" hidden>
       <input id = "input-txt" type = "file" accept = ".txt,._lngt" hidden>
       <input id = "input-transl" type = "file" accept = ".txt,._transl" hidden>
 
       <div id="files" class="part">
-        <div id="file-txt" class="file-field">Выберите текстовой файл</div>
-        <div id="file-audio" class="file-field">Выберите звуковой файл</div>
-        <div id="file-transl" class="file-field">Выберите файл с переводом</div>
+        <div type-file="lngt" class="file-field">Выберите текстовой файл</div>
+        <div type-file="mp3" class="file-field">Выберите звуковой файл</div>
+        <div type-file="transl" class="file-field">Выберите файл с переводом</div>
       </div>
 
       <div id="btns-files-state" class="part">

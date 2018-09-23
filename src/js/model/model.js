@@ -86,29 +86,18 @@ model.reduceSelection = () => {
 
 
 
-///////************    Load   **************
+///////************  Load/Save/Restore ************
 
-model.setLoadedAudioFile = (file) => { // file: {name, path, content}
-  modelAudio.decodeFile(file);
+model.setLoadedFile = (file) => {
+  if (file.type === 'mp3') modelAudio.decodeFile(file);
+  if (file.type === 'lngt') modelTxt.setLoadedFile(file);
+  if (file.type === 'transl') modelTransl.setLoadedFile(file);
 };
-
-model.setLoadedTranslFile = (file) => { // file: {name, path, content}
-  modelTransl.setLoadedFile(file);
-};
-
-model.setLoadedTxtFile = (file) => { // file: {name, path, content}
-  if (state === 'delete') model.setState('add');
-  modelTxt.setLoadedFile(file);
-}
-
-
-
-///////************  Save/Restore ************
 
 model.save = () => {
   if (state === 'add') modelTxt.save();
   if (state === 'transl') modelTransl.save();
-  if (state === 'delete') model.popup('Перейдите в режим редактирования или перевода', 2000);  
+  if (state === 'delete') model.popup('Перейдите в режим редактирования или перевода', 2000);
 };
 
 model.restore = () => {
