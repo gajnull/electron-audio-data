@@ -28,7 +28,7 @@ const modelAudio = {
     api.decode(content).then(res => {
       duration = res;
       file = {name, path};
-      vent.publish('decodedAudio', {name, path});
+      vent.publish('loadedFile', {type: 'mp3', name, path});
       vent.publish('changedPoz', getPoz());
       localStorage.setItem('path-audio', path);
       localStorage.setItem('name-audio', name);

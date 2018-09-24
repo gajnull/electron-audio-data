@@ -6,7 +6,7 @@ import model from './model/model';
 const file = {};
 let isLoading = false;
 
-let input, btn;
+let input, field;
 
 const init = () => {
   input = document.getElementById('input-files');
@@ -21,11 +21,11 @@ const close = () => {
 
 const selectFile = (type = 'lngt', btn) => {
   if (isLoading) return;
-  isLoading = true;
   let attr = '.lngt';
-  type === 'lngt' && attr = '.txt,._lngt,.lngt';
-  type === 'transl' && attr = '.txt,._transl,.transl';
-  type === 'mp3' && attr = '.mp3,.wav';
+  if (type === 'lngt') attr = '.txt,._lngt,.lngt';
+  if (type === 'transl') attr = '.txt,._transl,.transl';
+  if (type === 'mp3') attr = '.mp3,.wav';
+  field = btn
   input.setAttribute('accept', attr);
   file.type = type;
   input.click();
@@ -33,19 +33,19 @@ const selectFile = (type = 'lngt', btn) => {
 
 function choosedFile() {
   if (input.files.length === 0) return; //здесь ";" обязательно
+  isLoading = true;
   const selectedFile = input.files[0];
   input.value = '';  // единственный способ чтобы заново открыть тотже файл
   file.path = selectedFile.path;
   file.name = selectedFile.name;
   file.size = selectedFile.size;
-  console.log(file.size);
 
-  btn.innerHTML = 'loding...';
+  field.innerHTML = 'loding...';
   const reader = new FileReader();
   if(file.type === 'mp3') {
-      reader.readAsArrayBuffer(file);
+      reader.readAsArrayBuffer(selectedFile);
   } else {
-      reader.readAsText(file);
+      reader.readAsText(selectedFile);
   }
 
   //reader.onloadstart = startProgress
@@ -56,11 +56,13 @@ function choosedFile() {
   function loaded(ev) {
     file.content = ev.target.result;
     model.setLoadedFile(file);
+    isLoading = false;
   }
 
   function errorHandler(ev) {
     if(ev.target.error.name == "NotReadableError") {
-      btn.innerHTML = 'Выберите другой текстовой файл';
+      field.innerHTML = 'Выберите другой текстовой файл';
+      isLoading = false;
     }
   }
 

@@ -15,7 +15,9 @@ let state = 'add',  // 'delete'/'transl'
   timerStop = null;
 
 
-vent.on('loadedLngt', ({startPoz}) => { modelAudio.setStartPoz(startPoz); }); // это можно в modelTxt
+vent.on('loadedFile', ({type, startPoz}) => { 
+  if (type === 'lngt') modelAudio.setStartPoz(startPoz); 
+}); 
 
 model.setArea = (area) => { modelTxt.setRoot(area); }
 

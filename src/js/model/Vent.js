@@ -1,15 +1,14 @@
 
 const evs = {
   changeState: [], //publish - {state}
+  //files events
+  loadedFile: [], //publish - {type, name, path, content, startPoz}  
   //lngt events
-  loadedLngt: [], //publish - {name, path, content, startPoz}
   savedLngt: [], //publish - {name, path}
   //audio events
-  decodedAudio: [], //publish - {name, path}
   changedPoz: [], //publish - {pozMin, pozCurrent, duration, pozFrom, pozTo}
   changeStateAudio: [], //publish - {playing}
   //transl events
-  loadedTransl: [], //publish - {name, path, content} 
   savedTransl: [], //publish - {name, path}   
   // notifications
   popup: [] //publish - {msg, duration}

@@ -23,7 +23,7 @@ modelTxt.setLoadedFile = ({name, path, content}) => {
   let str = txtToLngt(content);
   initNodes(str);
 
-  vent.publish('loadedLngt', {name: file.name, path: file.path, startPoz: getStartPoz()});
+  vent.publish('loadedFile', {type: 'lngt', name: file.name, path: file.path, startPoz: getStartPoz()});
 
   function txtToLngt(content) {
     if (!/\.txt$/.test(file.name)) return content;

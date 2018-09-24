@@ -10,18 +10,24 @@ controlAudio.init = function() {
   btnPlay = btns.querySelector('button[act="tooglePlay"]');
 
   model.on('changeState', changeState);  //меняем набор кнопок
-  model.on('decodedAudio', handlerDecoded);
-  model.on('loadedTransl', handlerLoadedTransl);
+  //model.on('loadedFil', handlerDecoded);
+  model.on('loadedFile', handlerLoadedFiles);
   model.on('changeStateAudio', changeBtnPlay); //меняем кнопку stop/play
 };
 
 controlAudio.close = function() {
-  model.off('decodedAudio', handlerDecoded);
+  model.off('loadedFile', handlerDecoded);
   model.off('changeStateAudio', changeBtnPlay);
   model.off('changeState', changeState);
   btns.onclick = '';
   btns = null;
 };
+
+function handlerLoadedFiles({type}) {
+  if (type === 'transl') handlerLoadedTransl();
+  if (type === 'mp3') handlerDecoded();
+}
+
 
 function handlerDecoded() {
   btns.onclick = function(event) {

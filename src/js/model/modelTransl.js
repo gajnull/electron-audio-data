@@ -18,11 +18,11 @@ const setRoot = (root) => {
 };
 
 const setLoadedFile = ({name, path, content}) => {
-  file = {name, path};
+  file = {type: 'transl', name, path};
   let str = txtToTransl(content);
   initNodes(str);
 
-  vent.publish('loadedTransl', file);
+  vent.publish('loadedFile', file);
 
   function txtToTransl(content) {
     if (!/\.txt$/.test(file.name)) return content;
